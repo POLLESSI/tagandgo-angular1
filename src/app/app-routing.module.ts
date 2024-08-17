@@ -3,8 +3,11 @@ import { RouterModule, Routes } from '@angular/router';
 import { AvatarComponent } from './components/avatar/avatar.component';
 
 const routes: Routes = [
-    { path: 'avatar', component: AvatarComponent},
-    { path: '**', redirectTo: '' }
+    {
+      path: '',
+      pathMatch: 'full',
+      component: AvatarComponent
+    }
 ]
 
 @NgModule({

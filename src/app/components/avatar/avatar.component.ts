@@ -27,7 +27,7 @@ export class AvatarComponent {
         (avatar : Avatar) => {
           this.ListAvatar.push(avatar);
         });
-      
+
       // this.hubConnection.on("ReceiveAllAvatars", (avatars: Avatar[]) => {
       //   this.ListAvatar = avatars;
       // });
@@ -40,7 +40,7 @@ export class AvatarComponent {
           .then(() => console.log("Connected Rigth !!!!"))
           .catch((error) => console.log(error))
     }
-    
+
 
     submit() {
       const avatar: Avatar = {

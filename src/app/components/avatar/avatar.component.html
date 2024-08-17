@@ -4,12 +4,29 @@ Avatar Url : <input [(ngModel)="avatarUrl"] /><br />
 Description : <input [(ngModel)="description"] />
 
 <button (click)="submit()">Submit</button>
-<button (click)="deleteAvatar(avatar_Id)">Delete</button>
+<!-- <button (click)="deleteAvatar(avatar_Id)">Delete</button>
  <button (click)="getAllAvatar()">All Avatars</button>
- <button (click)="getAvatar(avatar_Id)">Details avatar</button>
+ <button (click)="getAvatar(avatar_Id)">Details avatar</button> -->
  <hr />
  <ul>
     <li *ngFor="let av of ListAvatar">
         {{av.avatarName}} : {{av.avatarUrl}} : {{av.description}}
     </li>
  </ul>
+
+
+
+
+<!-- Ce baser sur cette structure pour le formulair -->
+
+<!--  Formulaires basés sur les modèles (Template-Driven Forms) -->
+
+<!-- <
+  form #myForm="ngForm" (ngSubmit)="onSubmit(myForm)">
+  <input type="text" name="username" [(ngModel)]="username" required />
+  <input type="password" name="password" [(ngModel)]="password" minlength="8" />
+  <button type="submit" [disabled]="myForm.invalid">Submit</button>
+</
+> -->
+
+

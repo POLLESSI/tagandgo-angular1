@@ -12,11 +12,10 @@ import { FormsModule } from "@angular/forms";
         AvatarComponent
     ],
     imports: [
-    BrowserModule,
-    AppRoutingModule,
-    FormsModule,
-    AvatarComponent
-],
+      BrowserModule,
+      AppRoutingModule,
+      FormsModule
+    ],
     providers: [],
     bootstrap: [AppComponent]
 })
