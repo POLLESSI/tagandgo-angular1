@@ -1,0 +1,30 @@
+<h3>New Person</h3>
+<form #npersonForm="ngForm" (ngSubmit)="submit()">
+    Last Name : <input type="text" name="lastname" [(ngModel)]="lastname" required />
+    First Name : <input type="text" name="firstname" [(ngModel)]="firstname" required />
+    Email : <input type="text" name="email" [(ngModel)]="email" required />
+    Address_Street : <input type="text" name="address_Street" [(ngModel)]="addess_Street" />
+    Address_Nbr : <input type="text" name="address_Nbr" [(ngModel)]="address_Nbr" required />
+    PostalCode : <input type="text" name="postalCode" [(ngModel)]="postalCode" required />
+    Address_City : <input type="text" name="address_City" [(ngModel)]="address_City" required />
+    Address_Country : <input type="text" name="address_Country" [(ngModel)]="address_Country" required />
+    Telephone : <input type="text" name="telephone" [(ngModel)]="telephone" />
+    Gsm : <input type="text" name="gsm" [(ngModel)]="gsm" />
+    <button (click)="submit()">Submit</button>
+</form>
+
+<hr />
+<ul>
+    <li *ngFor="let np of ListNPerson">
+        {{np.lastname}}
+        {{np.firstname}}
+        {{np.email}}
+        {{np.address_street}}
+        {{np.address_Nbr}}
+        {{np.postalCode}}
+        {{np.address_City}}
+        {{np.address_Country}}
+        {{np.telephone}}
+        {{np.gsm}}
+    </li>
+</ul>

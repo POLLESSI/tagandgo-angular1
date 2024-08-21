@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Form } from '@angular/forms';
 import * as signalr from '@microsoft/signalr';
 // import { error } from 'console';
 
@@ -18,6 +19,8 @@ export class AvatarComponent {
   hubConnection! : signalr.HubConnection;
 
   disable! : boolean;
+
+  //#avatarForm! : Form;
     ngOnInit(){
       this.hubConnection = new signalr.HubConnectionBuilder()
           .withUrl("https://localhost:7069/avatar")

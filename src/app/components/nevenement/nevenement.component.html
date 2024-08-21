@@ -1,0 +1,30 @@
+<h3>Events Room</h3>
+<form #nevenementForm="ngForm" (ngSubmit)="submit()">
+    Date Event : <input type="datetime" name="nevenementDate" [(ngModel)]="nEvenementDate" required>
+    Name Event : <input type="text" name="nevenementName" [(ngModel)]="nEvenementName" required>
+    Description : <input type="text" name="nevenementDescription" [(ngModel)]="nEvenementDescription" required>
+    Latitude : <input type="text" name="posLat" [(ngModel)]="posLat" required>
+    Longitude : <input type="text" name="posLong" [(ngModel)]="posLong" required>
+    Positif? : <input type="text" name="positif" [(ngModel)]="positif">
+    Organisator : <input type="text" name="organisateur_Id" [(ngModel)]="organisateur_Id">
+    Icon : <input type="text" name="nicon_Id" [(ngModel)]="nIcon_Id">
+    Recompense : <input type="text" name="recompense_Id" [(ngModel)]="recompense_Id">
+    Bonus : <input type="text" name="bonus_Id" [(ngModel)]="bonus_Id">
+    Media Item : <input type="text" name="mediaItem_Id" [(ngModel)]="mediaItem_Id">
+</form>
+<hr />
+<ul>
+    <li *ngFor="let nev of ListNEvenement">
+        {{nev.nEvenementDate}}
+        {{nev.nEvenementName}}
+        {{nev.nEvenementDescription}}
+        {{nev.posLat}}
+        {{nev.posLong}}
+        {{nev.positif}}
+        {{nev.organisateur_Id}}
+        {{nev.nIcon_Id}}
+        {{nev.recompense_Id}}
+        {{nev.bonus_Id}}
+        {{nev.mediaItem_Id}}
+    </li>
+</ul>

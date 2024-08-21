@@ -1,0 +1,14 @@
+<h3>Icons Room</h3>
+<form #niconForm="ngForm" (ngSubmit)="submit()">
+    Icon Name : <input type="text" name="nIconName" [(ngModel)]="nIconName" required>
+    Description : <input type="text" name="nIconDescription" [(ngModel)]="nIconDescription" required>
+    Url : <input type="text" name="nIconUrl" [(ngModel)]="nIconUrl" required>
+</form>
+<hr />
+<ul>
+    <li *ngFor="let nic of ListNIcon">
+        {{nic.nIconName}}
+        {{nic.nIconDescription}}
+        {{nic.nIconUrl}}
+    </li>
+</ul>

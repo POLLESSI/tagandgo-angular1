@@ -1,15 +1,22 @@
 <h3>Avatar</h3>
-Avatar Name : <input [(ngModel)="avatarName"] /><br />
-Avatar Url : <input [(ngModel)="avatarUrl"] /><br />
-Description : <input [(ngModel)="description"] />
+<form #avatarForm="ngForm" (ngSubmit)="submit()">
+    <!-- Avatar Name : <input [(ngModel)="avatarName"] /><br />
+    Avatar Url : <input [(ngModel)="avatarUrl"] /><br />
+    Description : <input [(ngModel)="description"] />  -->
+    <input type="text" name="avatarName" [(ngModel)]="avatarName" required />
+    <input type="text" name="avatarUrl" [(ngModel)]="avatarUrl" required >
+    <input type="text" name="description" [(ngModel)]="description" required >
+    <button (click)="submit()">Submit</button>
+    <!-- <button (click)="deleteAvatar(avatar_Id)">Delete</button>
+    <button (click)="getAllAvatar()">All Avatars</button>
+    <button (click)="getAvatar(avatar_Id)">Details avatar</button> -->
+</form> 
 
-<button (click)="submit()">Submit</button>
-<button (click)="deleteAvatar(avatar_Id)">Delete</button>
- <button (click)="getAllAvatar()">All Avatars</button>
- <button (click)="getAvatar(avatar_Id)">Details avatar</button>
- <hr />
- <ul>
-    <li *ngFor="let av of ListAvatar">
-        {{av.avatarName}} : {{av.avatarUrl}} : {{av.description}}
-    </li>
- </ul>
+
+
+<hr />
+<ul>
+<li *ngFor="let av of ListAvatar">
+    {{av.avatarName}} : {{av.avatarUrl}} : {{av.description}}
+</li>
+</ul>

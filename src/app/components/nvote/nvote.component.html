@@ -1,0 +1,15 @@
+<h3>Vote Room</h3>
+<form #nVoteForm="ngForm" (ngSubmit)="submit()">
+    Id Evenement : <input type="text" name="nevenement_id" [(ngModel)]="nEvenement_Id" unique>
+    Fun ? : <input type="text" name="funornot" [(ngModel)]="funOrNot">
+    Comment : <input type="text" name="comment" [(ngModel)]="comment">
+    <button (click)="submit()">Submit</button>
+</form>
+<hr />
+<ul>
+    <li *ngFor="let vo of ListNVote">
+        {{vo.nEvenement_Id}}
+        {{vo.funOrNot}}
+        {{vo.comment}}
+    </li>
+</ul>
