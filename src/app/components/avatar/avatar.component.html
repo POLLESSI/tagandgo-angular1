@@ -10,13 +10,13 @@
     <!-- <button (click)="deleteAvatar(avatar_Id)">Delete</button>
     <button (click)="getAllAvatar()">All Avatars</button>
     <button (click)="getAvatar(avatar_Id)">Details avatar</button> -->
-</form> 
+</form>
 
 
 
 <hr />
 <ul>
-<li *ngFor="let av of ListAvatar">
+<li *ngFor="let av of listAvatars">
     {{av.avatarName}} : {{av.avatarUrl}} : {{av.description}}
 </li>
 </ul>
