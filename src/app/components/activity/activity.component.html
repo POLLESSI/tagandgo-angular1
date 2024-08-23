@@ -1,0 +1,22 @@
+<h3>Activities Room</h3>
+<form #activityForm="ngForm" (ngSubmit)="submit()">
+    Activity Name : <input type="text" name="activityName" [(ngModel)]="activityName" required>
+    Address : <input type="text" name="activityAddress" [(ngModel)]="activityAddress" required>
+    Description : <input type="text" name="activityDescription" [(ngModel)]="activityDescription" required>
+    Additional Information : <input type="text" name="complementareInformation" [(ngModel)]="complementareInformation" required>
+    Latitude : <input type="text" name="posLat" [(ngModel)]="posLat" required>
+    Longitude : <input type="text" name="posLong" [(ngModel)]="posLong" required>
+    Organisateur : <input type="text" name="organisateur_Id" [(ngModel)]="organisateur_Id" required>
+</form>
+<hr />
+<ul>
+    <li *ngFor="let act of ListActivity">
+        {{act.activityName}}
+        {{act.activityAddress}}
+        {{act.activityDescription}}
+        {{act.complementareInformation}}
+        {{act.posLat}}
+        {{act.posLong}}
+        {{act.organisateur_Id}}
+    </li>
+</ul>

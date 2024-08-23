@@ -1,0 +1,16 @@
+<h3>Organisators Room</h3>
+<form #organisateurForm="ngForm" (ngSubmit)="submit()">
+    Company Name : <input type="text" name="companyName" [(ngModel)]="companyName" required>
+    Business Number : <input type="text" name="businessNumber" [(ngModel)]="businessNumber" required>
+    User : <input type="text" name="nUser_Id" [(ngModel)]="nUser_Id" required>
+    Point : <input type="text" name="point" [(ngModel)]="point" required>
+</form>
+<hr />
+<ul>
+    <li *ngFor="let org of ListOrganisateur">
+        {{org.companyName}}
+        {{org.businessNumber}}
+        {{org.nUser_Id}}
+        {{org.point}}
+    </li>
+</ul>

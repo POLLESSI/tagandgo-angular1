@@ -1,0 +1,15 @@
+<h3>Map room</h3>
+<form #mapForm="ngForm" (ngSubmit)="submit()">
+    Date Creation : <input type="text" name="datecreation" [(ngModel)]="dateCreation" required>
+    Url Map : <input type="text" name="mapurl" [(ngModel)]="mapUrl" required>
+    Description : <input type="text" name="description" [(ngModel)]="description" required>
+    <button (click)="submit()">Submit</button>
+</form>
+<hr />
+<ul *ngFor="let mp of ListMap">
+    <li>
+        {{mp.dateCreation}}
+        {{mp.mapUrl}}
+        {{mp.description}}
+    </li>
+</ul>

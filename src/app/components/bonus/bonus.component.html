@@ -1,0 +1,14 @@
+<h3>Bonus</h3>
+<form #bonusForm="ngForm" (ngSubmit)="submit()">
+    Bonus Type : <input type="text" name="bonusType" [(ngModel)]="bonusType" required/>
+    Bonus Description : <input type="text" name="bonusDescription" [(ngModel)]="bonusDescription" required />
+    Application : <input type="text" name="application" [(ngModel)]="application" required />
+    Granted : <input type="text" name="granted" [(ngModel)]="granted" required>
+    <button (click)="submit()">Submit</button>
+</form>
+<hr />
+<ul>
+    <li *ngFor="let bo of ListBonus">
+        {{bo.bonusType}} : {{bo.bonusDescription}} : {{bo.application}} Granted : {{bo.granted}}
+    </li>
+</ul>

@@ -1,0 +1,17 @@
+<h3>Recompense Room</h3>
+<form #recompenseForm="ngForm" (ngSubmit)="submit()">
+    Definition : <input type="text" name="definition" [(ngModel)]="definition">
+    Point : <input type="text" name="point" [(ngModel)]="point">
+    Implication : <input type="text" name="implication" [(ngModel)]="implication">
+    Granted : <input type="text" name="granted" [(ngModel)]="granted">
+    <button (click)="submit()">Submit</button>
+</form>
+<hr />
+<ul>
+    <li *ngFor="let re of ListRecompense">
+        {{re.definition}}
+        {{re.point}}
+        {{re.implication}}
+        {{re.granted}}
+    </li>
+</ul>

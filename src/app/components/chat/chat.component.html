@@ -1,0 +1,15 @@
+<h3>Chat Room</h3>
+<form #chatForm="ngForm" (ngSubmit)="submit()">
+    New Message : <input type="text" name="newmessage" [(ngModel)]="newMessage">
+    Id Event : <input type="text" name="nevenement_id" [(ngModel)]="nEvenement_Id">
+    Id Activity : <input type="text" name="activity_id" [(ngModel)]="activity_Id">
+    <button (click)="submit()">Submit</button>
+</form>
+<hr />
+<ul *ngFor="let ch of ListMessage">
+    <li>
+        {{ch.newMessage}}
+        {{ch.nEvenement_Id}}
+        {{ch.activity_Id}}
+    </li>
+</ul>

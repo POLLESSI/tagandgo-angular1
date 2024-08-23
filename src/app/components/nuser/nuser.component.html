@@ -1,0 +1,22 @@
+<h3>New User</h3>
+<form #nuserForm="ngForm" (ngSubmit)="submit()">
+    Email : <input type="text" name="email" [(ngModel)]="email" required />
+    Password : <input type="text" name="pwd" [(ngModel)]="pwd" required />
+    Confirm Password : <input type="text" name="pwd" [(ngModel)]="pwd" required />
+    Id Person : <input type="text" name="nPerson_Id" [(ngModel)]="nPerson_Id" required />
+    Id Rôle : <input type="text" name="role_Id" [(ngModel)]="role_Id" required />
+    Id Avatar : <input type="text" name="avatar_Id" [(ngModel)]="avatar_Id">
+    Points : <input type="text" name="point" [(ngModel)]="point" />
+    <button (click)="submit()">Submit</button>
+</form>
+
+<hr />
+<ul>    
+    <li *ngFor="let nu of ListNUser">
+        {{nu.email}}
+        {{nu.nPerson_Id}}
+        {{nu.role_Id}}
+        {{nu.avatar_Id}}
+        {{nu.point}}
+    </li>
+</ul>
