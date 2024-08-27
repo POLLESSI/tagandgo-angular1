@@ -12,7 +12,7 @@ export class ActivityService {
   constructor(private http: HttpClient) { }
 
   public async getAllActivities(): Promise<Array<ActivityModel>> {
-    const url: string = `${this.API_URL_BASE}/activity`;
+    const url: string = `${this.API_URL_BASE}/Activity`;
 
     try {
       const respons: any = await firstValueFrom(this.http.get(url, {responseType: 'json'}));
@@ -22,6 +22,7 @@ export class ActivityService {
       throw error;
     }
   }
+
   public async createActivity(): Promise<void> {
     try {
 
@@ -29,6 +30,7 @@ export class ActivityService {
       throw error;
     }
   }
+
   public async updateActivity(): Promise<void> {
     try {
 
@@ -36,6 +38,7 @@ export class ActivityService {
       throw error;
     }
   }
+
   public async deleteActivity(): Promise<void> {
     try {
 
