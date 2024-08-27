@@ -28,12 +28,12 @@ export class ActivityComponent implements OnInit {
   //hubConnection! : signalr.HubConnection;
 
   disable! : boolean;
-  
+
   constructor(private activityService: ActivityService) {}
 
   async ngOnInit(): Promise<void> {
     await this.getAllActivities();
-    
+
     // this.hubConnection = new signalr.HubConnectionBuilder()
     //     .withUrl("https://localhost:7069/activity")
     //     .build();
@@ -49,7 +49,7 @@ export class ActivityComponent implements OnInit {
   }
   async getAllActivities(): Promise<void> {
     try {
-      this.ListActivities = await this.activityService['getAllActivities']();
+      this.ListActivities = await this.activityService.getAllActivities();
     } catch (error) {
       console.log("Error List activities");
     }
