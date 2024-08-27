@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Form } from '@angular/forms';
-import * as signalr from '@microsoft/signalr';
+//import * as signalr from '@microsoft/signalr';
+import { NPersonModel } from 'src/app/models/nperson.model';
+import { NpersonService } from 'src/app/services/nperson.service';
 // import { error } from 'console';
 
 @Component({
@@ -10,8 +12,8 @@ import * as signalr from '@microsoft/signalr';
   templateUrl: './nperson.component.html',
   styleUrl: './nperson.component.css'
 })
-export class NpersonComponent {
-  ListNPerson: NPerson[] = []
+export class NpersonComponent implements OnInit {
+  ListNPersons: NPersonModel[] = [];
 
   lastname! : string;
   firstname! : string;
@@ -25,27 +27,38 @@ export class NpersonComponent {
   gsm! : string;
   NPerson_Id! : number;
 
-  hubConnection! : signalr.HubConnection;
+  //hubConnection! : signalr.HubConnection;
 
   disable! : boolean;
 
-  ngOnInit() {
-    this.hubConnection = new signalr.HubConnectionBuilder()
-        .withUrl("https://localhost:7069/nperson")
-        .build();
+  constructor(private npersonService: NpersonService) {}
 
-    this.hubConnection.on("receiveNPerson",
-      (nperson: NPerson) => {
-        this.ListNPerson.push(nperson);
-      });
+  async ngOnInit(): Promise<void> {
+    await this.getAllNPersons();
+    // this.hubConnection = new signalr.HubConnectionBuilder()
+    //     .withUrl("https://localhost:7069/nperson")
+    //     .build();
 
-    this.hubConnection.start()
-        .then(() => console.log("Connected Rigth !!!!!"))
-        .catch((error) => console.log(error))
+    // this.hubConnection.on("receiveNPerson",
+    //   (nperson: NPersonModel) => {
+    //     this.ListNPerson.push(nperson);
+    //   });
+
+    // this.hubConnection.start()
+    //     .then(() => console.log("Connected Rigth !!!!!"))
+    //     .catch((error) => console.log(error))
   }
 
-  submit() {
-    const nperson: NPerson = {
+  async getAllNPersons(): Promise<void> {
+    try {
+      this.ListNPersons = await this.npersonService['getAllNPersons']();
+    } catch (error) {
+      console.log("Error list Persons");
+    }
+  }
+
+  submit(): void {
+    const nperson: NPersonModel = {
       lastname: this.lastname,
       firstname: this.firstname,
       email: this.email,
@@ -58,22 +71,10 @@ export class NpersonComponent {
       gsm: this.gsm,
       NPerson_Id: this.NPerson_Id
     };
-    this.hubConnection.invoke("SubmitNPerson", nperson)
-        .catch(err => console.error(err));
+    // this.hubConnection.invoke("SubmitNPerson", nperson)
+    //     .catch(err => console.error(err));
   }
 
 }
 
-export interface NPerson {
-  lastname : string;
-  firstname : string;
-  email : string;
-  address_street : string;
-  address_Nbr : string;
-  postalCode : string;
-  address_City : string;
-  address_Country : string;
-  telephone : string;
-  gsm : string;
-  NPerson_Id : number;
-}
+

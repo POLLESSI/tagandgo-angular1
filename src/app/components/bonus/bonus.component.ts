@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Form, NgForm } from '@angular/forms';
-import * as signalr from '@microsoft/signalr';
+//import * as signalr from '@microsoft/signalr';
+import { BonusModel } from 'src/app/models/bonus.model';
+import { BonusService } from 'src/app/services/bonus.service';
 
 @Component({
   selector: 'app-bonus',
@@ -9,8 +11,8 @@ import * as signalr from '@microsoft/signalr';
   templateUrl: './bonus.component.html',
   styleUrl: './bonus.component.css'
 })
-export class BonusComponent {
-  ListBonus: Bonus[] = [];
+export class BonusComponent implements OnInit {
+  ListBonus: BonusModel[] = [];
 
   bonusType! : string;
   bonusDescription! : string;
@@ -18,47 +20,47 @@ export class BonusComponent {
   granted! : boolean;
   bonus_Id! : number;
 
-  hubConnection! : signalr.HubConnection;
+  //hubConnection! : signalr.HubConnection;
 
   disable! : boolean;
 
-  ngOnInit(){
-    this.hubConnection = new signalr.HubConnectionBuilder()
-      .withUrl("https://localhost:7069/bonus")
-      .build();
+  constructor(private bonusService: BonusService) {}
 
-    this.hubConnection.on("receiveBonus",
-      (bonus : Bonus) => {
-        this.ListBonus.push(bonus);
-      });
+  async ngOnInit(): Promise<void>{
+    try {
+      this.ListBonus = await this.bonusService['getAllBonus']();
+    } catch (error) {
+      console.log("Error list Bonus");
+    }
+    // this.hubConnection = new signalr.HubConnectionBuilder()
+    //   .withUrl("https://localhost:7069/bonus")
+    //   .build();
+
+    // this.hubConnection.on("receiveBonus",
+    //   (bonus : BonusModel) => {
+    //     this.ListBonus.push(bonus);
+    //   });
 
 
-    this.hubConnection.start()
-      .then(() => console.log("Connected Rigth !!!!"))
-      .catch((error) => console.log(error))
+    // this.hubConnection.start()
+    //   .then(() => console.log("Connected Rigth !!!!"))
+    //   .catch((error) => console.log(error))
   }
 
   onSubmit(form:NgForm) {
     console.log(form.value);
   }
 
-  submit() {
-    const bonus: Bonus = {
+  submit(): void {
+    const bonus: BonusModel = {
       bonusType: this.bonusType,
       bonusDescription: this.bonusDescription,
       application: this.application,
       granted: this.granted,
       bonus_Id: this.bonus_Id
     };
-    this.hubConnection.invoke("SubmitBonus", bonus)
-      .catch(err => console.error(err));
+    // this.hubConnection.invoke("SubmitBonus", bonus)
+    //   .catch(err => console.error(err));
   }
 }
 
-export interface Bonus {
-  bonusType : string;
-  bonusDescription : string;
-  application : string;
-  granted : boolean;
-  bonus_Id : number;
-}

@@ -7,12 +7,13 @@ import { AvatarModel } from '../models/avatar.model';
   providedIn: 'root'
 })
 export class AvatarService {
+  [x: string]: any;
 
   private API_URL_BASE: string = "http://localhost:7069";
 
   constructor(private http: HttpClient) { }
 
-  public async getAvatars(): Promise<Array<AvatarModel>> {
+  public async getAllAvatars(): Promise<Array<AvatarModel>> {
     const url: string = `${this.API_URL_BASE}/avatar`;
 
     try {
@@ -25,7 +26,7 @@ export class AvatarService {
     }
   }
 
-  public async creatAvatar(): Promise<void>  {
+  public async createAvatar(): Promise<void>  {
     try {
 
     } catch (error) {

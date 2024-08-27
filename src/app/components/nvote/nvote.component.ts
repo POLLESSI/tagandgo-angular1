@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Form, NgForm } from '@angular/forms';
-import * as signalr from '@microsoft/signalr';
+//import * as signalr from '@microsoft/signalr';
+import { NVoteModel } from 'src/app/models/nvote.model';
+import { NvoteService } from 'src/app/services/nvote.service';
 //import { error } from 'console';
 
 @Component({
@@ -10,52 +12,57 @@ import * as signalr from '@microsoft/signalr';
   templateUrl: './nvote.component.html',
   styleUrl: './nvote.component.css'
 })
-export class NvoteComponent {
-  ListNVote: NVote[] = []
+export class NvoteComponent implements OnInit {
+  ListNVotes: NVoteModel[] = [];
 
   nEvenement_Id! : number;
   funOrNot! : boolean;
   comment! : string;
   nVote_Id! : number;
 
-  hubConnection! : signalr.HubConnection;
+  //hubConnection! : signalr.HubConnection;
 
   disable! : boolean;
 
-  ngOnInit() {
-    this.hubConnection = new signalr.HubConnectionBuilder()
-        .withUrl("https://localhost:7069/nvote")
-        .build();
+  constructor(private nvoteService: NvoteService) {}
 
-    this.hubConnection.on("receiveNVote",
-      (nvote : NVote) => {
-        this.ListNVote.push(nvote);
-      });
+  async ngOnInit(): Promise<void> {
+    await this.getAllNVotes();
+    // this.hubConnection = new signalr.HubConnectionBuilder()
+    //     .withUrl("https://localhost:7069/nvote")
+    //     .build();
 
-    this.hubConnection.start()
-      .then(() => console.log("Connected Rigth !!!!!!"))
-      .catch((error) => console.log(error));
+    // this.hubConnection.on("receiveNVote",
+    //   (nvote : NVoteModel) => {
+    //     this.ListNVote.push(nvote);
+    //   });
+
+    // this.hubConnection.start()
+    //   .then(() => console.log("Connected Rigth !!!!!!"))
+    //   .catch((error) => console.log(error));
+  }
+
+  async getAllNVotes(): Promise<void> {
+    try {
+      this.ListNVotes = await this.nvoteService['getAllNVotes']();
+    } catch (error) {
+      console.log("Error list Votes");
+    }
   }
 
   onSubmit(form:NgForm) {
     console.log(form.value);
   }
 
-  submit() {
-    const nVote: NVote = {
+  submit(): void {
+    const nVote: NVoteModel = {
       nEvenement_Id: this.nEvenement_Id,
       funOrNot: this.funOrNot,
       comment: this.comment,
       nVote_Id: this.nVote_Id
     };
-    this.hubConnection.invoke("SubmitNVote", nVote)
-      .catch(err => console.error(err));
+    // this.hubConnection.invoke("SubmitNVote", nVote)
+    //   .catch(err => console.error(err));
   }
 }
 
-export interface NVote {
-  nEvenement_Id : number;
-  funOrNot : boolean;
-  comment : string;
-  nVote_Id : number;
-}

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Form } from '@angular/forms';
-import * as signalr from '@microsoft/signalr';
+//import * as signalr from '@microsoft/signalr';
 import { AvatarModel } from 'src/app/models/avatar.model';
 import { AvatarService } from 'src/app/services/avatar.service';
 
@@ -18,19 +18,19 @@ export class AvatarComponent implements OnInit {
   description! : string;
   avatar_Id! : number;
 
-  hubConnection! : signalr.HubConnection;
+  //hubConnection! : signalr.HubConnection;
 
   disable! : boolean;
 
   constructor(private avatarService: AvatarService) {}
 
   async ngOnInit(): Promise<void> {
-    await this.getAvatars();
+    await this.getAllAvatars();
   }
 
-  async getAvatars(): Promise<void> {
+  async getAllAvatars(): Promise<void> {
     try {
-      this.listAvatars = await this.avatarService.getAvatars();
+      this.listAvatars = await this.avatarService['getAllAvatars']();
 
     } catch (error) {
       console.log("Error list avatars");
@@ -44,8 +44,8 @@ export class AvatarComponent implements OnInit {
       description: this.description,
       avatar_Id: this.avatar_Id
     };
-    this.hubConnection.invoke("SubmitAvatar", avatar)
-      .catch(err => console.error(err));
+    // this.hubConnection.invoke("SubmitAvatar", avatar)
+    //   .catch(err => console.error(err));
   }
 
 }

@@ -20,6 +20,7 @@ import { RecompenseComponent } from "./components/recompense/recompense.componen
 import { OrganisateurComponent } from "./components/organisateur/organisateur.component";
 import { WeatherforecastComponent } from "./components/weatherforecast/weatherforecast.component";
 import { FormsModule } from "@angular/forms";
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 @NgModule({
     declarations: [
@@ -46,7 +47,9 @@ import { FormsModule } from "@angular/forms";
     FormsModule,
     HttpClientModule
 ],
-    providers: [],
+    providers: [
+    provideAnimationsAsync()
+  ],
     bootstrap: [AppComponent]
 })
 export class AppModule { }
