@@ -14,7 +14,7 @@ export class AvatarService {
   constructor(private http: HttpClient) { }
 
   public async getAllAvatars(): Promise<Array<AvatarModel>> {
-    const url: string = `${this.API_URL_BASE}/avatar`;
+    const url: string = `${this.API_URL_BASE}/Avatar`;
 
     try {
       const respons: any = await firstValueFrom(this.http.get(url, { responseType: 'json' }));
