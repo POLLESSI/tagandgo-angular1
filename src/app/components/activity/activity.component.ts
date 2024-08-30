@@ -33,7 +33,7 @@ export class ActivityComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     await this.getAllActivities();
-    
+    console.log("OK");
     // this.hubConnection = new signalr.HubConnectionBuilder()
     //     .withUrl("https://localhost:7069/activity")
     //     .build();
@@ -49,7 +49,8 @@ export class ActivityComponent implements OnInit {
   }
   async getAllActivities(): Promise<void> {
     try {
-      this.ListActivities = await this.activityService['getAllActivities']();
+      this.ListActivities = await this.activityService.getAllActivities();
+      console.log(this.ListActivities);
     } catch (error) {
       console.log("Error List activities");
     }
