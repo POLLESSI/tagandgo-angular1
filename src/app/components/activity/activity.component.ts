@@ -14,7 +14,8 @@ import { AvatarService } from 'src/app/services/avatar.service';
   styleUrl: './activity.component.css'
 })
 export class ActivityComponent implements OnInit {
-  ListActivities: ActivityModel[] = []
+
+  listActivities: ActivityModel[] = [];
 
   activityName! : string;
   activityAddress! : string;
@@ -24,38 +25,26 @@ export class ActivityComponent implements OnInit {
   posLong! : string;
   organisateur_Id! : number;
   activity_Id! : number;
-
-  //hubConnection! : signalr.HubConnection;
-
   disable! : boolean;
 
   constructor(private activityService: ActivityService) {}
 
-  async ngOnInit(): Promise<void> {
+  public async ngOnInit(): Promise<void> {
     await this.getAllActivities();
-    console.log("OK");
-    // this.hubConnection = new signalr.HubConnectionBuilder()
-    //     .withUrl("https://localhost:7069/activity")
-    //     .build();
-
-    // this.hubConnection.on("receiveActivity",
-    //   (activity : Activity) => {
-    //     this.ListActivity.push(activity);
-    //   });
-
-    // this.hubConnection.start()
-    //   .then(() => console.log("Connected Rigth!!!!!"))
-    //   .catch((error) => console.log(error))
   }
-  async getAllActivities(): Promise<void> {
+
+  public async getAllActivities(): Promise<void> {
     try {
-      this.ListActivities = await this.activityService.getAllActivities();
-      console.log(this.ListActivities);
+      this.listActivities = await this.activityService.getAllActivities();
+
+      console.log(this.listActivities);
+
     } catch (error) {
       console.log("Error List activities");
     }
   }
-  submit(): void {
+
+  public submit(): void {
     const activity: ActivityModel = {
       activityName: this.activityName,
       activityAddress: this.activityAddress,
@@ -66,8 +55,8 @@ export class ActivityComponent implements OnInit {
       organisateur_Id: this.organisateur_Id,
       activity_Id: this.activity_Id
     };
-    // this.hubConnection.invoke("SubmitActivity", activity)
-    //   .catch(err => console.error(err));
+
+
   }
 }
 
