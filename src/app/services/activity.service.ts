@@ -8,7 +8,7 @@ import { ActivityModel } from '../models/activity.model';
 })
 export class ActivityService {
 
-  private API_URL_BASE: string = "http://localhost:7069";
+  private API_URL_BASE: string = "https://localhost:7069/api";
   constructor(private http: HttpClient) { }
 
   public async getAllActivities(): Promise<Array<ActivityModel>> {
