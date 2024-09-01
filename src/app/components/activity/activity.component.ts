@@ -1,15 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Form } from '@angular/forms';
-//import * as signalr from '@microsoft/signalr';
 import { ActivityModel } from 'src/app/models/activity.model'
 import { ActivityService } from 'src/app/services/activity.service';
-import { AvatarService } from 'src/app/services/avatar.service';
-//import { error } from 'console';
-
 @Component({
   selector: 'app-activity',
-  // standalone: true,
-  // imports: [],
   templateUrl: './activity.component.html',
   styleUrl: './activity.component.css'
 })

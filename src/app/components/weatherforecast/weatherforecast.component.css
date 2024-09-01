@@ -1,0 +1,15 @@
+li {
+    background-color: coral;
+}
+
+input {
+    background-color: lightgoldenrodyellow;
+}
+
+button {
+    background-color: lightskyblue;
+    font: bold;
+    font-style: oblique;
+    font-size: large;
+    color: black;
+}

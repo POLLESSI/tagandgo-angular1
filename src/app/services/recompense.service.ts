@@ -1,4 +1,7 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
+import { RecompenseModel } from '../models/recompense.model';
 import { CONST_API } from '../constants/api-constants';
 
 @Injectable({
@@ -6,5 +9,41 @@ import { CONST_API } from '../constants/api-constants';
 })
 export class RecompenseService {
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
+
+  public async getAllRecompenses(): Promise<Array<RecompenseModel>> {
+    const url: string = `${CONST_API.URL_API}/Recompense`;
+
+    try {
+      const respons: any = await firstValueFrom(this.http.get(url, {responseType: 'json'}));
+
+      return respons as Array<RecompenseModel>
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async createRecompense(): Promise<void> {
+    try {
+
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async updateRecompense(): Promise<void> {
+    try {
+
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async deleteRecompense(): Promise<void> {
+    try {
+
+    } catch (error) {
+      throw error;
+    }
+  }
 }
