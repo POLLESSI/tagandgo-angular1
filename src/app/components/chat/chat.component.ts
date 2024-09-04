@@ -11,6 +11,7 @@ export class ChatComponent implements OnInit {
   ListMessages: ChatModel[] = [];
 
   newMessage! : string;
+  author! : string;
   SendingDate! : string;
   nEvenement_Id! : number;
   activity_Id! : number;
@@ -35,6 +36,7 @@ export class ChatComponent implements OnInit {
   submit(): void {
     const chat: ChatModel = {
       newMessage: this.newMessage,
+      author: this.author,
       SendingDate: this.SendingDate,
       nEvenement_Id: this.nEvenement_Id,
       activity_Id: this.activity_Id,

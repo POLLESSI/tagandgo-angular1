@@ -1,9 +1,10 @@
 li { 
-    background-color: aquamarine;
+    background-color: black;
+    color: orangered;
 }
 
 input {
-    background-color: lightgoldenrodyellow;
+    background-color: lightcyan;
 }
 
 button {
