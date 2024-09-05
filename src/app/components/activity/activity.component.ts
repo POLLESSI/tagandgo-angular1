@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivityModel } from 'src/app/models/activity.model'
+import { NgForm } from '@angular/forms';
+import { ActivityModel } from 'src/app/models/activity/activity.model'
+import { ActivityCreationModel } from 'src/app/models/activity/activityCreation.model';
 import { ActivityService } from 'src/app/services/activity.service';
 @Component({
   selector: 'app-activity',
@@ -17,7 +19,6 @@ export class ActivityComponent implements OnInit {
   posLat! : string;
   posLong! : string;
   organisateur_Id! : number;
-  activity_Id! : number;
   disable! : boolean;
 
   constructor(private activityService: ActivityService) {}
@@ -33,12 +34,26 @@ export class ActivityComponent implements OnInit {
       console.log(this.listActivities);
 
     } catch (error) {
-      console.log("Error List activities");
+      console.log("Error List activities!");
     }
   }
 
-  public submit(): void {
-    const activity: ActivityModel = {
+  public async submit(activityForm: NgForm): Promise<void> {
+    // Validation via le formulaire
+    if (activityForm.invalid) {
+      console.log("Form is invalid");
+      return;
+    }
+
+    // Validation supplémentaire pour la latitude
+    const latPattern = /^-?\d+\.\d{6}$/;
+    const longPattern = latPattern;
+    if (!latPattern.test(this.posLat) || !longPattern.test(this.posLat)) {
+      console.log("Must be a decimal with up to 6 digits after the decimal point");
+      return;
+    }
+
+    const activity: ActivityCreationModel = {
       activityName: this.activityName,
       activityAddress: this.activityAddress,
       activityDescription: this.activityDescription,
@@ -46,10 +61,18 @@ export class ActivityComponent implements OnInit {
       posLat: this.posLat,
       posLong: this.posLong,
       organisateur_Id: this.organisateur_Id,
-      activity_Id: this.activity_Id
     };
 
+    console.log(activity);
 
+    try {
+      const response: ActivityModel = await this.activityService.createActivity(activity);
+      this.listActivities.push(response);
+
+    } catch (error) {
+      console.log("Error creating activity!");
+    }
   }
+
 }
 

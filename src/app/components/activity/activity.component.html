@@ -1,16 +1,61 @@
 <h3>Activities Room</h3>
-<form #activityForm="ngForm" (ngSubmit)="submit()">
-    Activity Name : <input type="text" name="activityName" [(ngModel)]="activityName" required>
-    Address : <input type="text" name="activityAddress" [(ngModel)]="activityAddress" required>
-    Description : <input type="text" name="activityDescription" [(ngModel)]="activityDescription" required>
-    Additional Information : <input type="text" name="complementareInformation" [(ngModel)]="complementareInformation" required>
-    Latitude : <input type="text" name="posLat" [(ngModel)]="posLat" required>
-    Longitude : <input type="text" name="posLong" [(ngModel)]="posLong" required>
-    Organisateur : <input type="text" name="organisateur_Id" [(ngModel)]="organisateur_Id" required>
-    <button (click)="submit()">Submit</button>
-    <button (click)="getAllActivities()">All Activities</button>
+<form #activityForm="ngForm" (ngSubmit)="submit(activityForm)">
+    <!-- Activity Name -->
+    Activity Name :
+    <input type="text" name="activityName" [(ngModel)]="activityName" required #activityNameField="ngModel">
+    <div *ngIf="activityNameField.invalid && activityNameField.touched">
+        Activity Name is required.
+    </div>
+
+    <!-- Address -->
+    Address :
+    <input type="text" name="activityAddress" [(ngModel)]="activityAddress" required #activityAddressField="ngModel">
+    <div *ngIf="activityAddressField.invalid && activityAddressField.touched">
+        Address is required.
+    </div>
+
+    <!-- Description -->
+    Description :
+    <input type="text" name="activityDescription" [(ngModel)]="activityDescription" required #activityDescriptionField="ngModel">
+    <div *ngIf="activityDescriptionField.invalid && activityDescriptionField.touched">
+        Description is required.
+    </div>
+
+    <!-- Additional Information -->
+    Additional Information :
+    <input type="text" name="complementareInformation" [(ngModel)]="complementareInformation" required #complementareInformationField="ngModel">
+    <div *ngIf="complementareInformationField.invalid && complementareInformationField.touched">
+        Additional Information is required.
+    </div>
+
+    <!-- Latitude -->
+    Latitude :
+    <input type="text" name="posLat" [(ngModel)]="posLat" required pattern="^-?\d+\.\d{6}$" #posLatField="ngModel">
+    <div *ngIf="posLatField.invalid && posLatField.touched">
+        Error.
+    </div>
+
+    <!-- Longitude -->
+    Longitude :
+    <input type="text" name="posLong" [(ngModel)]="posLong" required pattern="^-?\d+\.\d{6}$" #posLongField="ngModel">
+    <div *ngIf="posLongField.invalid && posLongField.touched">
+        Error.
+    </div>
+
+    <!-- Organisateur -->
+    Organisateur :
+    <input type="text" name="organisateur_Id" [(ngModel)]="organisateur_Id" required #organisateurField="ngModel">
+    <div *ngIf="organisateurField.invalid && organisateurField.touched">
+        Organisateur is required.
+    </div>
+
+    <button type="submit" [disabled]="activityForm.invalid">Submit</button>
+    <button type="button" (click)="getAllActivities()">All Activities</button>
 </form>
+
+
 <hr />
+
 <ul>
     <li *ngFor="let act of listActivities">
         {{act.activityName}}
