@@ -26,7 +26,7 @@ export class ActivityService {
   }
 
   public async createActivity(activityCreated: ActivityCreationModel): Promise<ActivityModel> {
-    const url: string = `${CONST_API.URL_API}/Activity/creat`;
+    const url: string = `${CONST_API.URL_API}/Activity/create`;
 
     try {
       const respons: any = await firstValueFrom(this.http.post(url, activityCreated,{responseType: 'json'}));
