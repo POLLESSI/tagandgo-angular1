@@ -24,8 +24,13 @@ export class BonusService {
     }
   }
 
-  public async createBonus(bonus: BonusCreationModel): Promise<void> {
+  public async createBonus(bonusCreated: BonusCreationModel): Promise<BonusModel> {
+    const url: string = `${CONST_API.URL_API}/Bonus/create`;
+
     try {
+      const response: any = await firstValueFrom(this.http.post(url, bonusCreated, {responseType: 'json'}))
+
+    return response as BonusModel
 
     } catch (error) {
       throw error;

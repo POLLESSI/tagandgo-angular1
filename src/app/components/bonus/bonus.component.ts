@@ -52,6 +52,7 @@ export class BonusComponent implements OnInit {
     try {
       const response: BonusModel = await this.bonusService.createBonus(bonus);
       this.ListBonus.push(response);
+      
     } catch (error) {
       console.log("Error creating bonus!");
     }

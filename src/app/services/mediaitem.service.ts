@@ -24,8 +24,12 @@ export class MediaitemService {
     }
   }
 
-  public async createMediaItem(mediaItem: MediaItemCreationModel): Promise<void> {
+  public async createMediaItem(mediaItemCreated: MediaItemCreationModel): Promise<MediaItemModel> {
+    const url: string = `${CONST_API.URL_API}/MediaItem/create`;
     try {
+      const response: any = await firstValueFrom(this.http.post(url, mediaItemCreated, {responseType: 'json'}))
+
+      return response as MediaItemModel
 
     } catch (error) {
       throw error;

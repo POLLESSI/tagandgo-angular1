@@ -24,8 +24,12 @@ export class NiconService {
     }
   }
 
-  public async createNIcon(nIcon: NIconCreationModel): Promise<void> {
+  public async createNIcon(nIconCreated: NIconCreationModel): Promise<NIconModel> {
+    const url: string = `${CONST_API.URL_API}/NIcon/create`;
     try {
+      const response: any = await firstValueFrom(this.http.post(url, nIconCreated, {responseType: 'json'}))
+
+      return response as NIconModel
 
     } catch (error) {
       throw error;

@@ -24,9 +24,12 @@ export class NevenementService {
     }
   }
 
-  public async createNEvenement(nevenement: NEvenementCreationModel): Promise<void> {
+  public async createNEvenement(nevenementCreated: NEvenementCreationModel): Promise<NEvenementModel> {
+    const url: string = `${CONST_API.URL_API}/NEvenement/create`;
     try {
+      const response: any = await firstValueFrom(this.http.post(url, nevenementCreated, {responseType: 'json'}))
 
+      return response as NEvenementModel
     } catch (error) {
       throw error;
     }

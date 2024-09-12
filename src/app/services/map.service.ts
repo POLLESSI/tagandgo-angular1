@@ -24,8 +24,12 @@ export class MapService {
     }
   }
 
-  public async createMap(map: MapCreationModel): Promise<void> {
+  public async createMap(mapCreated: MapCreationModel): Promise<MapModel> {
+    const url: string = `${CONST_API.URL_API}/Map/create`;
     try {
+      const response: any = await firstValueFrom(this.http.post(url, mapCreated, {responseType: 'json'}))
+
+      return response as MapModel
 
     } catch (error) {
       throw error;

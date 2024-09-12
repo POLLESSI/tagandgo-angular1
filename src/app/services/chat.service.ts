@@ -25,9 +25,13 @@ export class ChatService {
     }
   }
   
-  public async createChat(chat: ChatCreationModel): Promise<void> {
-    try {
+  public async createChat(chatCreated: ChatCreationModel): Promise<ChatModel> {
+    const url: string = `${CONST_API.URL_API}/Chat/create`;
 
+    try {
+      const response: any = await firstValueFrom(this.http.post(url, chatCreated, {responseType: 'json'}))
+
+      return response as ChatModel
     } catch (error) {
       throw error;
     }
