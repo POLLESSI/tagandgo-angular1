@@ -57,8 +57,8 @@ export class NpersonComponent implements OnInit {
     };
 
     try {
-      const response: NPersonModel = await this.npersonService.createNPerson(nperson);
-      this.ListNPersons.push(response);
+      // const response: NPersonModel = await this.npersonService.createNPerson(nperson);
+      // this.ListNPersons.push(response);
     } catch (Error) {
       console.log("Error creating new person!");
     }

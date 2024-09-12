@@ -47,8 +47,8 @@ export class OrganisateurComponent implements OnInit {
     console.log(organisateur);
 
     try {
-      const response: OrganisateurModel = await this.organisateurService.createOrganisateur(organisateur);
-      this.ListOrganisateurs.push(response);
+      // const response: OrganisateurModel = await this.organisateurService.createOrganisateur(organisateur);
+      // this.ListOrganisateurs.push(response);
     } catch (error) {
       console.log("Error creating Organisateur!");
     }

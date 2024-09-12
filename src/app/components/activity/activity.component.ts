@@ -21,10 +21,59 @@ export class ActivityComponent implements OnInit {
   organisateur_Id! : number;
   disable! : boolean;
 
-  constructor(private activityService: ActivityService) {}
+  showForm: boolean;
+
+  displayedColumns: string[] = ['activityName', 'activityAddress', 'activityDescription', 'complementareInformation', 'posLat', 'posLong', 'organisateur_Id', 'activity_Id'];
+
+  constructor(private activityService: ActivityService) {
+  }
 
   public async ngOnInit(): Promise<void> {
-    await this.getAllActivities();
+    await this.getAllActivities();``
+
+
+    this.listActivities = [
+      {
+        "activity_Id": 1,
+        "activityName": "Atelier de peinture",
+        "activityAddress": "10 Rue des Arts, 75000 Paris",
+        "activityDescription": "Un atelier pour découvrir les techniques de peinture acrylique.",
+        "complementareInformation": "Matériel fourni sur place.",
+        "posLat": "48.8566",
+        "posLong": "2.3522",
+        "organisateur_Id": 101
+      },
+      {
+        "activity_Id": 2,
+        "activityName": "Concert de jazz",
+        "activityAddress": "25 Avenue de la Musique, 75001 Paris",
+        "activityDescription": "Un concert en plein air avec des musiciens de jazz renommés.",
+        "complementareInformation": "Apportez vos propres sièges.",
+        "posLat": "48.8584",
+        "posLong": "2.2945",
+        "organisateur_Id": 102
+      },
+      {
+        "activity_Id": 3,
+        "activityName": "Marathon de charité",
+        "activityAddress": "Parc des Princes, 75016 Paris",
+        "activityDescription": "Un marathon pour soutenir des œuvres de charité locales.",
+        "complementareInformation": "Inscription en ligne obligatoire.",
+        "posLat": "48.8414",
+        "posLong": "2.2529",
+        "organisateur_Id": 103
+      },
+      {
+        "activity_Id": 4,
+        "activityName": "Exposition d'art contemporain",
+        "activityAddress": "12 Boulevard de l'Art, 75012 Paris",
+        "activityDescription": "Une exposition mettant en avant les œuvres d'art contemporain.",
+        "complementareInformation": "Entrée gratuite le samedi.",
+        "posLat": "48.8446",
+        "posLong": "2.4075",
+        "organisateur_Id": 104
+      }
+    ]
   }
 
   public async getAllActivities(): Promise<void> {

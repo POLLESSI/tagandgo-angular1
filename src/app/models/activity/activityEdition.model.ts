@@ -1,4 +1,4 @@
-export interface ActivityModel {
+export interface ActivityEditionModel {
   activity_Id : number;
   activityName : string;
   activityAddress : string;

@@ -54,8 +54,8 @@ export class WeatherforecastComponent {
     console.log(weatherforecast);
 
     try {
-      const response: WeatherForecastModel = await this.weatherForecastService.createWeatherForecast(weatherforecast);
-      this.ListWeatherForecasts.push(response);
+      // const response: WeatherForecastModel = await this.weatherForecastService.createWeatherForecast(weatherforecast);
+      // this.ListWeatherForecasts.push(response);
     } catch(error) {
       console.log("Error creating weather forecast!")
     }

@@ -52,8 +52,8 @@ export class NuserComponent implements OnInit {
     console.log(nuser);
 
     try {
-      const response: NUserModel = await this.nuserService.createNUser(nuser);
-      this.ListNUsers.push(response);
+      // const response: NUserModel = await this.nuserService.createNUser(nuser);
+      // this.ListNUsers.push(response);
     } catch (error) {
       console.log("Error creating new user!");
     }
