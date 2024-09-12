@@ -1,10 +1,43 @@
 <h3>Chat Room</h3>
-<form #chatForm="ngForm" (ngSubmit)="submit()">
+<form #chatForm="ngForm" (ngSubmit)="submit(chatForm)">
     New Message : <input type="text" name="newmessage" [(ngModel)]="newMessage">
     Id Event : <input type="text" name="nevenement_id" [(ngModel)]="nEvenement_Id">
     Id Activity : <input type="text" name="activity_id" [(ngModel)]="activity_Id">
-    <button (click)="submit()">Submit</button>
-    <button (click)="getAllChats()">All Chats</button>
+     <!-- New Message -->
+     New Message :
+     <input type="text" name="newmessage" [(ngModel)]="newMessage" required #newMessageField="ngModel">
+     <div *ngIf="newMessageField.invalid && newMessageField.touched">
+         New Message is required.
+     </div>
+     <!-- Author -->
+     Author :
+     <input type="text" name="author" [(ngModel)]="author" required #authorField="ngModel">
+     <div *ngIf="authorField.invalid && authorField.touched">
+         Name of author is required.
+     </div>
+     <!-- Sending Date -->
+     Sending Date :
+     <input type="datetime" name="sendingDate" [(ngModel)]="sendingDate" required #SendingDateField="ngModel">
+     <div *ngIf="SendingDateField.invalid && SendingDateField.touched">
+         Name of author is required.
+     </div>
+ 
+     <!-- Event Id -->
+     Id Event :
+     <input type="number" name="nevenement_id" [(ngModel)]="nEvenement_Id" required #nEvenement_IdField="ngModel">
+     <div *ngIf="nEvenement_IdField.invalid && nEvenement_IdField.touched">
+         Id of Event is required.
+     </div>
+ 
+     <!-- Activity Id -->
+     Id Activity :
+     <input type="number" name="activity_id" [(ngModel)]="activity_Id" required #activity_IdField="ngModel">
+     <div *ngIf="activity_IdField.invalid && activity_IdField.touched">
+         Id of activity is required.
+     </div>
+ 
+     <button type="submit" [disabled]="chatForm.invalid">Submit</button>
+     <button type="button" (click)="getAllChats()">All Activities</button>
 </form>
 <hr />
 <ul *ngFor="let ch of ListMessages">

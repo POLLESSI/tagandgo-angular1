@@ -1,17 +1,70 @@
 <h3>Persons Room</h3>
-<form #npersonForm="ngForm" (ngSubmit)="submit()">
-    Last Name : <input type="text" name="lastname" [(ngModel)]="lastname" required />
-    First Name : <input type="text" name="firstname" [(ngModel)]="firstname" required />
-    Email : <input type="text" name="email" [(ngModel)]="email" required />
-    Address_Street : <input type="text" name="address_Street" [(ngModel)]="addess_Street" />
-    Address_Nbr : <input type="text" name="address_Nbr" [(ngModel)]="address_Nbr" required />
-    PostalCode : <input type="text" name="postalCode" [(ngModel)]="postalCode" required />
-    Address_City : <input type="text" name="address_City" [(ngModel)]="address_City" required />
-    Address_Country : <input type="text" name="address_Country" [(ngModel)]="address_Country" required />
-    Telephone : <input type="text" name="telephone" [(ngModel)]="telephone" />
-    Gsm : <input type="text" name="gsm" [(ngModel)]="gsm" />
-    <button (click)="submit()">Submit</button>
-    <button (click)="getAllNPersons()">All Persons</button>
+<form #npersonForm="ngForm" (ngSubmit)="submit(npersonForm)">
+    <!-- Last Name -->
+    Last Name :
+    <input type="text" name="lastname" [(ngModel)]="lastname" required #lastnameField="ngModel">
+    <div *ngIf="lastnameField.invalid && lastnameField.touched">
+        Date of event is required.
+    </div>
+
+    <!-- First Name -->
+    First Name :
+    <input type="text" name="firstname" [(ngModel)]="firstname" required #firstnameField="ngModel">
+    <div *ngIf="firstnameField.invalid && firstnameField.touched">
+        First Name is required.
+    </div>
+
+    <!-- Email -->
+    Email :
+    <input type="text" name="email" [(ngModel)]="email" required #emailField="ngModel">
+    <div *ngIf="emailField.invalid && emailField.touched">
+        Email is required.
+    </div>
+    <!-- Address Street -->
+    Street :
+    <input type="text" name="addess_Street" [(ngModel)]="addess_Street" required #address_StreetField="ngModel">
+    <div *ngIf="address_StreetField.invalid && address_StreetField.touched">
+        Street is required.
+    </div>
+
+    <!-- Address Nbr -->
+    Number :
+    <input type="text" name="address_Nbr" [(ngModel)]="address_Nbr" required #address_NbrField="ngModel">
+    <div *ngIf="address_NbrField.invalid && address_NbrField.touched">
+        Number is required.
+    </div>
+    <!-- Postal Code -->
+    Postal Code :
+    <input type="text" name="postalCode" [(ngModel)]="postalCode" required #postalCodeField="ngModel">
+    <div *ngIf="postalCodeField.invalid && postalCodeField.touched">
+        Postal Code is required.
+    </div>
+    <!-- address_City -->
+    City :
+    <input type="text" name="address_City" [(ngModel)]="address_City" required #address_CityField="ngModel">
+    <div *ngIf="address_CityField.invalid && address_CityField.touched">
+        City is required.
+    </div>
+    <!-- address Country -->
+    Country :
+    <input type="text" name="address_Country" [(ngModel)]="address_Country" required #address_CountryField="ngModel">
+    <div *ngIf="address_CountryField.invalid && address_CountryField.touched">
+        Country is required.
+    </div>
+    <!-- Telephone -->
+    Phone :
+    <input type="text" name="telephone" [(ngModel)]="telephone" required #telephoneField="ngModel">
+    <div *ngIf="telephoneField.invalid && telephoneField.touched">
+        Phone is required.
+    </div>
+    <!-- Gsm -->
+    Gsm :
+    <input type="text" name="gsm" [(ngModel)]="gsm" required #gsmField="ngModel">
+    <div *ngIf="gsmField.invalid && gsmField.touched">
+        Gsm is required.
+    </div>
+    <button type="submit" [disabled]="npersonForm.invalid">Submit</button>
+    <button type="button" (click)="getAllNPersons()">All Activities</button>
 </form>
 
 <hr />

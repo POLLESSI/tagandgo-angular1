@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { MapModel } from '../models/map.model';
+import { MapModel } from '../models/map/map.model';
 import { CONST_API } from '../constants/api-constants';
+import { MapCreationModel } from '../models/map/mapCreation.model';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,7 @@ export class MapService {
     }
   }
 
-  public async createMap(): Promise<void> {
+  public async createMap(map: MapCreationModel): Promise<void> {
     try {
 
     } catch (error) {

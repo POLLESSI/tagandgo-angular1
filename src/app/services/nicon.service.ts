@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { NIconModel } from '../models/nicon.model';
+import { NIconModel } from '../models/nicon/nicon.model';
 import { CONST_API } from '../constants/api-constants';
+import { NIconCreationModel } from '../models/nicon/niconCreation.model';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,7 @@ export class NiconService {
     }
   }
 
-  public async createNIcon(): Promise<void> {
+  public async createNIcon(nIcon: NIconCreationModel): Promise<void> {
     try {
 
     } catch (error) {

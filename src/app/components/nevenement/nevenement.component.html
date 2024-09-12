@@ -1,18 +1,77 @@
 <h3>Events Room</h3>
-<form #nevenementForm="ngForm" (ngSubmit)="submit()">
-    Date Event : <input type="datetime" name="nevenementDate" [(ngModel)]="nEvenementDate" required>
-    Name Event : <input type="text" name="nevenementName" [(ngModel)]="nEvenementName" required>
-    Description : <input type="text" name="nevenementDescription" [(ngModel)]="nEvenementDescription" required>
-    Latitude : <input type="text" name="posLat" [(ngModel)]="posLat" required>
-    Longitude : <input type="text" name="posLong" [(ngModel)]="posLong" required>
-    Positif? : <input type="text" name="positif" [(ngModel)]="positif">
-    Organisator : <input type="text" name="organisateur_Id" [(ngModel)]="organisateur_Id">
-    Icon : <input type="text" name="nicon_Id" [(ngModel)]="nIcon_Id">
-    Recompense : <input type="text" name="recompense_Id" [(ngModel)]="recompense_Id">
-    Bonus : <input type="text" name="bonus_Id" [(ngModel)]="bonus_Id">
-    Media Item : <input type="text" name="mediaItem_Id" [(ngModel)]="mediaItem_Id">
-    <button (click)="submit()">Submit</button>
-    <button (click)="getAllNEvenements()">All Events</button>
+<form #nevenementForm="ngForm" (ngSubmit)="submit(nevenementForm)">
+    <!-- Date Event -->
+    Date Event :
+    <input type="datetime" name="nevenementDate" [(ngModel)]="nEvenementDate" required #nEvenementDateField="ngModel">
+    <div *ngIf="nEvenementDateField.invalid && nEvenementDateField.touched">
+        Date of event is required.
+    </div>
+
+    <!-- Name Event -->
+    Name Event :
+    <input type="text" name="nevenementName" [(ngModel)]="nEvenementName" required #nEvenementNameField="ngModel">
+    <div *ngIf="nEvenementNameField.invalid && nEvenementNameField.touched">
+        Name of event is required.
+    </div>
+
+    <!-- Description -->
+    Description :
+    <input type="text" name="nEvenementDescription" [(ngModel)]="nEvenementDescription" required #nEvenementDescriptionField="ngModel">
+    <div *ngIf="nEvenementDescriptionField.invalid && nEvenementDescriptionField.touched">
+        Description is required.
+    </div>
+    <!-- Latitude -->
+    Latitude :
+    <input type="text" name="posLat" [(ngModel)]="posLat" required pattern="^-?\d+\.\d{5}$" #posLatField="ngModel">
+    <div *ngIf="posLatField.invalid && posLatField.touched">
+        Error.
+    </div>
+
+    <!-- Longitude -->
+    Longitude :
+    <input type="text" name="posLong" [(ngModel)]="posLong" required pattern="^-?\d+\.\d{5}$" #posLongField="ngModel">
+    <div *ngIf="posLongField.invalid && posLongField.touched">
+        Error.
+    </div>
+    <!-- Positif? -->
+    Positif ? :
+    <input type="text" name="positif" [(ngModel)]="positif" required #positifField="ngModel">
+    <div *ngIf="positifField.invalid && positifField.touched">
+        Your opinion is required.
+    </div>
+    <!-- Organisateur -->
+    Organisateur :
+    <input type="number" name="organisateur_Id" [(ngModel)]="organisateur_Id" required #organisateurField="ngModel">
+    <div *ngIf="organisateurField.invalid && organisateurField.touched">
+        Id Organisateur is required.
+    </div>
+    <!-- Icon -->
+    Icon :
+    <input type="number" name="nIcon_Id" [(ngModel)]="nIcon_Id" required #nIcon_IdField="ngModel">
+    <div *ngIf="nIcon_IdField.invalid && nIcon_IdField.touched">
+        Id icon is required.
+    </div>
+    <!-- Recompense -->
+    Recompense :
+    <input type="number" name="recompense_Id" [(ngModel)]="recompense_Id" required #recompense_IdField="ngModel">
+    <div *ngIf="recompense_IdField.invalid && recompense_IdField.touched">
+        Id recompense is required.
+    </div>
+    <!-- Bonus -->
+    Bonus :
+    <input type="number" name="bonus_Id" [(ngModel)]="bonus_Id" required #bonus_IdField="ngModel">
+    <div *ngIf="bonus_IdField.invalid && bonus_IdField.touched">
+        Id bonus is required.
+    </div>
+    <!-- Media Item -->
+    Organisateur :
+    <input type="number" name="mediaItem_Id" [(ngModel)]="mediaItem_Id" required #mediaItemField="ngModel">
+    <div *ngIf="mediaItemField.invalid && mediaItemField.touched">
+        Media Item Id is required.
+    </div>
+
+    <button type="submit" [disabled]="nevenementForm.invalid">Submit</button>
+    <button type="button" (click)="getAllNEvenements()">All Activities</button>
 </form>
 <hr />
 <ul>

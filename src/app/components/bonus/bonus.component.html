@@ -1,11 +1,35 @@
 <h3>Bonus Room</h3>
-<form #bonusForm="ngForm" (ngSubmit)="submit()">
-    Bonus Type : <input type="text" name="bonusType" [(ngModel)]="bonusType" required/>
-    Bonus Description : <input type="text" name="bonusDescription" [(ngModel)]="bonusDescription" required />
-    Application : <input type="text" name="application" [(ngModel)]="application" required />
-    Granted : <input type="text" name="granted" [(ngModel)]="granted" required>
-    <button (click)="submit()">Submit</button>
-    <button (click)="getAllBonuss()">All Bonus</button>
+<form #bonusForm="ngForm" (ngSubmit)="submit(bonusForm)">
+    <!-- bonusType -->
+    Bonus Type :
+    <input type="text" name="bonusType" [(ngModel)]="bonusType" required #bonusTypeField="ngModel">
+    <div *ngIf="bonusTypeField.invalid && bonusTypeField.touched">
+        Bonus Type is required.
+    </div>
+
+    <!-- Description -->
+    Description :
+    <input type="text" name="bonusDescription" [(ngModel)]="bonusDescription" required #bonusDescriptionField="ngModel">
+    <div *ngIf="bonusDescriptionField.invalid && bonusDescriptionField.touched">
+        Description is required.
+    </div>
+
+    <!-- Application -->
+    Application :
+    <input type="text" name="application" [(ngModel)]="application" required #applicationField="ngModel">
+    <div *ngIf="applicationField.invalid && applicationField.touched">
+        Description is required.
+    </div>
+
+    <!-- Granted -->
+    Granted :
+    <input type="boolean" name="granted" [(ngModel)]="granted" required #grantedField="ngModel">
+    <div *ngIf="grantedField.invalid && grantedField.touched">
+        Granted is required.
+    </div>
+
+    <button type="submit" [disabled]="bonusForm.invalid">Submit</button>
+    <button type="button" (click)="getAllBonuss()">All Activities</button>
 </form>
 <hr />
 <ul>

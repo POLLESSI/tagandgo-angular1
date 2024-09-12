@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
-import { WeatherForecastModel } from 'src/app/models/weatherforecast.model';
+import { NgForm } from '@angular/forms';
+import { WeatherForecastModel } from 'src/app/models/weatherForecast/weatherforecast.model';
+import { WeatherForecastCreationModel } from 'src/app/models/weatherForecast/weatherforecastCreation.model';
 import { WeatherforecastService } from 'src/app/services/weatherforecast.service';
 
 @Component({
@@ -17,34 +19,45 @@ export class WeatherforecastComponent {
   humidity! : string;
   precipitation! : string;
   nEvenement_Id! : number;
-  weatherForecast_Id! : number;
 
   disable! : boolean;
 
   constructor(private weatherForecastService: WeatherforecastService) {}
 
-  async ngOnInit(): Promise<void> {
+  public async ngOnInit(): Promise<void> {
     await this.getAllWeatherForecasts();
   }
 
-  async getAllWeatherForecasts(): Promise<void> {
+  public async getAllWeatherForecasts(): Promise<void> {
     try {
       this.ListWeatherForecasts = await this.weatherForecastService.getAllWeatherForecasts();
     } catch (error) {
       console.log("Error list Weather Forecasts");
     }
   }
+  public async submit(weatherForecastForm: NgForm): Promise<void> {
+    if (weatherForecastForm.invalid) {
+      console.log("Form is invalid");
+      return;
+    }
 
-  submit(): void {
-    const weatherforecast: WeatherForecastModel = {
+    const weatherforecast: WeatherForecastCreationModel = {
       temperatureC: this.temperatureC,
       temperatureF: this.temperatureF,
       summary: this.summary,
       description: this.description,
       humidity: this.humidity,
       precipitation: this.precipitation,
-      nEvenement_Id: this.nEvenement_Id,
-      weatherForecast_Id: this.weatherForecast_Id
+      nEvenement_Id: this.nEvenement_Id
+    };
+
+    console.log(weatherforecast);
+
+    try {
+      const response: WeatherForecastModel = await this.weatherForecastService.createWeatherForecast(weatherforecast);
+      this.ListWeatherForecasts.push(response);
+    } catch(error) {
+      console.log("Error creating weather forecast!")
     }
   }
 }

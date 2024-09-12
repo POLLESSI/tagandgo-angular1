@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { WeatherForecastModel } from '../models/weatherforecast.model';
+import { WeatherForecastModel } from '../models/weatherForecast/weatherforecast.model';
 import { CONST_API } from '../constants/api-constants';
+import { WeatherForecastCreationModel } from '../models/weatherForecast/weatherforecastCreation.model';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,7 @@ export class WeatherforecastService {
     }
   }
 
-  public async createWeatherForecast(): Promise<void> {
+  public async createWeatherForecast(weatherforecast: WeatherForecastCreationModel): Promise<void> {
     try {
 
     } catch (error) {

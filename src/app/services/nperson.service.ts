@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { NPersonModel } from '../models/nperson.model';
+import { NPersonModel } from '../models/nperson/nperson.model';
 import { CONST_API } from '../constants/api-constants';
+import { NPersonCreationModel } from '../models/nperson/npersonCreationModel';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +23,7 @@ export class NpersonService {
       throw error;
     }
   }
-  public async createNPerson(): Promise<void> {
+  public async createNPerson(nperson: NPersonCreationModel): Promise<void> {
     try {
 
     } catch (error) {

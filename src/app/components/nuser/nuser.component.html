@@ -1,14 +1,52 @@
 <h3>Users Room</h3>
-<form #nuserForm="ngForm" (ngSubmit)="submit()">
-    Email : <input type="text" name="email" [(ngModel)]="email" required />
-    Password : <input type="text" name="pwd" [(ngModel)]="pwd" required />
-    Confirm Password : <input type="text" name="pwd" [(ngModel)]="pwd" required />
-    Id Person : <input type="text" name="nPerson_Id" [(ngModel)]="nPerson_Id" required />
-    Id Rôle : <input type="text" name="role_Id" [(ngModel)]="role_Id" required />
-    Id Avatar : <input type="text" name="avatar_Id" [(ngModel)]="avatar_Id">
-    Points : <input type="text" name="point" [(ngModel)]="point" />
-    <button (click)="submit()">Submit</button>
-    <button (click)="getAllNUsers()">All Users</button>
+<form #nuserForm="ngForm" (ngSubmit)="submit(nuserForm)">
+     <!-- Email -->
+     Email :
+     <input type="text" name="email" [(ngModel)]="email" required #emailField="ngModel">
+     <div *ngIf="emailField.invalid && emailField.touched">
+         Date of event is required.
+     </div>
+ 
+     <!-- Password -->
+     Password :
+     <input type="text" name="pwd" [(ngModel)]="pwd" required #pwdField="ngModel">
+     <div *ngIf="pwdField.invalid && pwdField.touched">
+         Password is required.
+     </div>
+ 
+     <!-- Second Password -->
+     Confirm Password :
+     <input type="text" name="pwd" [(ngModel)]="pwd" required #pwdField="ngModel">
+     <div *ngIf="pwdField.invalid && pwdField.touched">
+         Confirm your password please.
+     </div>
+     <!-- NPerson_Id -->
+     Id Person :
+     <input type="number" name="nPerson_Id" [(ngModel)]="nPerson_Id" required #nPerson_IdField="ngModel">
+     <div *ngIf="nPerson_IdField.invalid && nPerson_IdField.touched">
+         Id person is required.
+     </div>
+ 
+     <!-- Role_Id -->
+     Id Role :
+     <input type="text" name="role_Id" [(ngModel)]="role_Id" required #role_IdField="ngModel">
+     <div *ngIf="role_IdField.invalid && role_IdField.touched">
+         Id rôle is required.
+     </div>
+     <!-- Avatar_Id -->
+     Id Avatar :
+     <input type="number" name="avatar_Id" [(ngModel)]="avatar_Id" required #avatar_IdField="ngModel">
+     <div *ngIf="avatar_IdField.invalid && avatar_IdField.touched">
+         Id avatar is required.
+     </div>
+     <!-- Point -->
+     Points :
+     <input type="text" name="point" [(ngModel)]="point" required #pointField="ngModel">
+     <div *ngIf="pointField.invalid && pointField.touched">
+         Points is required.
+     </div>
+     <button type="submit" [disabled]="nuserForm.invalid">Submit</button>
+     <button type="button" (click)="getAllNUsers()">All Activities</button>
 </form>
 
 <hr />

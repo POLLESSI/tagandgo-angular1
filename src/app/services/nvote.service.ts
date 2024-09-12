@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { NVoteModel } from '../models/nvote.model';
+import { NVoteModel } from '../models/nvote/nvote.model';
 import { CONST_API } from '../constants/api-constants';
+import { NVoteCreationModel } from '../models/nvote/nvoteCreation.model';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,7 @@ export class NvoteService {
     }
   }
 
-  public async createNVote(): Promise<void> {
+  public async createNVote(nVote: NVoteCreationModel): Promise<void> {
     try {
 
     } catch (error) {

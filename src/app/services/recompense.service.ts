@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { RecompenseModel } from '../models/recompense.model';
+import { RecompenseModel } from '../models/recompense/recompense.model';
 import { CONST_API } from '../constants/api-constants';
+import { RecompenseCreationModel } from '../models/recompense/recompenseCreation.model';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,7 @@ export class RecompenseService {
     }
   }
 
-  public async createRecompense(): Promise<void> {
+  public async createRecompense(recompense: RecompenseCreationModel): Promise<void> {
     try {
 
     } catch (error) {

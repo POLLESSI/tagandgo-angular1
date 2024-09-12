@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { ChatModel } from '../models/chat.model';
+import { ChatModel } from '../models/chat/chat.model';
 import { CONST_API } from '../constants/api-constants';
+import { ChatCreationModel } from '../models/chat/chatCreation.model';
 
 
 @Injectable({
@@ -24,7 +25,7 @@ export class ChatService {
     }
   }
   
-  public async createChat(): Promise<void> {
+  public async createChat(chat: ChatCreationModel): Promise<void> {
     try {
 
     } catch (error) {

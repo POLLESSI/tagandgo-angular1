@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { OrganisateurModel } from '../models/organisateur.model';
+import { OrganisateurModel } from '../models/organisateur/organisateur.model';
 import { CONST_API } from '../constants/api-constants';
+import { OrganisateurCreationModel } from '../models/organisateur/organisateurCreation.model';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,7 @@ export class OrganisateurService {
     }
   }
 
-  public async createOrganisateur(): Promise<void> {
+  public async createOrganisateur(organisateur: OrganisateurCreationModel): Promise<void> {
     try {
 
     } catch (error) {

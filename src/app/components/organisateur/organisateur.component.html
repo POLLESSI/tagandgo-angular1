@@ -1,11 +1,32 @@
 <h3>Organisators Room</h3>
-<form #organisateurForm="ngForm" (ngSubmit)="submit()">
-    Company Name : <input type="text" name="companyName" [(ngModel)]="companyName" required>
-    Business Number : <input type="text" name="businessNumber" [(ngModel)]="businessNumber" required>
-    User : <input type="text" name="nUser_Id" [(ngModel)]="nUser_Id" required>
-    Point : <input type="text" name="point" [(ngModel)]="point" required>
-    <button (click)="submit()">Submit</button>
-    <button (click)="getAllOrganisateurs()">All Organisators</button>
+<form #organisateurForm="ngForm" (ngSubmit)="submit(organisateurForm)">
+     <!-- Company Name -->
+     Company Name :
+     <input type="text" name="companyName" [(ngModel)]="companyName" required #companyNameField="ngModel">
+     <div *ngIf="companyNameField.invalid && companyNameField.touched">
+         Company Name is required.
+     </div>
+     <!-- Business Number -->
+     Business Number :
+     <input type="text" name="businessNumber" [(ngModel)]="businessNumber" required #businessNumberField="ngModel">
+     <div *ngIf="businessNumberField.invalid && businessNumberField.touched">
+         Business number is required.
+     </div>
+     <!-- NUser_Id -->
+     Id User :
+     <input type="number" name="nUser_Id" [(ngModel)]="nUser_Id" required #nUser_IdField="ngModel">
+     <div *ngIf="nUser_IdField.invalid && nUser_IdField.touched">
+         Id User is required.
+     </div>
+     <!-- Point -->
+     Point :
+     <input type="text" name="point" [(ngModel)]="point" required #pointField="ngModel">
+     <div *ngIf="pointField.invalid && pointField.touched">
+         Points is required.
+     </div>
+ 
+     <button type="submit" [disabled]="organisateurForm.invalid">Submit</button>
+     <button type="button" (click)="getAllOrganisateurs()">All Organisators</button>
 </form>
 <hr />
 <ul>

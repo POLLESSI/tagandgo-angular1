@@ -1,13 +1,50 @@
 <h3>Weather Forecasts Room</h3>
-<form #weatherForecastForm="ngForm" (ngSubmit)="submit()">
-    C° : <input type="text" name="temperatureC" [(ngModel)]="temperatureC" required>
-    Summary : <input type="text" name="summary" [(ngModel)]="summary" required>
-    Description : <input type="text" name="description" [(ngModel)]="description" required>
-    Humidity : <input type="text" name="humidity" [(ngModel)]="humidity" required>
-    Precipitation : <input type="text" name="precipitation" [(ngModel)]="precipitation" required>
-    Id Event : <input type="text" name="nEvenement_Id" [(ngModel)]="nEvenement_Id" required>
-    <button (click)="submit()">Submit</button>
-    <button (click)="getAllWeatherForecasts()">All Weather Forecasts</button>
+<form #weatherForecastForm="ngForm" (ngSubmit)="submit(weatherForecastForm)">
+    <!-- TemperatureC -->
+    Temperature C° :
+    <input type="text" name="temperatureC" [(ngModel)]="temperatureC" required #temperatureCField="ngModel">
+    <div *ngIf="temperatureCField.invalid && temperatureCField.touched">
+        C° is required.
+    </div>
+    <!-- TemperatureF -->
+    Temperature F° :
+    <input type="text" name="temperatureF" [(ngModel)]="temperatureF" required #temperatureFField="ngModel">
+    <div *ngIf="temperatureFField.invalid && temperatureFField.touched">
+        F° is required.
+    </div>
+    <!-- Summary -->
+    Summary :
+    <input type="text" name="summary" [(ngModel)]="summary" required #summaryField="ngModel">
+    <div *ngIf="summaryField.invalid && summaryField.touched">
+        Summary is required.
+    </div>
+    <!-- Description -->
+    Description :
+    <input type="text" name="description" [(ngModel)]="description" required #descriptionField="ngModel">
+    <div *ngIf="descriptionField.invalid && descriptionField.touched">
+        Description is required.
+    </div>
+    <!-- Humidity -->
+    Humidity :
+    <input type="text" name="humidity" [(ngModel)]="humidity" required #humidityField="ngModel">
+    <div *ngIf="humidityField.invalid && humidityField.touched">
+        Humidity rate is required.
+    </div>
+    <!-- Precipitation -->
+    Precipitation :
+    <input type="text" name="precipitation" [(ngModel)]="precipitation" required #precipitationField="ngModel">
+    <div *ngIf="precipitationField.invalid && precipitationField.touched">
+        Precipitation rate is required.
+    </div>
+    <!-- NEvenement_Id -->
+    Id Event :
+    <input type="number" name="nEvenement_Id" [(ngModel)]="nEvenement_Id" required #nEvenement_IdField="ngModel">
+    <div *ngIf="nEvenement_IdField.invalid && nEvenement_IdField.touched">
+        Id Event is required.
+    </div>
+
+    <button type="submit" [disabled]="weatherForecastForm.invalid">Submit</button>
+    <button type="button" (click)="getAllWeatherForecasts()">All Organisators</button>
 </form>
 <hr />
 <ul>

@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { BonusModel } from '../models/bonus.model';
+import { BonusModel } from '../models/bonus/bonus.model';
 import { CONST_API } from '../constants/api-constants';
+import { BonusCreationModel } from '../models/bonus/bonusCreation.model';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,7 @@ export class BonusService {
     }
   }
 
-  public async createBonus(): Promise<void> {
+  public async createBonus(bonus: BonusCreationModel): Promise<void> {
     try {
 
     } catch (error) {

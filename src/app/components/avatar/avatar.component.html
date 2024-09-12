@@ -1,13 +1,29 @@
 <h3>Avatar Room</h3>
-<form #avatarForm="ngForm" (ngSubmit)="submit()">
+<form #avatarForm="ngForm" (ngSubmit)="submit(avatarForm)">
     <!-- Avatar Name : <input [(ngModel)="avatarName"] /><br />
     Avatar Url : <input [(ngModel)="avatarUrl"] /><br />
     Description : <input [(ngModel)="description"] />  -->
-    Avatar Name : <input type="text" name="avatarName" [(ngModel)]="avatarName" required />
-    Avatar Url : <input type="text" name="avatarUrl" [(ngModel)]="avatarUrl" required >
-    Description : <input type="text" name="description" [(ngModel)]="description" required >
-    <button (click)="submit()">Submit</button>
-    <button (click)="getAllAvatars()">All Avatars</button>
+    Avatar Name :
+    <input type="text" name="avatarName" [(ngModel)]="avatarName" required #avatarNameField="ngModel">
+    <div *ngIf="avatarNameField.invalid && avatarNameField.touched">
+        Activity Name is required.
+    </div>
+
+    <!-- Url -->
+    Avatar Url :
+    <input type="text" name="avatarUrl" [(ngModel)]="avatarUrl" required #avatarUrlField="ngModel">
+    <div *ngIf="avatarUrlField.invalid && avatarUrlField.touched">
+        Url is required.
+    </div>
+
+    <!-- Description -->
+    Description :
+    <input type="text" name="description" [(ngModel)]="description" required #descriptionField="ngModel">
+    <div *ngIf="descriptionField.invalid && descriptionField.touched">
+        Description is required.
+    </div>
+    <button type="submit" [disabled]="avatarForm.invalid">Submit</button>
+    <button type="button" (click)="getAllAvatars()">All Activities</button>
     <!-- <button (click)="deleteAvatar(avatar_Id)">Delete</button>
     <button (click)="getAllAvatar()">All Avatars</button>
     <button (click)="getAvatar(avatar_Id)">Details avatar</button> -->

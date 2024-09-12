@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { NIconModel } from 'src/app/models/nicon.model';
+import { NgForm } from '@angular/forms';
+import { NIconModel } from 'src/app/models/nicon/nicon.model';
+import { NIconCreationModel } from 'src/app/models/nicon/niconCreation.model';
 import { NiconService } from 'src/app/services/nicon.service';
 @Component({
   selector: 'app-nicon',
@@ -12,17 +14,16 @@ export class NiconComponent implements OnInit {
   nIconName! : string;
   nIconDescription! : string;
   nIconUrl! : string;
-  nIcon_Id! : number;
 
   disable! : boolean;
 
   constructor(private niconService: NiconService) {}
 
-  async ngOnInit(): Promise<void> {
+  public  async ngOnInit(): Promise<void> {
     await this.getAllNIcons();
   }
 
-  async getAllNIcons(): Promise<void> {
+  public async getAllNIcons(): Promise<void> {
     try {
       this.ListNIcons = await this.niconService.getAllNIcons();
     } catch (error) {
@@ -30,13 +31,25 @@ export class NiconComponent implements OnInit {
     }
   }
 
-  submit(): void {
-    const nIcon: NIconModel = {
+  public async submit(nIconForm: NgForm): Promise<void> {
+    if (nIconForm.invalid) {
+      console.log("Form is invalid");
+      return;
+    }
+    const nIcon: NIconCreationModel = {
       nIconName: this.nIconName,
       nIconDescription: this.nIconDescription,
-      nIconUrl: this.nIconUrl,
-      nIcon_Id: this.nIcon_Id
+      nIconUrl: this.nIconUrl
     };
+
+    console.log(nIcon);
+
+    try {
+      const response: NIconModel = await this.niconService.createNIcon(nIcon);
+      this.ListNIcons.push(response);
+    } catch (error) {
+      console.log("Error creating icon!");
+    }
   }
 }
 

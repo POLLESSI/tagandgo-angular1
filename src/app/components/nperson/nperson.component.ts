@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { NPersonModel } from 'src/app/models/nperson.model';
+import { NgForm } from '@angular/forms';
+import { NPersonModel } from 'src/app/models/nperson/nperson.model';
+import { NPersonCreationModel } from 'src/app/models/nperson/npersonCreationModel';
 import { NpersonService } from 'src/app/services/nperson.service';
 @Component({
   selector: 'app-nperson',
@@ -19,17 +21,16 @@ export class NpersonComponent implements OnInit {
   address_Country! : string;
   telephone! : string;
   gsm! : string;
-  NPerson_Id! : number;
 
   disable! : boolean;
 
   constructor(private npersonService: NpersonService) {}
 
-  async ngOnInit(): Promise<void> {
+  public async ngOnInit(): Promise<void> {
     await this.getAllNPersons();
   }
 
-  async getAllNPersons(): Promise<void> {
+  public async getAllNPersons(): Promise<void> {
     try {
       this.ListNPersons = await this.npersonService.getAllNPersons();
     } catch (error) {
@@ -37,8 +38,12 @@ export class NpersonComponent implements OnInit {
     }
   }
 
-  submit(): void {
-    const nperson: NPersonModel = {
+  public async submit(nPersonForm: NgForm): Promise<void> {
+    if (nPersonForm.invalid) {
+      console.log("Form is invalid");
+      return;
+    }
+    const nperson: NPersonCreationModel = {
       lastname: this.lastname,
       firstname: this.firstname,
       email: this.email,
@@ -48,9 +53,15 @@ export class NpersonComponent implements OnInit {
       address_City: this.address_City,
       address_Country: this.address_Country,
       telephone: this.telephone,
-      gsm: this.gsm,
-      NPerson_Id: this.NPerson_Id
+      gsm: this.gsm
     };
+
+    try {
+      const response: NPersonModel = await this.npersonService.createNPerson(nperson);
+      this.ListNPersons.push(response);
+    } catch (Error) {
+      console.log("Error creating new person!");
+    }
   }
 }
 

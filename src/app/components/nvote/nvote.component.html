@@ -1,10 +1,25 @@
 <h3>Votes Room</h3>
-<form #nVoteForm="ngForm" (ngSubmit)="submit()">
-    Id Evenement : <input type="text" name="nevenement_id" [(ngModel)]="nEvenement_Id" unique>
-    Fun ? : <input type="text" name="funornot" [(ngModel)]="funOrNot">
-    Comment : <input type="text" name="comment" [(ngModel)]="comment">
-    <button (click)="submit()">Submit</button>
-    <button (click)="getAllNVotes()">All Votes</button>
+<form #nVoteForm="ngForm" (ngSubmit)="submit(nVoteForm)">
+    <!-- Id Evenement -->
+    Id Event :
+    <input type="number" name="nEvenement_Id" [(ngModel)]="nEvenement_Id" required #nEvenement_IdField="ngModel">
+    <div *ngIf="nEvenement_IdField.invalid && nEvenement_IdField.touched">
+        Id Event is required.
+    </div>
+    <!-- Fun ? -->
+    Fun ? :
+    <input type="text" name="funOrNot" [(ngModel)]="funOrNot" required #funOrNotField="ngModel">
+    <div *ngIf="funOrNotField.invalid && funOrNotField.touched">
+        Your vote is required.
+    </div>
+    <!-- Comment -->
+    Comment :
+    <input type="text" name="comment" [(ngModel)]="comment" required #commentField="ngModel">
+    <div *ngIf="commentField.invalid && commentField.touched">
+        Your comment is required.
+    </div>
+    <button type="submit" [disabled]="nVoteForm.invalid">Submit</button>
+    <button type="button" (click)="getAllNVotes()">All Activities</button>
 </form>
 <hr />
 <ul>

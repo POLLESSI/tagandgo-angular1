@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { NUserModel } from '../models/nuser.model';
+import { NUserModel } from '../models/nuser/nuser.model';
 import { CONST_API } from '../constants/api-constants';
+import { NUserCreationModel } from '../models/nuser/nuserCreationModel';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,7 @@ export class NuserService {
     }
   }
 
-  public async createNUser(): Promise<void> {
+  public async createNUser(nuser: NUserCreationModel): Promise<void> {
     try {
 
     } catch (error) {

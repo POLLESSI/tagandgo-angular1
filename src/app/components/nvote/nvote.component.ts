@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { NVoteModel } from 'src/app/models/nvote.model';
+import { NgForm } from '@angular/forms';
+import { NVoteModel } from 'src/app/models/nvote/nvote.model';
+import { NVoteCreationModel } from 'src/app/models/nvote/nvoteCreation.model';
 import { NvoteService } from 'src/app/services/nvote.service';
 @Component({
   selector: 'app-nvote',
@@ -12,31 +14,41 @@ export class NvoteComponent implements OnInit {
   nEvenement_Id! : number;
   funOrNot! : boolean;
   comment! : string;
-  nVote_Id! : number;
 
   disable! : boolean;
 
   constructor(private nvoteService: NvoteService) {}
 
-  async ngOnInit(): Promise<void> {
+  public async ngOnInit(): Promise<void> {
     await this.getAllNVotes();
   }
 
-  async getAllNVotes(): Promise<void> {
+  public async getAllNVotes(): Promise<void> {
     try {
       this.ListNVotes = await this.nvoteService['getAllNVotes']();
     } catch (error) {
       console.log("Error list Votes");
     }
   }
-
-  submit(): void {
-    const nVote: NVoteModel = {
+  public async submit(nVoteForm: NgForm): Promise<void> {
+    if (nVoteForm.invalid) {
+      console.log("Form is invalid");
+      return;
+    }
+    const nVote: NVoteCreationModel = {
       nEvenement_Id: this.nEvenement_Id,
       funOrNot: this.funOrNot,
-      comment: this.comment,
-      nVote_Id: this.nVote_Id
+      comment: this.comment
     };
+
+    console.log(nVote);
+
+    try {
+      const response: NVoteModel = await this.nvoteService.createNVote(nVote);
+      this.ListNVotes.push(response);
+    } catch (error) {
+      console.log("Error creating new vote!");
+    }
   }
 }
 

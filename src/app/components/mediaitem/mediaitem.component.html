@@ -1,10 +1,28 @@
 <h3>Media Items Room</h3>
-<form #form="ngForm" (ngSubmit)="submit()">
-    Media Type : <input type="text" name="mediaType" [(ngModel)]="mediaType" required>
-    Url Item : <input type="text" name="urlItem" [(ngModel)]="urlItem" required>
-    Description : <input type="text" name="description" [ngModel]="description" required>
-    <button (click)="submit()">Submit</button>
-    <button (click)="getAllMediaItems()">All Media Item</button>
+<form #form="ngForm" (ngSubmit)="submit(mediaItemForm)">
+    <!-- media type -->
+    Media Type :
+    <input type="text" name="mediatype" [(ngModel)]="mediaType" required #mediaTypeField="ngModel">
+    <div *ngIf="mediaTypeField.invalid && mediaTypeField.touched">
+        Media Type is required.
+    </div>
+
+    <!-- url item -->
+    Url Item :
+    <input type="text" name="urlitem" [(ngModel)]="urlItem" required #urlItemField="ngModel">
+    <div *ngIf="urlItemField.invalid && urlItemField.touched">
+        Url of item is required.
+    </div>
+
+    <!-- Description -->
+    Description :
+    <input type="text" name="description" [(ngModel)]="description" required #descriptionField="ngModel">
+    <div *ngIf="descriptionField.invalid && descriptionField.touched">
+        Description is required.
+    </div>
+
+    <button type="submit" [disabled]="mediaItemForm.invalid">Submit</button>
+    <button type="button" (click)="getAllMediaItems()">All Activities</button>
 </form>
 <hr />
 <ul>

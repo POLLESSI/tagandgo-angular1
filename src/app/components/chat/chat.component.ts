@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ChatModel } from 'src/app/models/chat.model';
+import { NgForm } from '@angular/forms';
+import { ChatModel } from 'src/app/models/chat/chat.model';
+import { ChatCreationModel } from 'src/app/models/chat/chatCreation.model';
 import { ChatService } from 'src/app/services/chat.service';
 
 @Component({
@@ -12,10 +14,9 @@ export class ChatComponent implements OnInit {
 
   newMessage! : string;
   author! : string;
-  SendingDate! : string;
+  sendingDate! : string;
   nEvenement_Id! : number;
   activity_Id! : number;
-  chat_Id! : number;
 
   disable! : boolean;
 
@@ -32,16 +33,28 @@ export class ChatComponent implements OnInit {
       console.log("Error list Messages");
     }
   }
-  
-  submit(): void {
-    const chat: ChatModel = {
+  public async submit(chatForm: NgForm): Promise<void> {
+    if (chatForm.invalid) {
+      console.log("Form is invalid");
+      return;
+    }
+
+    const chat: ChatCreationModel = {
       newMessage: this.newMessage,
       author: this.author,
-      SendingDate: this.SendingDate,
+      sendingDate: this.sendingDate,
       nEvenement_Id: this.nEvenement_Id,
-      activity_Id: this.activity_Id,
-      chat_Id: this.chat_Id
+      activity_Id: this.activity_Id
     };
+
+    console.log(chat);
+
+    try {
+      const response: ChatModel = await this.chatService.createChat(chat);
+      this.ListMessages.push(response);
+    } catch (error) {
+      console.log("Error creating chat!");
+    }
   }
 }
 

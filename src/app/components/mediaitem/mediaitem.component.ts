@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { MediaItemModel } from 'src/app/models/mediaitem.model';
+import { NgForm } from '@angular/forms';
+import { MediaItemModel } from 'src/app/models/mediaitem/mediaitem.model';
+import { MediaItemCreationModel } from 'src/app/models/mediaitem/mediaitemCreation.model';
 import { MediaitemService } from 'src/app/services/mediaitem.service';  
 @Component({
   selector: 'app-mediaitem',
@@ -15,30 +17,40 @@ export class MediaitemComponent implements OnInit {
   mediaItem_Id! : number;
 
   disable! : boolean;
+mediaItemForm: NgForm;
 
   constructor(private mediaitemService: MediaitemService) {}
 
-  async ngOnInit(): Promise<void> {
+  public async ngOnInit(): Promise<void> {
     await this.getAllMediaItems();
   }
 
-  async getAllMediaItems(): Promise<void> {
+  public async getAllMediaItems(): Promise<void> {
     try {
       this.ListMediaItems = await this.mediaitemService.getAllMediaItems();
     } catch (error) {
-      console.log("Error list Média Items");
+      console.log("Error list Media Items");
     }
   }
 
-  submit() :void {
-    const mediaItem: MediaItemModel = {
+  public async submit(mediaItemForm: NgForm): Promise<void> {
+    if (mediaItemForm.invalid) {
+      console.log("Error list Média Items!");
+      return;
+    }
+    const mediaItem: MediaItemCreationModel = {
       mediaType: this.mediaType,
       urlItem: this.urlItem,
-      description: this.description,
-      mediaItem_Id: this.mediaItem_Id
+      description: this.description
     };
-    // this.hubConnection.invoke("SubmitMediaItem", mediaItem)
-    //   .catch(err => console.error(err));
+    console.log(mediaItem);
+
+    try {
+      const response: MediaItemModel = await this.mediaitemService.createMediaItem(mediaItem);
+      this.ListMediaItems.push(response);
+    } catch (error) {
+      console.log("Error creating média items!");
+    }
   }
 }
 

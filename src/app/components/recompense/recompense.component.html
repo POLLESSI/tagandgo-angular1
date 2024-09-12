@@ -1,11 +1,32 @@
 <h3>Recompense Room</h3>
-<form #recompenseForm="ngForm" (ngSubmit)="submit()">
-    Definition : <input type="text" name="definition" [(ngModel)]="definition">
-    Point : <input type="text" name="point" [(ngModel)]="point">
-    Implication : <input type="text" name="implication" [(ngModel)]="implication">
-    Granted : <input type="text" name="granted" [(ngModel)]="granted">
-    <button (click)="submit()">Submit</button>
-    <button (click)="getAllRecompenses()">All Recompenses</button>
+<form #recompenseForm="ngForm" (ngSubmit)="submit(recompenseForm)">
+    <!-- Definition -->
+    Definition :
+    <input type="text" name="definition" [(ngModel)]="definition" required #definitionField="ngModel">
+    <div *ngIf="definitionField.invalid && definitionField.touched">
+        Definition is required.
+    </div>
+    <!-- Point -->
+    Point :
+    <input type="text" name="point" [(ngModel)]="point" required #pointField="ngModel">
+    <div *ngIf="pointField.invalid && pointField.touched">
+        Points is required.
+    </div>
+    <!-- Implication -->
+    Implication :
+    <input type="text" name="implication" [(ngModel)]="implication" required #implicationField="ngModel">
+    <div *ngIf="implicationField.invalid && implicationField.touched">
+        Implication is required.
+    </div>
+    <!-- Granted -->
+    Granted :
+    <input type="text" name="granted" [(ngModel)]="granted" required #grantedField="ngModel">
+    <div *ngIf="grantedField.invalid && grantedField.touched">
+        Granted is required.
+    </div>
+
+    <button type="submit" [disabled]="recompenseForm.invalid">Submit</button>
+    <button type="button" (click)="getAllRecompenses()">All Organisators</button>
 </form>
 <hr />
 <ul>

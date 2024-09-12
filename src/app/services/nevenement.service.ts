@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { NEvenementModel } from '../models/nevenement.model';
+import { NEvenementModel } from '../models/nevenement/nevenement.model';
 import { CONST_API } from '../constants/api-constants';
+import { NEvenementCreationModel } from '../models/nevenement/nevenementCreation.model';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,7 @@ export class NevenementService {
     }
   }
 
-  public async createNEvenement(): Promise<void> {
+  public async createNEvenement(nevenement: NEvenementCreationModel): Promise<void> {
     try {
 
     } catch (error) {

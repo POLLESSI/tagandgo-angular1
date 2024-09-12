@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { NUserModel } from 'src/app/models/nuser.model';
+import { NgForm } from '@angular/forms';
+import { NUserModel } from 'src/app/models/nuser/nuser.model';
+import { NUserCreationModel } from 'src/app/models/nuser/nuserCreationModel';
 import { NuserService } from 'src/app/services/nuser.service';
 
 @Component({
@@ -16,17 +18,16 @@ export class NuserComponent implements OnInit {
   role_Id! : string;
   avatar_Id! : number;
   point! : string;
-  nUser_Id! : number;
 
   disable! : boolean;
 
   constructor(private nuserService: NuserService) {}
 
-  async ngOnInit(): Promise<void> {
+  public async ngOnInit(): Promise<void> {
     await this.getAllNUsers();
   }
 
-  async getAllNUsers(): Promise<void> {
+  public async getAllNUsers(): Promise<void> {
     try {
       this.ListNUsers = await this.nuserService['getAllNUsers']();
     } catch (error) {
@@ -34,16 +35,29 @@ export class NuserComponent implements OnInit {
     }
   }
 
-  submit(): void {
-    const nuser: NUserModel = {
+  public async submit(nUserForm: NgForm): Promise<void> {
+    if (nUserForm.invalid) {
+      console.log("Formis invalid");
+      return;
+    }
+    const nuser: NUserCreationModel = {
       email: this.email,
       pwd: this.pwd,
       nPerson_Id: this.nPerson_Id,
       role_Id: this.role_Id,
       avatar_Id: this.avatar_Id,
-      point: this.point,
-      nUser_Id: this.nUser_Id
+      point: this.point
     };
+
+    console.log(nuser);
+
+    try {
+      const response: NUserModel = await this.nuserService.createNUser(nuser);
+      this.ListNUsers.push(response);
+    } catch (error) {
+      console.log("Error creating new user!");
+    }
+
   }
 }
 

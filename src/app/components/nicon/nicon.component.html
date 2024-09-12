@@ -1,10 +1,27 @@
 <h3>Icons Room</h3>
-<form #niconForm="ngForm" (ngSubmit)="submit()">
-    Icon Name : <input type="text" name="nIconName" [(ngModel)]="nIconName" required>
-    Description : <input type="text" name="nIconDescription" [(ngModel)]="nIconDescription" required>
-    Url : <input type="text" name="nIconUrl" [(ngModel)]="nIconUrl" required>
-    <button (click)="submit()">Submit</button>
-    <button (click)="getAllNIcons()">All Icons</button>
+<form #niconForm="ngForm" (ngSubmit)="submit(niconForm)">
+     <!-- Icon Name -->
+     Icon Name :
+     <input type="text" name="nIconName" [(ngModel)]="nIconName" required #nIconNameField="ngModel">
+     <div *ngIf="nIconNameField.invalid && nIconNameField.touched">
+         Media Type is required.
+     </div>
+     <!-- Description -->
+     Description :
+     <input type="text" name="nIconDescription" [(ngModel)]="nIconDescription" required #nIconDescriptionField="ngModel">
+     <div *ngIf="nIconDescriptionField.invalid && nIconDescriptionField.touched">
+         Icon's description is required.
+     </div>
+     <!-- url -->
+     Url :
+     <input type="text" name="nIconUrl" [(ngModel)]="nIconUrl" required #nIconUrlField="ngModel">
+     <div *ngIf="nIconUrlField.invalid && nIconUrlField.touched">
+         Url of item is required.
+     </div>
+ 
+ 
+     <button type="submit" [disabled]="niconForm.invalid">Submit</button>
+     <button type="button" (click)="getAllNIcons()">All Activities</button>
 </form>
 <hr />
 <ul>

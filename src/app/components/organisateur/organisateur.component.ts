@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { OrganisateurModel } from 'src/app/models/organisateur.model';
+import { NgForm } from '@angular/forms';
+import { OrganisateurModel } from 'src/app/models/organisateur/organisateur.model';
+import { OrganisateurCreationModel } from 'src/app/models/organisateur/organisateurCreation.model';
 import { OrganisateurService } from 'src/app/services/organisateur.service';
 
 @Component({
@@ -14,32 +16,42 @@ export class OrganisateurComponent implements OnInit {
   businessNumber! : string;
   nUser_Id! : number;
   point! : string;
-  organisateur_Id! : number;
 
   disable! : boolean;
 
   constructor(private organisateurService: OrganisateurService) {}
 
-  async ngOnInit(): Promise<void> {
+  public async ngOnInit(): Promise<void> {
     await this.getAllOrganisateurs();
   }
 
-  async getAllOrganisateurs(): Promise<void> {
+  public async getAllOrganisateurs(): Promise<void> {
     try {
       this.ListOrganisateurs = await this.organisateurService.getAllOrganisateurs();
     } catch (error) {
       console.log("Error list Organisators");
     }
   }
-
-  submit(): void {
-    const organisateur: OrganisateurModel = {
+  public async submit(organisateurForm: NgForm): Promise<void> {
+    if (organisateurForm.invalid) {
+      console.log("Form is invalid");
+      return;
+    }
+    const organisateur: OrganisateurCreationModel = {
       companyName: this.companyName,
       businessNumber: this.businessNumber,
       nUser_Id: this.nUser_Id,
-      point: this.point,
-      organisateur_Id: this.organisateur_Id
+      point: this.point
     };
+
+    console.log(organisateur);
+
+    try {
+      const response: OrganisateurModel = await this.organisateurService.createOrganisateur(organisateur);
+      this.ListOrganisateurs.push(response);
+    } catch (error) {
+      console.log("Error creating Organisateur!");
+    }
   }
 }
 

@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { BonusModel } from 'src/app/models/bonus.model';
+import { NgForm } from '@angular/forms';
+import { BonusModel } from 'src/app/models/bonus/bonus.model';
+import { BonusCreationModel } from 'src/app/models/bonus/bonusCreation.model';
 import { BonusService } from 'src/app/services/bonus.service';
 
 @Component({
@@ -8,23 +10,23 @@ import { BonusService } from 'src/app/services/bonus.service';
   styleUrl: './bonus.component.css'
 })
 export class BonusComponent implements OnInit {
+
   ListBonus: BonusModel[] = [];
 
   bonusType! : string;
   bonusDescription! : string;
   application! : string;
   granted! : boolean;
-  bonus_Id! : number;
 
   disable! : boolean;
 
   constructor(private bonusService: BonusService) {}
 
-  async ngOnInit(): Promise<void>{
+  public async ngOnInit(): Promise<void>{
     await this.getAllBonuss();
   }
   
-  async getAllBonuss(): Promise<void> {
+  public async getAllBonuss(): Promise<void> {
     try {
       this.ListBonus = await this.bonusService.getAllBonuss();
     } catch (error) {
@@ -32,14 +34,26 @@ export class BonusComponent implements OnInit {
     }
   }
 
-  submit(): void {
-    const bonus: BonusModel = {
+  public async submit(bonusForm: NgForm): Promise<void> {
+    if (bonusForm.invalid) {
+      console.log("Form is invalid");
+      return;
+    }
+
+    const bonus: BonusCreationModel = {
       bonusType: this.bonusType,
       bonusDescription: this.bonusDescription,
       application: this.application,
-      granted: this.granted,
-      bonus_Id: this.bonus_Id
+      granted: this.granted
     };
-  }
 
+    console.log(bonus);
+
+    try {
+      const response: BonusModel = await this.bonusService.createBonus(bonus);
+      this.ListBonus.push(response);
+    } catch (error) {
+      console.log("Error creating bonus!");
+    }
+  }
 }

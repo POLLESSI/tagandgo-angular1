@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { MapModel } from 'src/app/models/map.model';
+import { NgForm } from '@angular/forms';
+import { MapModel } from 'src/app/models/map/map.model';
+import { MapCreationModel } from 'src/app/models/map/mapCreation.model';
 import { MapService } from 'src/app/services/map.service';
 
 @Component({
@@ -13,17 +15,16 @@ export class MapComponent implements OnInit {
   dateCreation! : string;
   mapUrl! : string;
   description! : string;
-  map_Id! : number;
 
   disable! : boolean;
 
   constructor(private mapService: MapService) {}
 
-  async ngOnInit(): Promise<void> {
+  public async ngOnInit(): Promise<void> {
     await this.getAllMaps();
   }
 
-  async getAllMaps(): Promise<void> {
+  public async getAllMaps(): Promise<void> {
     try {
       this.ListMaps = await this.mapService.getAllMaps();
     }catch (error) {
@@ -31,14 +32,25 @@ export class MapComponent implements OnInit {
     }
   }
 
-  submit(): void {
-    const map: MapModel = {
+  public async submit(mapForm: NgForm): Promise<void> {
+    if (mapForm.invalid) {
+      console.log("Form is invalid");
+      return;
+    }
+    const map: MapCreationModel = {
       dateCreation: this.dateCreation,
       mapUrl: this.mapUrl,
-      description: this.description,
-      map_Id: this.map_Id
+      description: this.description
     };
-  }
 
+    console.log(map);
+
+    try {
+      const response: MapModel = await this.mapService.createMap(map);
+      this.ListMaps.push(response);
+    } catch (error) {
+      console.log("Error creating map!");
+    }
+  } 
 }
 

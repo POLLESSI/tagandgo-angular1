@@ -1,10 +1,28 @@
 <h3>Map room</h3>
-<form #mapForm="ngForm" (ngSubmit)="submit()">
-    Date Creation : <input type="text" name="datecreation" [(ngModel)]="dateCreation" required>
-    Url Map : <input type="text" name="mapurl" [(ngModel)]="mapUrl" required>
-    Description : <input type="text" name="description" [(ngModel)]="description" required>
-    <button (click)="submit()">Submit</button>
-    <button (click)="getAllMaps()">All Maps</button>
+<form #mapForm="ngForm" (ngSubmit)="submit(mapForm)">
+     <!-- date creation -->
+     Date Création :
+     <input type="datetime" name="datecreation" [(ngModel)]="dateCreation" required #dateCreationField="ngModel">
+     <div *ngIf="dateCreationField.invalid && dateCreationField.touched">
+         Bonus Type is required.
+     </div>
+ 
+     <!-- MapUrl -->
+     Map Url :
+     <input type="text" name="mapurl" [(ngModel)]="mapUrl" required #mapUrlField="ngModel">
+     <div *ngIf="mapUrlField.invalid && mapUrlField.touched">
+         Url of map is required.
+     </div>
+ 
+     <!-- Description -->
+     Description :
+     <input type="text" name="description" [(ngModel)]="description" required #descriptionField="ngModel">
+     <div *ngIf="descriptionField.invalid && descriptionField.touched">
+         Description is required.
+     </div>
+ 
+     <button type="submit" [disabled]="mapForm.invalid">Submit</button>
+     <button type="button" (click)="getAllMaps()">All Activities</button>
 </form>
 <hr />
 <ul *ngFor="let mp of ListMaps">

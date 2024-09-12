@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { MediaItemModel } from '../models/mediaitem.model';
+import { MediaItemModel } from '../models/mediaitem/mediaitem.model';
 import { CONST_API } from '../constants/api-constants';
+import { MediaItemCreationModel } from '../models/mediaitem/mediaitemCreation.model';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,7 @@ export class MediaitemService {
     }
   }
 
-  public async createMediaItem(): Promise<void> {
+  public async createMediaItem(mediaItem: MediaItemCreationModel): Promise<void> {
     try {
 
     } catch (error) {

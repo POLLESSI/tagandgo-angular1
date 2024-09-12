@@ -30,14 +30,14 @@
 
     <!-- Latitude -->
     Latitude :
-    <input type="text" name="posLat" [(ngModel)]="posLat" required pattern="^-?\d+\.\d{6}$" #posLatField="ngModel">
+    <input type="text" name="posLat" [(ngModel)]="posLat" required pattern="^-?\d+\.\d{5}$" #posLatField="ngModel">
     <div *ngIf="posLatField.invalid && posLatField.touched">
         Error.
     </div>
 
     <!-- Longitude -->
     Longitude :
-    <input type="text" name="posLong" [(ngModel)]="posLong" required pattern="^-?\d+\.\d{6}$" #posLongField="ngModel">
+    <input type="text" name="posLong" [(ngModel)]="posLong" required pattern="^-?\d+\.\d{5}$" #posLongField="ngModel">
     <div *ngIf="posLongField.invalid && posLongField.touched">
         Error.
     </div>

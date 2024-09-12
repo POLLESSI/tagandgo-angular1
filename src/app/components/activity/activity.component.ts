@@ -46,10 +46,10 @@ export class ActivityComponent implements OnInit {
     }
 
     // Validation supplémentaire pour la latitude
-    const latPattern = /^-?\d+\.\d{6}$/;
+    const latPattern = /^-?\d+\.\d{5}$/;
     const longPattern = latPattern;
     if (!latPattern.test(this.posLat) || !longPattern.test(this.posLat)) {
-      console.log("Must be a decimal with up to 6 digits after the decimal point");
+      console.log("Must be a decimal with up to 5 digits after the decimal point");
       return;
     }
 
