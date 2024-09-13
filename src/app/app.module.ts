@@ -22,6 +22,12 @@ import { WeatherforecastComponent } from "./components/weatherforecast/weatherfo
 import { FormsModule } from "@angular/forms";
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
+
 @NgModule({
     declarations: [
         AppComponent,
@@ -45,7 +51,14 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+
+    // Material Angular
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatTableModule,
+    MatIconModule
 ],
     providers: [
     provideAnimationsAsync()

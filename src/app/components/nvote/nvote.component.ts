@@ -44,8 +44,8 @@ export class NvoteComponent implements OnInit {
     console.log(nVote);
 
     try {
-      const response: NVoteModel = await this.nvoteService.createNVote(nVote);
-      this.ListNVotes.push(response);
+      // const response: NVoteModel = await this.nvoteService.createNVote(nVote);
+      // this.ListNVotes.push(response);
     } catch (error) {
       console.log("Error creating new vote!");
     }

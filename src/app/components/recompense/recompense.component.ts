@@ -47,8 +47,8 @@ export class RecompenseComponent {
     console.log(recompense);
 
     try {
-      const response: RecompenseModel = await this.recompenseService.createRecompense(recompense);
-      this.ListRecompenses.push(response);
+      // const response: RecompenseModel = await this.recompenseService.createRecompense(recompense);
+      // this.ListRecompenses.push(response);
     } catch (error) {
       console.log("Error creating recompense!");
     }
