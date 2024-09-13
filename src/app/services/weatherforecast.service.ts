@@ -24,8 +24,12 @@ export class WeatherforecastService {
     }
   }
 
-  public async createWeatherForecast(weatherforecast: WeatherForecastCreationModel): Promise<void> {
+  public async createWeatherForecast(weatherforecastCreated: WeatherForecastCreationModel): Promise<WeatherForecastModel> {
+    const url: string = `${CONST_API.URL_API}/WeatherForecast/create`;
     try {
+      const response: any = await firstValueFrom(this.http.post(url, weatherforecastCreated, {responseType: 'json'}))
+
+      return response as WeatherForecastModel
 
     } catch (error) {
       throw error;

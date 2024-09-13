@@ -24,8 +24,12 @@ export class RecompenseService {
     }
   }
 
-  public async createRecompense(recompense: RecompenseCreationModel): Promise<void> {
+  public async createRecompense(recompenseCreated: RecompenseCreationModel): Promise<RecompenseModel> {
+    const url: string = `${CONST_API.URL_API}/Recompense/create`;
     try {
+      const response: any = await firstValueFrom(this.http.post(url, recompenseCreated, {responseType: 'json'}))
+
+      return response as RecompenseModel
 
     } catch (error) {
       throw error;

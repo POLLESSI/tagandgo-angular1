@@ -24,8 +24,12 @@ export class NuserService {
     }
   }
 
-  public async createNUser(nuser: NUserCreationModel): Promise<void> {
+  public async createNUser(nuserCreated: NUserCreationModel): Promise<NUserModel> {
+    const url: string = `${CONST_API.URL_API}/NUser/create`;
     try {
+      const response: any = await firstValueFrom(this.http.post(url, nuserCreated, {responseType: 'json'}))
+
+      return response as NUserModel
 
     } catch (error) {
       throw error;

@@ -24,8 +24,12 @@ export class OrganisateurService {
     }
   }
 
-  public async createOrganisateur(organisateur: OrganisateurCreationModel): Promise<void> {
+  public async createOrganisateur(organisateurCreated: OrganisateurCreationModel): Promise<OrganisateurModel> {
+    const url: string = `${CONST_API.URL_API}/Organisateur/create`;
     try {
+      const response: any = await firstValueFrom(this.http.post(url, organisateurCreated, {responseType: 'json'}))
+
+      return response as OrganisateurModel
 
     } catch (error) {
       throw error;

@@ -24,8 +24,12 @@ export class NvoteService {
     }
   }
 
-  public async createNVote(nVote: NVoteCreationModel): Promise<void> {
+  public async createNVote(nVoteCreated: NVoteCreationModel): Promise<NVoteModel> {
+    const url: string = `${CONST_API.URL_API}/NVote/create`;
     try {
+      const response: any = await firstValueFrom(this.http.post(url, nVoteCreated, {responseType: 'json'}))
+
+      return response as NVoteModel
 
     } catch (error) {
       throw error;

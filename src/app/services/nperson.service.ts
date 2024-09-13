@@ -23,8 +23,12 @@ export class NpersonService {
       throw error;
     }
   }
-  public async createNPerson(nperson: NPersonCreationModel): Promise<void> {
+  public async createNPerson(npersonCreated: NPersonCreationModel): Promise<NPersonModel> {
+    const url: string = `${CONST_API.URL_API}/NPerson/create`;
     try {
+      const response: any = await firstValueFrom(this.http.post(url, npersonCreated, {responseType: 'json'}))
+
+      return response as NPersonModel
 
     } catch (error) {
       throw error;
