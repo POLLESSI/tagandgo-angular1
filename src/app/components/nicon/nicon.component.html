@@ -1,33 +1,81 @@
 <h3>Icons Room</h3>
-<form #niconForm="ngForm" (ngSubmit)="submit(niconForm)">
-     <!-- Icon Name -->
-     Icon Name :
-     <input type="text" name="nIconName" [(ngModel)]="nIconName" required #nIconNameField="ngModel">
-     <div *ngIf="nIconNameField.invalid && nIconNameField.touched">
-         Media Type is required.
-     </div>
-     <!-- Description -->
-     Description :
-     <input type="text" name="nIconDescription" [(ngModel)]="nIconDescription" required #nIconDescriptionField="ngModel">
-     <div *ngIf="nIconDescriptionField.invalid && nIconDescriptionField.touched">
-         Icon's description is required.
-     </div>
-     <!-- url -->
-     Url :
-     <input type="text" name="nIconUrl" [(ngModel)]="nIconUrl" required #nIconUrlField="ngModel">
-     <div *ngIf="nIconUrlField.invalid && nIconUrlField.touched">
-         Url of item is required.
-     </div>
- 
- 
-     <button type="submit" [disabled]="niconForm.invalid">Submit</button>
-     <button type="button" (click)="getAllNIcons()">All Activities</button>
-</form>
+
+<button mat-flat-button (click)="showForm">Create Icon</button>
+<div *ngIf="showForm" class="overlay">
+    <div class="overlay-container">
+        <div class="exit-button">
+            <div (click)="showForm = false">X</div>
+        </div>
+    </div>
+    <form #niconForm="ngForm" (ngSubmit)="submit(niconForm)">
+        <!-- Icon Name -->
+         <mat-form-field>
+            <mat-label>Icon Name :</mat-label>
+            <input matInput type="text" name="nIconName" [(ngModel)]="nIconName" required #nIconNameField="ngModel">
+            <mat-error *ngIf="nIconNameField.invalid && nIconNameField.touched">Media Type is required.</mat-error>
+         </mat-form-field>
+        <!-- Description -->
+         <mat-form-field>
+            <mat-label>Description :</mat-label>
+            <input matInput type="text" name="nIconDescription" [(ngModel)]="nIconDescription" required #nIconDescriptionField="ngModel">
+            <mat-error *ngIf="nIconDescriptionField.invalid && nIconDescriptionField.touched">Icon's description is required.</mat-error>
+         </mat-form-field>
+        
+        <!-- url -->
+         <mat-form-field>
+            <mat-label>Url :</mat-label>
+            <input matInput type="text" name="nIconUrl" [(ngModel)]="nIconUrl" required #nIconUrlField="ngModel">
+            <mat-error *ngIf="nIconUrlField.invalid && nIconUrlField.touched">Url of item is required.</mat-error>
+         </mat-form-field>
+        <button mat-flat-button type="submit" [disabled]="niconForm.invalid">Submit</button>
+        <button mat-flat-button type="button" (click)="getAllNIcons()">All Activities</button>
+   </form>
+</div>
 <hr />
-<ul>
-    <li *ngFor="let nic of ListNIcons">
+<!-- <ul>
+    <li *ngFor="let nic of listNIcons">
         {{nic.nIconName}}
         {{nic.nIconDescription}}
         {{nic.nIconUrl}}
     </li>
-</ul>
+</ul> -->
+<table mat-table [dataSource]="listNIcons" class="mat-elevation-z8">
+
+    <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
+  
+    <!-- Position Column -->
+    <ng-container matColumnDef="nIconName">
+      <th mat-header-cell *matHeaderCellDef>Icon's Name : </th>
+      <td mat-cell *matCellDef="let element"> {{element.nIconName}} </td>
+    </ng-container>
+  
+    <!-- Name Column -->
+    <ng-container matColumnDef="nIconDescription">
+      <th mat-header-cell *matHeaderCellDef>Decription : </th>
+      <td mat-cell *matCellDef="let element"> {{element.nIconDescription}} </td>
+    </ng-container>
+  
+    <!-- Weight Column -->
+    <ng-container matColumnDef="nIconUrl">
+      <th mat-header-cell *matHeaderCellDef> Url : </th>
+      <td mat-cell *matCellDef="let element"> {{element.nIconUrl}} </td>
+    </ng-container>
+      <ng-container matColumnDef="nIcon_Id">
+        <th mat-header-cell *matHeaderCellDef> Option </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="buttonList">
+            <button mat-mini-fab disabled aria-label="delete">
+              <mat-icon>delete</mat-icon>
+            </button>
+            <button mat-mini-fab disabled aria-label="edit">
+              <mat-icon>edit</mat-icon>
+            </button>
+          </div>
+  
+          <!-- {{element.activity_Id}} -->
+        </td>
+      </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>

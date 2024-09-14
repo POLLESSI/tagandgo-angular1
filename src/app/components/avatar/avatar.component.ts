@@ -19,10 +19,42 @@ export class AvatarComponent implements OnInit {
 
   disable! : boolean;
 
+  showForm: boolean;
+
+  displayedColumns: string[] = ['avatarName', 'avatarUrl', 'description'];
+
   constructor(private avatarService: AvatarService) {}
 
   async ngOnInit(): Promise<void> {
     await this.getAllAvatars();
+
+    this.listAvatars = [
+      {
+        "avatar_Id": 1,
+        "avatarName": "Albator",
+        "avatarUrl": "https://images/albator.jpg",
+        "description": "Albator Corsaire de l'espace"
+      },
+      {
+        "avatar_Id": 2,
+        "avatarName": "Capitain Flam",
+        "avatarUrl": "https://images/capitainflam.jpg",
+        "description": "Caaaptain Flam, tu n'es pas"
+      },
+      {
+        "avatar_Id": 3,
+        "avatarName": "Capitain Cavern",
+        "avatarUrl": "https://images/capitaincavern.jpg",
+        "description": "Caapitaaain Caaaveeern!!!!!"
+      },
+      {
+        "avatar_Id": 4,
+        "avatarName": "Scoobedoo",
+        "avatarUrl": "https://images/scoobedoo.jpg",
+        "description": "Scoobodoo be do be do!!!!!"
+      }
+    ]
+
   }
 
   async getAllAvatars(): Promise<void> {

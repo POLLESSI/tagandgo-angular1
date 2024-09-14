@@ -11,7 +11,7 @@ import { NevenementService } from 'src/app/services/nevenement.service';
   styleUrl: './nevenement.component.css'
 })
 export class NevenementComponent implements OnInit {
-  ListNEvenements: NEvenementModel[] = []
+  listNEvenements: NEvenementModel[] = []
 
   nEvenementDate! : string;
   nEvenementName! : string;
@@ -27,14 +27,33 @@ export class NevenementComponent implements OnInit {
 
   disable! : boolean;
 
+  showForm: boolean;
+  displayedColums: string[] = ['nEvenementDate', 'nEvenementName', 'nEvenementDescription', 'posLat', 'posLong', 'positif', 'organisateur_Id', 'nIcon_Id', 'recompense_Id', 'bonus_Id', 'mediaItem_Id']
+displayedColumns: any;
+
   constructor(private nevenementService: NevenementService) {}
 
   public async ngOnInit(): Promise<void> {
     await this.getAllNEvenements();
+
+    this.listNEvenements = [
+      // "nEvenement_Id": 1,
+      // "nEvenementDate": "14-09-2024",
+      // "nEvenementName": "Grand Concert d'Indochine",
+      // "nEvenementDescription": "Grand concert de Nicolas Sirkis sur le toit du Mont des Arts",
+      // "posLat": "0.00030",
+      // "posLong": "0.00031",
+      // "positif": "false",
+      // "organisateur_Id": 1,
+      // "nIcon_Id": 1,
+      // "recompense_Id": 1,
+      // "bonus_Id": 1,
+      // "mediaItem_Id": 1
+    ]
   }
   public async getAllNEvenements(): Promise<void> {
     try {
-      this.ListNEvenements = await this.nevenementService.getAllNEvenements();
+      this.listNEvenements = await this.nevenementService.getAllNEvenements();
     } catch (error) {
       console.log("Error list nevenements");
     }
@@ -72,7 +91,7 @@ export class NevenementComponent implements OnInit {
 
     try {
       const response: NEvenementModel = await this.nevenementService.createNEvenement(nevenement);
-      this.ListNEvenements.push(response);
+      this.listNEvenements.push(response);
     } catch (error) {
       console.log("Error creating Event!");
     }

@@ -1,39 +1,97 @@
 <h3>Organisators Room</h3>
-<form #organisateurForm="ngForm" (ngSubmit)="submit(organisateurForm)">
-     <!-- Company Name -->
-     Company Name :
-     <input type="text" name="companyName" [(ngModel)]="companyName" required #companyNameField="ngModel">
-     <div *ngIf="companyNameField.invalid && companyNameField.touched">
-         Company Name is required.
-     </div>
-     <!-- Business Number -->
-     Business Number :
-     <input type="text" name="businessNumber" [(ngModel)]="businessNumber" required #businessNumberField="ngModel">
-     <div *ngIf="businessNumberField.invalid && businessNumberField.touched">
-         Business number is required.
-     </div>
-     <!-- NUser_Id -->
-     Id User :
-     <input type="number" name="nUser_Id" [(ngModel)]="nUser_Id" required #nUser_IdField="ngModel">
-     <div *ngIf="nUser_IdField.invalid && nUser_IdField.touched">
-         Id User is required.
-     </div>
-     <!-- Point -->
-     Point :
-     <input type="text" name="point" [(ngModel)]="point" required #pointField="ngModel">
-     <div *ngIf="pointField.invalid && pointField.touched">
-         Points is required.
-     </div>
- 
-     <button type="submit" [disabled]="organisateurForm.invalid">Submit</button>
-     <button type="button" (click)="getAllOrganisateurs()">All Organisators</button>
-</form>
-<hr />
+
+<button mat-flat-button (click)="showForm = true">Create Organisator</button>
+
+<div *ngIf="showForm" class="overlay">
+    <div class="overlay-container">
+        <div class="exit-button">
+            <div (click)="showForm = false">X</div>
+        </div>
+    </div>
+    <form #organisateurForm="ngForm" (ngSubmit)="submit(organisateurForm)">
+        <!-- Company Name -->
+        <mat-form-field>
+            <mat-label>Company Name :</mat-label>
+            <input matInput type="text" name="companyName" [(ngModel)]="companyName" required #companyNameField="ngModel">
+            <mat-error *ngIf="companyNameField.invalid && companyNameField.touched">Company Name is required.</mat-error>
+        </mat-form-field>
+        <!-- Business Number -->
+         <mat-form-field>
+            <mat-label>Business Number :</mat-label>
+            <input matInput type="text" name="businessNumber" [(ngModel)]="businessNumber" required #businessNumberField="ngModel">
+            <mat-error *ngIf="businessNumberField.invalid && businessNumberField.touched">Business number is required.</mat-error>
+         </mat-form-field>
+        <!-- NUser_Id -->
+         <mat-form-field>
+            <mat-label>Id User :</mat-label>
+            <input matInput type="number" name="nUser_Id" [(ngModel)]="nUser_Id" required #nUser_IdField="ngModel">
+            <mat-error *ngIf="nUser_IdField.invalid && nUser_IdField.touched">Id User is required.</mat-error>
+         </mat-form-field>
+        <!-- Point -->
+         <mat-form-field>
+            <mat-label>Point :</mat-label>
+            <input matInput type="text" name="point" [(ngModel)]="point" required #pointField="ngModel">
+            <mat-error *ngIf="pointField.invalid && pointField.touched">Points is required.</mat-error>
+         </mat-form-field>
+        <button mat-flat-button type="submit" [disabled]="organisateurForm.invalid">Submit</button>
+        <button mat-flat-button type="button" (click)="getAllOrganisateurs()">All Organisators</button>
+   </form>
+</div>
+
+<!-- <hr />
 <ul>
-    <li *ngFor="let org of ListOrganisateurs">
+    <li *ngFor="let org of listOrganisateurs">
         {{org.companyName}}
         {{org.businessNumber}}
         {{org.nUser_Id}}
         {{org.point}}
     </li>
-</ul>
+</ul> -->
+<table mat-table [dataSource]="listOrganisateurs" class="mat-elevation-z8">
+
+    <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
+  
+    <!-- Position Column -->
+    <ng-container matColumnDef="companyName">
+      <th mat-header-cell *matHeaderCellDef>Company Name : </th>
+      <td mat-cell *matCellDef="let element"> {{element.companyName}} </td>
+    </ng-container>
+  
+    <!-- Name Column -->
+    <ng-container matColumnDef="businessNumber">
+      <th mat-header-cell *matHeaderCellDef>Business Number : </th>
+      <td mat-cell *matCellDef="let element"> {{element.businessNumber}} </td>
+    </ng-container>
+  
+    <!-- Weight Column -->
+    <ng-container matColumnDef="nUser_Id">
+      <th mat-header-cell *matHeaderCellDef> Id User : </th>
+      <td mat-cell *matCellDef="let element"> {{element.nUser_Id}} </td>
+    </ng-container>
+  
+    <!-- Symbol Column -->
+    <ng-container matColumnDef="point">
+      <th mat-header-cell *matHeaderCellDef> Points : </th>
+      <td mat-cell *matCellDef="let element"> {{element.point}} </td>
+    </ng-container>
+      <ng-container matColumnDef="organisateur_Id">
+        <th mat-header-cell *matHeaderCellDef> Option </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="buttonList">
+            <button mat-mini-fab disabled aria-label="delete">
+              <mat-icon>delete</mat-icon>
+            </button>
+  
+            <button mat-mini-fab disabled aria-label="edit">
+              <mat-icon>edit</mat-icon>
+            </button>
+          </div>
+  
+          <!-- {{element.activity_Id}} -->
+        </td>
+      </ng-container>
+  
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>

@@ -10,7 +10,7 @@ import { OrganisateurService } from 'src/app/services/organisateur.service';
   styleUrl: './organisateur.component.css'
 })
 export class OrganisateurComponent implements OnInit {
-  ListOrganisateurs: OrganisateurModel[] = [];
+  listOrganisateurs: OrganisateurModel[] = [];
 
   companyName! : string;
   businessNumber! : string;
@@ -19,15 +19,26 @@ export class OrganisateurComponent implements OnInit {
 
   disable! : boolean;
 
+  showForm: boolean;
+  displayedColums: string[] = ['companyName', 'businessNumber', 'nUser_Id', "point"]
+displayedColumns: any;
+
   constructor(private organisateurService: OrganisateurService) {}
 
   public async ngOnInit(): Promise<void> {
     await this.getAllOrganisateurs();
+
+    this.listOrganisateurs = [
+      // "organisateur_Id": 1,
+      // "companyName": "Les Grands Malades d'Anderlecht",
+      // "nUser_Id": 1,
+      // "point": "1000"
+    ]
   }
 
   public async getAllOrganisateurs(): Promise<void> {
     try {
-      this.ListOrganisateurs = await this.organisateurService.getAllOrganisateurs();
+      this.listOrganisateurs = await this.organisateurService.getAllOrganisateurs();
     } catch (error) {
       console.log("Error list Organisators");
     }
@@ -47,8 +58,8 @@ export class OrganisateurComponent implements OnInit {
     console.log(organisateur);
 
     try {
-      // const response: OrganisateurModel = await this.organisateurService.createOrganisateur(organisateur);
-      // this.ListOrganisateurs.push(response);
+      const response: OrganisateurModel = await this.organisateurService.createOrganisateur(organisateur);
+      this.listOrganisateurs.push(response);
     } catch (error) {
       console.log("Error creating Organisateur!");
     }

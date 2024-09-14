@@ -10,7 +10,7 @@ import { WeatherforecastService } from 'src/app/services/weatherforecast.service
   styleUrl: './weatherforecast.component.css'
 })
 export class WeatherforecastComponent {
-  ListWeatherForecasts: WeatherForecastModel[] = [];
+  listWeatherForecasts: WeatherForecastModel[] = [];
 
   temperatureC! : string;
   temperatureF! : string;
@@ -22,15 +22,30 @@ export class WeatherforecastComponent {
 
   disable! : boolean;
 
+  showForm: boolean;
+  displayedColums: string[] = ['temperatureC', 'temperatureF', 'summary', 'description', 'humidity', 'precipitation', 'nEvenement_Id']
+displayedColumns: any;
+
   constructor(private weatherForecastService: WeatherforecastService) {}
 
   public async ngOnInit(): Promise<void> {
     await this.getAllWeatherForecasts();
+
+    this.listWeatherForecasts = [
+      // "weatherForecast_Id": 1,
+      // "temperatureC": "25",
+      // "temperatureF": "444",
+      // "summary": "Pluies Torantielles pour toute la journée",
+      // "description": "Alerte rouge aux intemperies",
+      // "humidity": "99.9",
+      // "precipitation": "99.9",
+      // "nEvenement_Id": 1
+    ]
   }
 
   public async getAllWeatherForecasts(): Promise<void> {
     try {
-      this.ListWeatherForecasts = await this.weatherForecastService.getAllWeatherForecasts();
+      this.listWeatherForecasts = await this.weatherForecastService.getAllWeatherForecasts();
     } catch (error) {
       console.log("Error list Weather Forecasts");
     }
@@ -54,8 +69,8 @@ export class WeatherforecastComponent {
     console.log(weatherforecast);
 
     try {
-      // const response: WeatherForecastModel = await this.weatherForecastService.createWeatherForecast(weatherforecast);
-      // this.ListWeatherForecasts.push(response);
+      const response: WeatherForecastModel = await this.weatherForecastService.createWeatherForecast(weatherforecast);
+      this.listWeatherForecasts.push(response);
     } catch(error) {
       console.log("Error creating weather forecast!")
     }

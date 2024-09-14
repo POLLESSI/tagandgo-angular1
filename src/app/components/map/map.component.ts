@@ -10,7 +10,7 @@ import { MapService } from 'src/app/services/map.service';
   styleUrl: './map.component.css'
 })
 export class MapComponent implements OnInit {
-  ListMaps: MapModel[] = [];
+  listMaps: MapModel[] = [];
 
   dateCreation! : string;
   mapUrl! : string;
@@ -18,15 +18,26 @@ export class MapComponent implements OnInit {
 
   disable! : boolean;
 
+  showForm: boolean;
+  displayedColums: string[] = ['dateCreation', 'mapUrl', 'description']
+displayedColumns: any;
+
   constructor(private mapService: MapService) {}
 
   public async ngOnInit(): Promise<void> {
     await this.getAllMaps();
+
+    this.listMaps = [
+      // "map_Id": 1,
+      // "dateCreation": "19-09-2024",
+      // "mapUrl": "https://www.openstreetmap.org/#map=18/50.827895/4.371888",
+      // "description": "Région bruxelloise Place Flagey"
+    ]
   }
 
   public async getAllMaps(): Promise<void> {
     try {
-      this.ListMaps = await this.mapService.getAllMaps();
+      this.listMaps = await this.mapService.getAllMaps();
     }catch (error) {
       console.log("Error List Maps");
     }
@@ -47,7 +58,7 @@ export class MapComponent implements OnInit {
 
     try {
       const response: MapModel = await this.mapService.createMap(map);
-      this.ListMaps.push(response);
+      this.listMaps.push(response);
     } catch (error) {
       console.log("Error creating map!");
     }

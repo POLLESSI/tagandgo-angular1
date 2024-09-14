@@ -1,49 +1,100 @@
 <h3>Chat Room</h3>
-<form #chatForm="ngForm" (ngSubmit)="submit(chatForm)">
-    New Message : <input type="text" name="newmessage" [(ngModel)]="newMessage">
-    Id Event : <input type="text" name="nevenement_id" [(ngModel)]="nEvenement_Id">
-    Id Activity : <input type="text" name="activity_id" [(ngModel)]="activity_Id">
-     <!-- New Message -->
-     New Message :
-     <input type="text" name="newmessage" [(ngModel)]="newMessage" required #newMessageField="ngModel">
-     <div *ngIf="newMessageField.invalid && newMessageField.touched">
-         New Message is required.
-     </div>
-     <!-- Author -->
-     Author :
-     <input type="text" name="author" [(ngModel)]="author" required #authorField="ngModel">
-     <div *ngIf="authorField.invalid && authorField.touched">
-         Name of author is required.
-     </div>
-     <!-- Sending Date -->
-     Sending Date :
-     <input type="datetime" name="sendingDate" [(ngModel)]="sendingDate" required #SendingDateField="ngModel">
-     <div *ngIf="SendingDateField.invalid && SendingDateField.touched">
-         Name of author is required.
-     </div>
- 
-     <!-- Event Id -->
-     Id Event :
-     <input type="number" name="nevenement_id" [(ngModel)]="nEvenement_Id" required #nEvenement_IdField="ngModel">
-     <div *ngIf="nEvenement_IdField.invalid && nEvenement_IdField.touched">
-         Id of Event is required.
-     </div>
- 
-     <!-- Activity Id -->
-     Id Activity :
-     <input type="number" name="activity_id" [(ngModel)]="activity_Id" required #activity_IdField="ngModel">
-     <div *ngIf="activity_IdField.invalid && activity_IdField.touched">
-         Id of activity is required.
-     </div>
- 
-     <button type="submit" [disabled]="chatForm.invalid">Submit</button>
-     <button type="button" (click)="getAllChats()">All Activities</button>
-</form>
+
+<button mat-flat-button (click)="showForm">Create Chat</button>
+
+<div *ngIf="showForm" class="overlay">
+    <div class="overlay-container">  
+        <div class="exit-button">
+            <div (click)="showForm = false">X</div>
+        </div>
+    </div>
+    <form #chatForm="ngForm" (ngSubmit)="submit(chatForm)">
+        <mat-form-field>    
+            <!-- New Message : <input type="text" name="newmessage" [(ngModel)]="newMessage">
+            Id Event : <input type="text" name="nevenement_id" [(ngModel)]="nEvenement_Id">
+            Id Activity : <input type="text" name="activity_id" [(ngModel)]="activity_Id"> -->
+            <!-- New Message -->
+             <mat-label>New Message :</mat-label>
+            <input matInput type="text" name="newmessage" [(ngModel)]="newMessage" required #newMessageField="ngModel">
+            <mat-error *ngIf="newMessageField.invalid && newMessageField.touched">New Message is required.</mat-error>
+            <!-- Author -->
+             <mat-label>Author :</mat-label>
+            <input matInput type="text" name="author" [(ngModel)]="author" required #authorField="ngModel">
+            <mat-error *ngIf="authorField.invalid && authorField.touched">Name of author is required.</mat-error>
+            <!-- Sending Date -->
+             <mat-label>Sending Date :</mat-label>
+            <input matInput type="datetime" name="sendingDate" [(ngModel)]="sendingDate" required #SendingDateField="ngModel">
+            <mat-error *ngIf="SendingDateField.invalid && SendingDateField.touched">Name of author is required.</mat-error>
+            <!-- Event Id -->
+             <mat-label>Id Event :</mat-label>
+            <input matInput type="number" name="nevenement_id" [(ngModel)]="nEvenement_Id" required #nEvenement_IdField="ngModel">
+            <mat-error *ngIf="nEvenement_IdField.invalid && nEvenement_IdField.touched">Id of Event is required.</mat-error>
+            <!-- Activity Id -->
+             <mat-label>Id Activity :</mat-label>
+            <input matInput type="number" name="activity_id" [(ngModel)]="activity_Id" required #activity_IdField="ngModel">
+            <mat-error *ngIf="activity_IdField.invalid && activity_IdField.touched">Id of activity is required.</mat-error>
+        
+            <button mat-flat-button type="submit" [disabled]="chatForm.invalid">Submit</button>
+            <button mat-flat-button type="button" (click)="getAllChats()">All Activities</button>
+        </mat-form-field>
+        
+    </form>
+</div>
+
+
 <hr />
-<ul *ngFor="let ch of ListMessages">
+<!-- <ul *ngFor="let ch of listMessages">
     <li>
         {{ch.newMessage}}
         {{ch.nEvenement_Id}}
         {{ch.activity_Id}}
     </li>
-</ul>
+</ul> -->
+<table mat-table [dataSource]="listMessages" class="mat-elevation-z8">
+
+    <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
+  
+    <!-- Position Column -->
+    <ng-container matColumnDef="newMessage">
+      <th mat-header-cell *matHeaderCellDef>Message : </th>
+      <td mat-cell *matCellDef="let element"> {{element.newMessage}} </td>
+    </ng-container>
+  
+    <!-- Name Column -->
+    <ng-container matColumnDef="author">
+      <th mat-header-cell *matHeaderCellDef>Author : </th>
+      <td mat-cell *matCellDef="let element"> {{element.author}} </td>
+    </ng-container>
+  
+    <!-- Weight Column -->
+    <ng-container matColumnDef="sendingDate">
+      <th mat-header-cell *matHeaderCellDef> Sending Date : </th>
+      <td mat-cell *matCellDef="let element"> {{element.sendingDate}} </td>
+    </ng-container>
+  
+    <!-- Symbol Column -->
+    <ng-container matColumnDef="nEvenement_Id">
+      <th mat-header-cell *matHeaderCellDef> Event Id : </th>
+      <td mat-cell *matCellDef="let element"> {{element.nEvenement_Id}} </td>
+    </ng-container>
+      <ng-container matColumnDef="chat_Id">
+        <th mat-header-cell *matHeaderCellDef> Option </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="buttonList">
+            <button mat-mini-fab disabled aria-label="delete">
+              <mat-icon>delete</mat-icon>
+            </button>
+  
+            <button mat-mini-fab disabled aria-label="edit">
+              <mat-icon>edit</mat-icon>
+            </button>
+          </div>
+  
+          <!-- {{element.activity_Id}} -->
+        </td>
+      </ng-container>
+  
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>

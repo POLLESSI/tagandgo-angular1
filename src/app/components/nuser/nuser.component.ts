@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { NUserModel } from 'src/app/models/nuser/nuser.model';
-import { NUserCreationModel } from 'src/app/models/nuser/nuserCreationModel';
+import { NUserCreationModel } from 'src/app/models/nuser/nuserCreation.model';
 import { NuserService } from 'src/app/services/nuser.service';
 
 @Component({
@@ -10,7 +10,7 @@ import { NuserService } from 'src/app/services/nuser.service';
   styleUrl: './nuser.component.css'
 })
 export class NuserComponent implements OnInit {
-  ListNUsers: NUserModel[] = [];
+  listNUsers: NUserModel[] = [];
 
   email! : string;
   pwd! : string;
@@ -21,15 +21,30 @@ export class NuserComponent implements OnInit {
 
   disable! : boolean;
 
+  showForm: boolean;
+
+  displayedColums: string[] = ['email', 'pwd', 'nPerson_Id', 'role_Id', 'avatar_Id', 'point']
+displayedColumns: any;
+
   constructor(private nuserService: NuserService) {}
 
   public async ngOnInit(): Promise<void> {
     await this.getAllNUsers();
+
+    this.listNUsers = [
+      // "nUser_Id": 1,
+      // "email": "albatorcorsairdel'espace@skynet.org",
+      // "pwd": "XXXXXXXXXXXXXXXXXXXXXXXXXX",
+      // "nPerson_Id": 1,
+      // "role_Id": 1,
+      // "avatar_Id": 1,
+      // "point": "1000"
+    ]
   }
 
   public async getAllNUsers(): Promise<void> {
     try {
-      this.ListNUsers = await this.nuserService['getAllNUsers']();
+      this.listNUsers = await this.nuserService['getAllNUsers']();
     } catch (error) {
       console.log("Error List Users");
     }
@@ -52,8 +67,8 @@ export class NuserComponent implements OnInit {
     console.log(nuser);
 
     try {
-      // const response: NUserModel = await this.nuserService.createNUser(nuser);
-      // this.ListNUsers.push(response);
+      const response: NUserModel = await this.nuserService.createNUser(nuser);
+      this.listNUsers.push(response);
     } catch (error) {
       console.log("Error creating new user!");
     }

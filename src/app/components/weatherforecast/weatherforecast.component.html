@@ -1,54 +1,66 @@
 <h3>Weather Forecasts Room</h3>
-<form #weatherForecastForm="ngForm" (ngSubmit)="submit(weatherForecastForm)">
-    <!-- TemperatureC -->
-    Temperature C° :
-    <input type="text" name="temperatureC" [(ngModel)]="temperatureC" required #temperatureCField="ngModel">
-    <div *ngIf="temperatureCField.invalid && temperatureCField.touched">
-        C° is required.
-    </div>
-    <!-- TemperatureF -->
-    Temperature F° :
-    <input type="text" name="temperatureF" [(ngModel)]="temperatureF" required #temperatureFField="ngModel">
-    <div *ngIf="temperatureFField.invalid && temperatureFField.touched">
-        F° is required.
-    </div>
-    <!-- Summary -->
-    Summary :
-    <input type="text" name="summary" [(ngModel)]="summary" required #summaryField="ngModel">
-    <div *ngIf="summaryField.invalid && summaryField.touched">
-        Summary is required.
-    </div>
-    <!-- Description -->
-    Description :
-    <input type="text" name="description" [(ngModel)]="description" required #descriptionField="ngModel">
-    <div *ngIf="descriptionField.invalid && descriptionField.touched">
-        Description is required.
-    </div>
-    <!-- Humidity -->
-    Humidity :
-    <input type="text" name="humidity" [(ngModel)]="humidity" required #humidityField="ngModel">
-    <div *ngIf="humidityField.invalid && humidityField.touched">
-        Humidity rate is required.
-    </div>
-    <!-- Precipitation -->
-    Precipitation :
-    <input type="text" name="precipitation" [(ngModel)]="precipitation" required #precipitationField="ngModel">
-    <div *ngIf="precipitationField.invalid && precipitationField.touched">
-        Precipitation rate is required.
-    </div>
-    <!-- NEvenement_Id -->
-    Id Event :
-    <input type="number" name="nEvenement_Id" [(ngModel)]="nEvenement_Id" required #nEvenement_IdField="ngModel">
-    <div *ngIf="nEvenement_IdField.invalid && nEvenement_IdField.touched">
-        Id Event is required.
-    </div>
 
-    <button type="submit" [disabled]="weatherForecastForm.invalid">Submit</button>
-    <button type="button" (click)="getAllWeatherForecasts()">All Organisators</button>
-</form>
+<button mat-flat-button (click)="showForm">Create Recompense</button>
+
+<div *ngIf="showForm" class="overlay">
+    <div class="overlay-container">
+        <div class="exit-button">
+            <div (click)="showForm = false">X</div>
+        </div>
+    </div>
+    <form #weatherForecastForm="ngForm" (ngSubmit)="submit(weatherForecastForm)">
+        <!-- TemperatureC -->
+         <mat-form-field>
+            <mat-label>Temperature C° :</mat-label>
+            <input matInput type="text" name="temperatureC" [(ngModel)]="temperatureC" required #temperatureCField="ngModel">
+            <mat-error *ngIf="temperatureCField.invalid && temperatureCField.touched">C° is required.</mat-error>
+         </mat-form-field>
+        <!-- TemperatureF -->
+         <mat-form-field>
+            <mat-label>Temperature F° :</mat-label>
+            <input matInput type="text" name="temperatureF" [(ngModel)]="temperatureF" required #temperatureFField="ngModel">
+            <mat-error *ngIf="temperatureFField.invalid && temperatureFField.touched">F° is required.</mat-error>  
+         </mat-form-field>
+        <!-- Summary -->
+         <mat-form-field>
+            <mat-label>Summary :</mat-label>
+            <input matInput type="text" name="summary" [(ngModel)]="summary" required #summaryField="ngModel">
+            <mat-error *ngIf="summaryField.invalid && summaryField.touched">Summary is required.</mat-error>
+         </mat-form-field>
+        <!-- Description -->
+         <mat-form-field>
+            <mat-label>Description :</mat-label>
+            <input matInput type="text" name="description" [(ngModel)]="description" required #descriptionField="ngModel">
+            <mat-error *ngIf="descriptionField.invalid && descriptionField.touched">Description is required.</mat-error>
+         </mat-form-field>
+        <!-- Humidity -->
+         <mat-form-field>
+            <mat-label>Humidity :</mat-label>
+            <input matInput type="text" name="humidity" [(ngModel)]="humidity" required #humidityField="ngModel">
+            <mat-error *ngIf="humidityField.invalid && humidityField.touched">Humidity rate is required.</mat-error>
+         </mat-form-field>
+        <!-- Precipitation -->
+         <mat-form-field>
+            <mat-label>Precipitation :</mat-label>
+            <input matInput type="text" name="precipitation" [(ngModel)]="precipitation" required #precipitationField="ngModel">
+            <mat-error *ngIf="precipitationField.invalid && precipitationField.touched">Precipitation rate is required.</mat-error>
+         </mat-form-field>
+        
+        <!-- NEvenement_Id -->
+        Id Event :
+        <input type="number" name="nEvenement_Id" [(ngModel)]="nEvenement_Id" required #nEvenement_IdField="ngModel">
+        <div *ngIf="nEvenement_IdField.invalid && nEvenement_IdField.touched">
+            Id Event is required.
+        </div>
+    
+        <button type="submit" [disabled]="weatherForecastForm.invalid">Submit</button>
+        <button type="button" (click)="getAllWeatherForecasts()">All Organisators</button>
+    </form>
+</div>
+
 <hr />
-<ul>
-    <li *ngFor="let wea of ListWeatherForecasts">
+<!-- <ul>
+    <li *ngFor="let wea of listWeatherForecasts">
         {{wea.temperatureC}}
         {{wea.temperatureF}}
         {{wea.summary}}
@@ -57,4 +69,67 @@
         {{wea.precipitation}}
         {{wea.nEvenement_Id}}
     </li>
-</ul>
+</ul> -->
+<table mat-table [dataSource]="listWeatherForecasts" class="mat-elevation-z8">
+
+    <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
+  
+    <!-- Position Column -->
+    <ng-container matColumnDef="temperatureC">
+      <th mat-header-cell *matHeaderCellDef>C° : </th>
+      <td mat-cell *matCellDef="let element"> {{element.temperatureF}} </td>
+    </ng-container>
+  
+    <!-- Name Column -->
+    <ng-container matColumnDef="temperatureF">
+      <th mat-header-cell *matHeaderCellDef>F° :  </th>
+      <td mat-cell *matCellDef="let element"> {{element.temperatureF}} </td>
+    </ng-container>
+  
+    <!-- Weight Column -->
+    <ng-container matColumnDef="summary">
+      <th mat-header-cell *matHeaderCellDef> Summary : </th>
+      <td mat-cell *matCellDef="let element"> {{element.summary}} </td>
+    </ng-container>
+  
+    <!-- Symbol Column -->
+    <ng-container matColumnDef="description">
+      <th mat-header-cell *matHeaderCellDef> Description : </th>
+      <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+    </ng-container>
+    <!-- Symbol Column -->
+    <ng-container matColumnDef="humidity">
+        <th mat-header-cell *matHeaderCellDef> Humidity : </th>
+        <td mat-cell *matCellDef="let element"> {{element.humidity}} </td>
+      </ng-container>
+      <!-- Symbol Column -->
+    <ng-container matColumnDef="precipitation">
+        <th mat-header-cell *matHeaderCellDef> Precipitation : </th>
+        <td mat-cell *matCellDef="let element"> {{element.precipitation}} </td>
+      </ng-container>
+      <!-- Symbol Column -->
+    <ng-container matColumnDef="nEvenement_Id">
+        <th mat-header-cell *matHeaderCellDef> Id Event : </th>
+        <td mat-cell *matCellDef="let element"> {{element.nEvenement_Id}} </td>
+      </ng-container>
+      <ng-container matColumnDef="weatherForecast_Id">
+        <th mat-header-cell *matHeaderCellDef> Option </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="buttonList">
+            <button mat-mini-fab disabled aria-label="delete">
+              <mat-icon>delete</mat-icon>
+            </button>
+  
+            <button mat-mini-fab disabled aria-label="edit">
+              <mat-icon>edit</mat-icon>
+            </button>
+          </div>
+  
+          <!-- {{element.activity_Id}} -->
+        </td>
+      </ng-container>
+  
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>

@@ -9,7 +9,7 @@ import { MediaitemService } from 'src/app/services/mediaitem.service';
   styleUrl: './mediaitem.component.css'
 })
 export class MediaitemComponent implements OnInit {
-  ListMediaItems: MediaItemModel[] = [];
+  listMediaItems: MediaItemModel[] = [];
 
   mediaType! : string;
   urlItem! : string;
@@ -17,17 +17,28 @@ export class MediaitemComponent implements OnInit {
   mediaItem_Id! : number;
 
   disable! : boolean;
-mediaItemForm: NgForm;
+  mediaItemForm: NgForm;
+
+  showForm: boolean;
+  displayedColums: string[] = ['mediaType', 'urlItem', 'description']
+displayedColumns: any;
 
   constructor(private mediaitemService: MediaitemService) {}
 
   public async ngOnInit(): Promise<void> {
     await this.getAllMediaItems();
+
+    this.listMediaItems = [
+      // "mediaItem_Id": 1,
+      // "mediaType": ".gif"
+      // "urlItem": "https://i.makeagif.com/media/1-04-2016/4qBKRB.gif",
+      // "description": "Albator à son poste de commandement"
+    ]
   }
 
   public async getAllMediaItems(): Promise<void> {
     try {
-      this.ListMediaItems = await this.mediaitemService.getAllMediaItems();
+      this.listMediaItems = await this.mediaitemService.getAllMediaItems();
     } catch (error) {
       console.log("Error list Media Items");
     }
@@ -47,7 +58,7 @@ mediaItemForm: NgForm;
 
     try {
       const response: MediaItemModel = await this.mediaitemService.createMediaItem(mediaItem);
-      this.ListMediaItems.push(response);
+      this.listMediaItems.push(response);
     } catch (error) {
       console.log("Error creating média items!");
     }

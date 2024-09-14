@@ -9,7 +9,7 @@ import { NvoteService } from 'src/app/services/nvote.service';
   styleUrl: './nvote.component.css'
 })
 export class NvoteComponent implements OnInit {
-  ListNVotes: NVoteModel[] = [];
+  listNVotes: NVoteModel[] = [];
 
   nEvenement_Id! : number;
   funOrNot! : boolean;
@@ -17,15 +17,26 @@ export class NvoteComponent implements OnInit {
 
   disable! : boolean;
 
+  showForm: boolean;
+  displayedColums: string[] = ['nEvenement_Id', 'funOrNot', 'comment']
+displayedColumns: any;
+
   constructor(private nvoteService: NvoteService) {}
 
   public async ngOnInit(): Promise<void> {
     await this.getAllNVotes();
+
+    this.listNVotes = [
+      // "nVote_Id": 1,
+      // "nEvenement_Id": 1,
+      // "funOrNot": "false",
+      // "comment": "Bof bof bof"
+    ]
   }
 
   public async getAllNVotes(): Promise<void> {
     try {
-      this.ListNVotes = await this.nvoteService['getAllNVotes']();
+      this.listNVotes = await this.nvoteService['getAllNVotes']();
     } catch (error) {
       console.log("Error list Votes");
     }
@@ -44,8 +55,8 @@ export class NvoteComponent implements OnInit {
     console.log(nVote);
 
     try {
-      // const response: NVoteModel = await this.nvoteService.createNVote(nVote);
-      // this.ListNVotes.push(response);
+      const response: NVoteModel = await this.nvoteService.createNVote(nVote);
+      this.listNVotes.push(response);
     } catch (error) {
       console.log("Error creating new vote!");
     }

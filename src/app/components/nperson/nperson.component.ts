@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { NPersonModel } from 'src/app/models/nperson/nperson.model';
-import { NPersonCreationModel } from 'src/app/models/nperson/npersonCreationModel';
+import { NPersonCreationModel } from 'src/app/models/nperson/npersonCreation.model';
 import { NpersonService } from 'src/app/services/nperson.service';
 @Component({
   selector: 'app-nperson',
@@ -9,7 +9,7 @@ import { NpersonService } from 'src/app/services/nperson.service';
   styleUrl: './nperson.component.css'
 })
 export class NpersonComponent implements OnInit {
-  ListNPersons: NPersonModel[] = [];
+  listNPersons: NPersonModel[] = [];
 
   lastname! : string;
   firstname! : string;
@@ -24,15 +24,33 @@ export class NpersonComponent implements OnInit {
 
   disable! : boolean;
 
+  showForm: boolean;
+  displayedColums: string[] = ['lastname', 'firstname', 'email', 'address_Street', 'address_Nbr', 'postalCode', 'address_City', 'address_Country', 'telephone', 'gsm']
+displayedColumns: any;
+
   constructor(private npersonService: NpersonService) {}
 
   public async ngOnInit(): Promise<void> {
     await this.getAllNPersons();
+
+    this.listNPersons = [
+      // "nPerson_Id": 1,
+      // "lastname": "CorsaireDeL'Espace",
+      // "firstname": "Albator",
+      // "email": "albatorcorsairdel'espace@skynet.org",
+      // "address_Street": "Ceinture de Vanhaelen",
+      // "address_Nbr": "1B",
+      // "postalCode": "00000",
+      // "address_City": "Orbite Basse",
+      // "address_Country": "Planète Terre",
+      // "telephone": "000/0000001",
+      // "gsm": "0000/000001"
+    ]
   }
 
   public async getAllNPersons(): Promise<void> {
     try {
-      this.ListNPersons = await this.npersonService.getAllNPersons();
+      this.listNPersons = await this.npersonService.getAllNPersons();
     } catch (error) {
       console.log("Error list Persons");
     }
@@ -57,8 +75,8 @@ export class NpersonComponent implements OnInit {
     };
 
     try {
-      // const response: NPersonModel = await this.npersonService.createNPerson(nperson);
-      // this.ListNPersons.push(response);
+      const response: NPersonModel = await this.npersonService.createNPerson(nperson);
+      this.listNPersons.push(response);
     } catch (Error) {
       console.log("Error creating new person!");
     }

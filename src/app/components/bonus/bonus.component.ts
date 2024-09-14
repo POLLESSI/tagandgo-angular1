@@ -20,10 +20,36 @@ export class BonusComponent implements OnInit {
 
   disable! : boolean;
 
+  showForm: boolean;
+
+  displayedColums: string[] = ['bonusType', 'bonusDescription', 'application', 'granted']
+displayedColumns: any;
+
   constructor(private bonusService: BonusService) {}
 
   public async ngOnInit(): Promise<void>{
     await this.getAllBonuss();
+
+    this.ListBonus = [
+      // {
+      //   "bonus_Id": 1,
+      //   "bonusDescription": "Frites à volonté gratuites",
+      //   "application": "A vie",
+      //   "granted": 1
+      // },
+      // {
+      //   "bonus_Id": 2,
+      //   "bonusDescription": "Pizzas à volonté",
+      //   "application": "Pour l'éternité",
+      //   "granted": 1
+      // }
+      // {
+      //   "bonus_Id": 3,
+      //   "bonusDescription": "Tout le pognon du monde",
+      //   "application": "Jamais",
+      //   "granted": 0
+      // }
+    ]
   }
   
   public async getAllBonuss(): Promise<void> {

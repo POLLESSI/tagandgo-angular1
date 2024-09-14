@@ -1,39 +1,96 @@
 <h3>Recompense Room</h3>
-<form #recompenseForm="ngForm" (ngSubmit)="submit(recompenseForm)">
-    <!-- Definition -->
-    Definition :
-    <input type="text" name="definition" [(ngModel)]="definition" required #definitionField="ngModel">
-    <div *ngIf="definitionField.invalid && definitionField.touched">
-        Definition is required.
-    </div>
-    <!-- Point -->
-    Point :
-    <input type="text" name="point" [(ngModel)]="point" required #pointField="ngModel">
-    <div *ngIf="pointField.invalid && pointField.touched">
-        Points is required.
-    </div>
-    <!-- Implication -->
-    Implication :
-    <input type="text" name="implication" [(ngModel)]="implication" required #implicationField="ngModel">
-    <div *ngIf="implicationField.invalid && implicationField.touched">
-        Implication is required.
-    </div>
-    <!-- Granted -->
-    Granted :
-    <input type="text" name="granted" [(ngModel)]="granted" required #grantedField="ngModel">
-    <div *ngIf="grantedField.invalid && grantedField.touched">
-        Granted is required.
-    </div>
 
-    <button type="submit" [disabled]="recompenseForm.invalid">Submit</button>
-    <button type="button" (click)="getAllRecompenses()">All Organisators</button>
-</form>
+<button mat-flat-button (click)="showForm">Create Recompense</button>
+
+<div *ngIf="showForm" class="overlay">
+    <div class="overlay-container">
+        <div class="exit-button">
+            <div (click)="showForm = false">X</div>
+        </div>
+    </div>
+    <form #recompenseForm="ngForm" (ngSubmit)="submit(recompenseForm)">
+        <!-- Definition -->
+         <mat-form-field>
+            <mat-label>Definition :</mat-label>
+            <input matInput type="text" name="definition" [(ngModel)]="definition" required #definitionField="ngModel">
+            <mat-error *ngIf="definitionField.invalid && definitionField.touched">Definition is required.</mat-error>
+         </mat-form-field>
+        <!-- Point -->
+         <mat-form-field>
+            <mat-label>Point :</mat-label>
+            <input matInput type="text" name="point" [(ngModel)]="point" required #pointField="ngModel">
+            <mat-error *ngIf="pointField.invalid && pointField.touched">Points is required.</mat-error>
+         </mat-form-field>
+        <!-- Implication -->
+         <mat-form-field>
+            <mat-label>Implication :</mat-label>
+            <input matInput type="text" name="implication" [(ngModel)]="implication" required #implicationField="ngModel">
+            <mat-error *ngIf="implicationField.invalid && implicationField.touched">Implication is required.</mat-error>
+         </mat-form-field>
+        <!-- Granted -->
+         <mat-form-field>
+            <mat-label>Granted :</mat-label>
+            <input matInput type="text" name="granted" [(ngModel)]="granted" required #grantedField="ngModel">
+            <mat-error *ngIf="grantedField.invalid && grantedField.touched">Granted is required.</mat-error>
+         </mat-form-field>
+        <button mat-flat-button type="submit" [disabled]="recompenseForm.invalid">Submit</button>
+        <button mat-flat-button type="button" (click)="getAllRecompenses()">All Organisators</button>
+    </form>
+</div>
 <hr />
-<ul>
-    <li *ngFor="let re of ListRecompenses">
+<!-- <ul>
+    <li *ngFor="let re of listRecompenses">
         {{re.definition}}
         {{re.point}}
         {{re.implication}}
         {{re.granted}}
     </li>
-</ul>
+</ul> -->
+<table mat-table [dataSource]="listRecompenses" class="mat-elevation-z8">
+
+    <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
+  
+    <!-- Position Column -->
+    <ng-container matColumnDef="definition">
+      <th mat-header-cell *matHeaderCellDef>Definition : </th>
+      <td mat-cell *matCellDef="let element"> {{element.definition}} </td>
+    </ng-container>
+  
+    <!-- Name Column -->
+    <ng-container matColumnDef="point">
+      <th mat-header-cell *matHeaderCellDef>Point : </th>
+      <td mat-cell *matCellDef="let element"> {{element.point}} </td>
+    </ng-container>
+  
+    <!-- Weight Column -->
+    <ng-container matColumnDef="implication">
+      <th mat-header-cell *matHeaderCellDef> implication : </th>
+      <td mat-cell *matCellDef="let element"> {{element.implication}} </td>
+    </ng-container>
+  
+    <!-- Symbol Column -->
+    <ng-container matColumnDef="granted">
+      <th mat-header-cell *matHeaderCellDef> Granted </th>
+      <td mat-cell *matCellDef="let element"> {{element.granted}} </td>
+    </ng-container>
+      <ng-container matColumnDef="recompense_Id">
+        <th mat-header-cell *matHeaderCellDef> Option </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="buttonList">
+            <button mat-mini-fab disabled aria-label="delete">
+              <mat-icon>delete</mat-icon>
+            </button>
+  
+            <button mat-mini-fab disabled aria-label="edit">
+              <mat-icon>edit</mat-icon>
+            </button>
+          </div>
+  
+          <!-- {{element.activity_Id}} -->
+        </td>
+      </ng-container>
+  
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>

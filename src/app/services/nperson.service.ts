@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { NPersonModel } from '../models/nperson/nperson.model';
 import { CONST_API } from '../constants/api-constants';
-import { NPersonCreationModel } from '../models/nperson/npersonCreationModel';
+import { NPersonCreationModel } from '../models/nperson/npersonCreation.model';
 
 @Injectable({
   providedIn: 'root'

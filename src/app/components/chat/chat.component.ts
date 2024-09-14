@@ -10,7 +10,7 @@ import { ChatService } from 'src/app/services/chat.service';
   styleUrl: './chat.component.css'
 })
 export class ChatComponent implements OnInit {
-  ListMessages: ChatModel[] = [];
+  listMessages: ChatModel[] = [];
 
   newMessage! : string;
   author! : string;
@@ -20,15 +20,28 @@ export class ChatComponent implements OnInit {
 
   disable! : boolean;
 
+  showForm: boolean;
+  displayedColums: string[] = ['newMessage', 'author', 'sendingDate', 'nEvenement_Id', 'activity_id']
+displayedColumns: any;
+
   constructor(private chatService: ChatService) {}
 
   async ngOnInit(): Promise<void> {
     await this.getAllChats();
+
+    this.listMessages = [
+      // "chat_Id": 1,
+      // "newMessage": "Bof bof bof bof bof",
+      // "author": "Youry les grands pieds"
+      // "sendingDate": 13-09-2024,
+      // "nEvenement_Id": 1,
+      // "activity_Id": 1
+    ]
     
   }
   async getAllChats(): Promise<void> {
     try {
-      this.ListMessages = await this.chatService.getAllChats();
+      this.listMessages = await this.chatService.getAllChats();
     } catch (error) {
       console.log("Error list Messages");
     }
@@ -51,7 +64,7 @@ export class ChatComponent implements OnInit {
 
     try {
       const response: ChatModel = await this.chatService.createChat(chat);
-      this.ListMessages.push(response);
+      this.listMessages.push(response);
     } catch (error) {
       console.log("Error creating chat!");
     }

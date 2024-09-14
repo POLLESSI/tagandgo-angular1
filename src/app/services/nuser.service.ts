@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { NUserModel } from '../models/nuser/nuser.model';
 import { CONST_API } from '../constants/api-constants';
-import { NUserCreationModel } from '../models/nuser/nuserCreationModel';
+import { NUserCreationModel } from '../models/nuser/nuserCreation.model';
 
 @Injectable({
   providedIn: 'root'

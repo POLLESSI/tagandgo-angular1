@@ -9,7 +9,7 @@ import { RecompenseService } from 'src/app/services/recompense.service';
   styleUrl: './recompense.component.css'
 })
 export class RecompenseComponent {
-  ListRecompenses: RecompenseModel[] = [];
+  listRecompenses: RecompenseModel[] = [];
 
   definition! : string;
   point! : string;
@@ -18,15 +18,26 @@ export class RecompenseComponent {
 
   disable! : boolean;
 
+  showForm: boolean;
+  displayedColums: string[] = ['definition', 'point', 'implication', 'granted']
+displayedColumns: any;
+
   constructor(private recompenseService: RecompenseService) {}
 
   public async ngOnInit(): Promise<void> {
     await this.getAllRecompenses();
+
+    this.listRecompenses = [
+      // "recompense_Id": 1,
+      // "definition": "1000 points de bonus en plus",
+      // "implication": "+1000",
+      // "granted": "true"
+    ]
   }
 
   public async getAllRecompenses(): Promise<void> {
     try {
-      this.ListRecompenses = await this.recompenseService.getAllRecompenses();
+      this.listRecompenses = await this.recompenseService.getAllRecompenses();
     } catch (error) {
       console.log("Error list Recompenses");
     }
@@ -47,8 +58,8 @@ export class RecompenseComponent {
     console.log(recompense);
 
     try {
-      // const response: RecompenseModel = await this.recompenseService.createRecompense(recompense);
-      // this.ListRecompenses.push(response);
+      const response: RecompenseModel = await this.recompenseService.createRecompense(recompense);
+      this.listRecompenses.push(response);
     } catch (error) {
       console.log("Error creating recompense!");
     }

@@ -9,7 +9,7 @@ import { NiconService } from 'src/app/services/nicon.service';
   styleUrl: './nicon.component.css'
 })
 export class NiconComponent implements OnInit {
-  ListNIcons: NIconModel[] = [];
+  listNIcons: NIconModel[] = [];
 
   nIconName! : string;
   nIconDescription! : string;
@@ -17,15 +17,25 @@ export class NiconComponent implements OnInit {
 
   disable! : boolean;
 
+  showForm: boolean;
+  displayedColums: string[] = ['nIconName', 'nIconDescription', 'nIconUrl']
+displayedColumns: any;
+
   constructor(private niconService: NiconService) {}
 
   public  async ngOnInit(): Promise<void> {
     await this.getAllNIcons();
+
+    this.listNIcons = [
+      // "nIcon_Id": 1,
+      // "nIconName": "Albator",
+      // "nIconUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxyUufi9EbnWTryfrzGM7fd8b8sHeVOb6fyw&s"
+    ]
   }
 
   public async getAllNIcons(): Promise<void> {
     try {
-      this.ListNIcons = await this.niconService.getAllNIcons();
+      this.listNIcons = await this.niconService.getAllNIcons();
     } catch (error) {
       console.log("Error List Icons");
     }
@@ -46,7 +56,7 @@ export class NiconComponent implements OnInit {
 
     try {
       const response: NIconModel = await this.niconService.createNIcon(nIcon);
-      this.ListNIcons.push(response);
+      this.listNIcons.push(response);
     } catch (error) {
       console.log("Error creating icon!");
     }
