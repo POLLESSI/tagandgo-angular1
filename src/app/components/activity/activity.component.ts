@@ -189,34 +189,3 @@ export class ActivityComponent implements OnInit {
   }
 }
 
-public async Task<IActionResult> Create(ActivityRegisterForm activity)
-{
-    if (!ModelState.IsValid)
-    {
-        return BadRequest(ModelState);  // Renvoie les erreurs de validation du modèle
-    }
-
-    try
-    {
-        var activityDal = activity.ActivityToDal();
-        var activityCreated = _activityRepository.Create(activityDal);
-
-        if (activityCreated)
-        {
-            await _activityHub.RefreshActivity();
-
-            // Retourne l'objet créé avec un statut 201 (Created)
-            return CreatedAtAction(nameof(Create), new { id = activityDal.Id }, activityDal);
-        }
-
-        return BadRequest(new { message = "Registration Error. Could not create activity" });  // Renvoie une erreur spécifique
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Error creating Activity; {ex}");
-        return StatusCode(500, new { message = "Internal Server Error", error = ex.Message });  // Renvoie un message d'erreur avec des détails
-    }
-}
-
-
-
