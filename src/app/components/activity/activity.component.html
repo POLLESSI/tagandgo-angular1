@@ -3,11 +3,14 @@
 <button mat-flat-button (click)="showForm = true">Create activity</button>
 
 <div *ngIf="showForm" class="overlay">
-  <div class="overlay-container ">
+  <div class="overlay-container">
 
     <div class="exit-button">
-        <div (click)="showForm = false">X</div>
+        <div (click)="onCancelForm()">X</div>
     </div>
+
+    <h1 *ngIf="!isFormEdition">Creation d'une activité</h1>
+    <h1 *ngIf="isFormEdition">Edition d'une activité</h1>
 
     <form #activityForm="ngForm" (ngSubmit)="submit(activityForm)">
         <!-- Activity Name -->
@@ -66,18 +69,6 @@
 
 <hr />
 
-<!-- <ul>
-    <li *ngFor="let act of listActivities">
-        {{act.activityName}}
-        {{act.activityAddress}}
-        {{act.activityDescription}}
-        {{act.complementareInformation}}
-        {{act.posLat}}
-        {{act.posLong}}
-        {{act.organisateur_Id}}
-    </li>
-</ul> -->
-
 <table mat-table [dataSource]="listActivities" class="mat-elevation-z8">
 
   <!--- Note that these columns can be defined in any order.
@@ -126,16 +117,14 @@
     <th mat-header-cell *matHeaderCellDef> Option </th>
     <td mat-cell *matCellDef="let element">
       <div class="buttonList">
-        <button mat-mini-fab disabled aria-label="delete">
+        <button mat-mini-fab aria-label="delete">
           <mat-icon>delete</mat-icon>
         </button>
 
-        <button mat-mini-fab disabled aria-label="edit">
+        <button mat-mini-fab aria-label="edit" (click)="onIdition(element.activity_Id)">
           <mat-icon>edit</mat-icon>
         </button>
       </div>
-
-      <!-- {{element.activity_Id}} -->
     </td>
   </ng-container>
 

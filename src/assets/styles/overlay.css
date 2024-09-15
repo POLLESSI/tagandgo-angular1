@@ -20,4 +20,6 @@
     border-radius: 10px;
     display: flex;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
 }
