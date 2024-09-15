@@ -3,5 +3,5 @@ export interface BonusEditionModel {
     bonusType : string;
     bonusDescription : string;
     application : string;
-    granted : boolean;
+    granted : string;
 }

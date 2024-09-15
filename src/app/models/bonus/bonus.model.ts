@@ -2,6 +2,6 @@ export interface BonusModel {
     bonusType : string;
     bonusDescription : string;
     application : string;
-    granted : boolean;
+    granted : string;
     bonus_Id : number;
   }
