@@ -35,49 +35,48 @@ export class ActivityComponent implements OnInit {
   public async ngOnInit(): Promise<void> {
     await this.getAllActivities();``
 
-
-    this.listActivities = [
-      {
-        "activity_Id": 1,
-        "activityName": "Atelier de peinture",
-        "activityAddress": "10 Rue des Arts, 75000 Paris",
-        "activityDescription": "Un atelier pour découvrir les techniques de peinture acrylique.",
-        "complementareInformation": "Matériel fourni sur place.",
-        "posLat": "48.8566",
-        "posLong": "2.3522",
-        "organisateur_Id": 101
-      },
-      {
-        "activity_Id": 2,
-        "activityName": "Concert de jazz",
-        "activityAddress": "25 Avenue de la Musique, 75001 Paris",
-        "activityDescription": "Un concert en plein air avec des musiciens de jazz renommés.",
-        "complementareInformation": "Apportez vos propres sièges.",
-        "posLat": "48.8584",
-        "posLong": "2.2945",
-        "organisateur_Id": 102
-      },
-      {
-        "activity_Id": 3,
-        "activityName": "Marathon de charité",
-        "activityAddress": "Parc des Princes, 75016 Paris",
-        "activityDescription": "Un marathon pour soutenir des œuvres de charité locales.",
-        "complementareInformation": "Inscription en ligne obligatoire.",
-        "posLat": "48.8414",
-        "posLong": "2.2529",
-        "organisateur_Id": 103
-      },
-      {
-        "activity_Id": 4,
-        "activityName": "Exposition d'art contemporain",
-        "activityAddress": "12 Boulevard de l'Art, 75012 Paris",
-        "activityDescription": "Une exposition mettant en avant les œuvres d'art contemporain.",
-        "complementareInformation": "Entrée gratuite le samedi.",
-        "posLat": "48.8446",
-        "posLong": "2.4075",
-        "organisateur_Id": 104
-      }
-    ]
+    // this.listActivities = [
+    //   {
+    //     "activity_Id": 1,
+    //     "activityName": "Atelier de peinture",
+    //     "activityAddress": "10 Rue des Arts, 75000 Paris",
+    //     "activityDescription": "Un atelier pour découvrir les techniques de peinture acrylique.",
+    //     "complementareInformation": "Matériel fourni sur place.",
+    //     "posLat": "48.8566",
+    //     "posLong": "2.3522",
+    //     "organisateur_Id": 101
+    //   },
+    //   {
+    //     "activity_Id": 2,
+    //     "activityName": "Concert de jazz",
+    //     "activityAddress": "25 Avenue de la Musique, 75001 Paris",
+    //     "activityDescription": "Un concert en plein air avec des musiciens de jazz renommés.",
+    //     "complementareInformation": "Apportez vos propres sièges.",
+    //     "posLat": "48.8584",
+    //     "posLong": "2.2945",
+    //     "organisateur_Id": 102
+    //   },
+    //   {
+    //     "activity_Id": 3,
+    //     "activityName": "Marathon de charité",
+    //     "activityAddress": "Parc des Princes, 75016 Paris",
+    //     "activityDescription": "Un marathon pour soutenir des œuvres de charité locales.",
+    //     "complementareInformation": "Inscription en ligne obligatoire.",
+    //     "posLat": "48.8414",
+    //     "posLong": "2.2529",
+    //     "organisateur_Id": 103
+    //   },
+    //   {
+    //     "activity_Id": 4,
+    //     "activityName": "Exposition d'art contemporain",
+    //     "activityAddress": "12 Boulevard de l'Art, 75012 Paris",
+    //     "activityDescription": "Une exposition mettant en avant les œuvres d'art contemporain.",
+    //     "complementareInformation": "Entrée gratuite le samedi.",
+    //     "posLat": "48.8446",
+    //     "posLong": "2.4075",
+    //     "organisateur_Id": 104
+    //   }
+    // ]
   }
 
   public async getAllActivities(): Promise<void> {
@@ -125,11 +124,15 @@ export class ActivityComponent implements OnInit {
 
         this.listActivities.push(response);
 
+        this.cancelForm();
+
       } catch (error) {
         console.log("Error update activity!");
       }
     }
     else {
+      console.log("ICI");
+
       const activity: ActivityCreationModel = {
         activityName: this.activityName,
         activityAddress: this.activityAddress,
@@ -142,7 +145,10 @@ export class ActivityComponent implements OnInit {
 
       try {
         const response: ActivityModel = await this.activityService.createActivity(activity);
+
         this.listActivities.push(response);
+
+        this.cancelForm();
 
       } catch (error) {
         console.log("Error creating activity!");
@@ -166,6 +172,10 @@ export class ActivityComponent implements OnInit {
   }
 
   public onCancelForm(): void {
+    this.cancelForm();
+  }
+
+  public cancelForm(): void {
     this.showForm = false;
     this.isFormEdition = false;
 
@@ -178,4 +188,34 @@ export class ActivityComponent implements OnInit {
     this.organisateur_Id = null;
   }
 }
+
+public async Task<IActionResult> Create(ActivityRegisterForm activity)
+{
+    if (!ModelState.IsValid)
+    {
+        return BadRequest(ModelState);  // Renvoie les erreurs de validation du modèle
+    }
+
+    try
+    {
+        var activityDal = activity.ActivityToDal();
+        var activityCreated = _activityRepository.Create(activityDal);
+
+        if (activityCreated)
+        {
+            await _activityHub.RefreshActivity();
+
+            // Retourne l'objet créé avec un statut 201 (Created)
+            return CreatedAtAction(nameof(Create), new { id = activityDal.Id }, activityDal);
+        }
+
+        return BadRequest(new { message = "Registration Error. Could not create activity" });  // Renvoie une erreur spécifique
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error creating Activity; {ex}");
+        return StatusCode(500, new { message = "Internal Server Error", error = ex.Message });  // Renvoie un message d'erreur avec des détails
+    }
+}
+
 
