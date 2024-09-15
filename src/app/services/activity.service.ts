@@ -52,8 +52,11 @@ export class ActivityService {
     }
   }
 
-  public async deleteActivity(): Promise<void> {
+  public async deleteActivity(activity_Id: number): Promise<void> {
+    const url: string = `${CONST_API.URL_API}/Activity/delete/`;
+
     try {
+      const respons: any = await firstValueFrom(this.http.delete(url, {responseType: 'json'}));
 
     } catch (error) {
       throw error;
