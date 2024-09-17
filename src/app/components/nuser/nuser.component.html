@@ -5,66 +5,58 @@
 <div *ngIf="showForm" class="overlay">
     <div class="overlay-container">
         <div class="exit-button">
-            <div (click)="showForm = false">X</div>
+            <div (click)="onCancelForm()">X</div>
         </div>
+        <form #nuserForm="ngForm" (ngSubmit)="submit(nuserForm)">
+          <!-- Email -->
+           <mat-form-field>
+              <mat-label>Email :</mat-label>
+              <input matInput type="text" name="email" [(ngModel)]="email" required #emailField="ngModel">
+              <mat-error *ngIf="emailField.invalid && emailField.touched">Date of event is required.</mat-error>
+           </mat-form-field>
+          <!-- Password -->
+           <mat-form-field>
+              <mat-label>Password :</mat-label>
+              <input matInput type="text" name="pwd" [(ngModel)]="pwd" required #pwdField="ngModel">
+              <mat-error *ngIf="pwdField.invalid && pwdField.touched">Password is required.</mat-error>
+           </mat-form-field>
+          <!-- Second Password -->
+           <mat-form-field>
+              <mat-label>Confirm Password :</mat-label>
+              <input matInput type="text" name="pwd" [(ngModel)]="pwd" required #pwdField="ngModel">
+              <mat-error *ngIf="pwdField.invalid && pwdField.touched">Confirm your password please.</mat-error>
+           </mat-form-field>
+          <!-- NPerson_Id -->
+           <mat-form-field>
+              <mat-label>Id Person :</mat-label>
+              <input matInput type="number" name="nPerson_Id" [(ngModel)]="nPerson_Id" required #nPerson_IdField="ngModel">
+              <mat-error *ngIf="nPerson_IdField.invalid && nPerson_IdField.touched">Id person is required.</mat-error>
+           </mat-form-field>
+          <!-- Role_Id -->
+           <mat-form-field>
+              <mat-label>Id Role :</mat-label>
+              <input matInput type="text" name="role_Id" [(ngModel)]="role_Id" required #role_IdField="ngModel">
+              <mat-error *ngIf="role_IdField.invalid && role_IdField.touched">Id rôle is required.</mat-error>
+           </mat-form-field>
+          <!-- Avatar_Id -->
+          <mat-form-field>
+              <mat-label>Id Avatar :</mat-label>
+              <input matInput type="number" name="avatar_Id" [(ngModel)]="avatar_Id" required #avatar_IdField="ngModel">
+              <mat-error *ngIf="avatar_IdField.invalid && avatar_IdField.touched">Id avatar is required.</mat-error>
+          </mat-form-field>
+          <!-- Point -->
+           <mat-form-field>
+              <mat-label>Points :</mat-label>
+              <input matInput type="text" name="point" [(ngModel)]="point" required #pointField="ngModel">
+              <mat-error *ngIf="pointField.invalid && pointField.touched">Points is required.</mat-error>
+           </mat-form-field>
+          <button mat-flat-button type="submit" [disabled]="nuserForm.invalid">Submit</button>
+          <!-- <button mat-flat-button type="button" (click)="getAllNUsers()">All Users</button> -->
+     </form>
     </div>
-    <form #nuserForm="ngForm" (ngSubmit)="submit(nuserForm)">
-        <!-- Email -->
-         <mat-form-field>
-            <mat-label>Email :</mat-label>
-            <input matInput type="text" name="email" [(ngModel)]="email" required #emailField="ngModel">
-            <mat-error *ngIf="emailField.invalid && emailField.touched">Date of event is required.</mat-error>
-         </mat-form-field>
-        <!-- Password -->
-         <mat-form-field>
-            <mat-label>Password :</mat-label>
-            <input matInput type="text" name="pwd" [(ngModel)]="pwd" required #pwdField="ngModel">
-            <mat-error *ngIf="pwdField.invalid && pwdField.touched">Password is required.</mat-error>
-         </mat-form-field>
-        <!-- Second Password -->
-         <mat-form-field>
-            <mat-label>Confirm Password :</mat-label>
-            <input matInput type="text" name="pwd" [(ngModel)]="pwd" required #pwdField="ngModel">
-            <mat-error *ngIf="pwdField.invalid && pwdField.touched">Confirm your password please.</mat-error>
-         </mat-form-field>
-        <!-- NPerson_Id -->
-         <mat-form-field>
-            <mat-label>Id Person :</mat-label>
-            <input matInput type="number" name="nPerson_Id" [(ngModel)]="nPerson_Id" required #nPerson_IdField="ngModel">
-            <mat-error *ngIf="nPerson_IdField.invalid && nPerson_IdField.touched">Id person is required.</mat-error>
-         </mat-form-field>
-        <!-- Role_Id -->
-         <mat-form-field>
-            <mat-label>Id Role :</mat-label>
-            <input matInput type="text" name="role_Id" [(ngModel)]="role_Id" required #role_IdField="ngModel">
-            <mat-error *ngIf="role_IdField.invalid && role_IdField.touched">Id rôle is required.</mat-error>
-         </mat-form-field>
-        <!-- Avatar_Id -->
-        <mat-form-field>
-            <mat-label>Id Avatar :</mat-label>
-            <input matInput type="number" name="avatar_Id" [(ngModel)]="avatar_Id" required #avatar_IdField="ngModel">
-            <mat-error *ngIf="avatar_IdField.invalid && avatar_IdField.touched">Id avatar is required.</mat-error>
-        </mat-form-field>
-        <!-- Point -->
-         <mat-form-field>
-            <mat-label>Points :</mat-label>
-            <input matInput type="text" name="point" [(ngModel)]="point" required #pointField="ngModel">
-            <mat-error *ngIf="pointField.invalid && pointField.touched">Points is required.</mat-error>
-         </mat-form-field>
-        <button mat-flat-button type="submit" [disabled]="nuserForm.invalid">Submit</button>
-        <!-- <button mat-flat-button type="button" (click)="getAllNUsers()">All Users</button> -->
-   </form>
 </div>
 <hr />
-<!-- <ul>    
-    <li *ngFor="let nu of listNUsers">
-        {{nu.email}}
-        {{nu.nPerson_Id}}
-        {{nu.role_Id}}
-        {{nu.avatar_Id}}
-        {{nu.point}}
-    </li>
-</ul> -->
+
 <table mat-table [dataSource]="listNUsers" class="mat-elevation-z8">
 
     <!--- Note that these columns can be defined in any order.
@@ -106,7 +98,7 @@
               <mat-icon>delete</mat-icon>
             </button>
   
-            <button mat-mini-fab disabled aria-label="edit">
+            <button mat-mini-fab disabled aria-label="edit" (click)="onEdition(element.nUser_Id)">
               <mat-icon>edit</mat-icon>
             </button>
           </div>

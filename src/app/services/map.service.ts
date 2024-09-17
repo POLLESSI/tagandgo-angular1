@@ -4,6 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import { MapModel } from '../models/map/map.model';
 import { CONST_API } from '../constants/api-constants';
 import { MapCreationModel } from '../models/map/mapCreation.model';
+import { MapEditionModel } from '../models/map/mapEdition.model';
 
 @Injectable({
   providedIn: 'root'
@@ -36,7 +37,7 @@ export class MapService {
     }
   }
 
-  public async updateMap(): Promise<void> {
+  public async updateMap(mapEdited: MapEditionModel): Promise<void> {
     try {
 
     } catch (error) {

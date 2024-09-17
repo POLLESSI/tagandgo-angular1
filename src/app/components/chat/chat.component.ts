@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { BonusModel } from 'src/app/models/bonus/bonus.model';
 import { ChatModel } from 'src/app/models/chat/chat.model';
 import { ChatCreationModel } from 'src/app/models/chat/chatCreation.model';
+import { ChatEditionModel } from 'src/app/models/chat/chatEdition.model';
 import { ChatService } from 'src/app/services/chat.service';
 
 @Component({
@@ -21,27 +23,21 @@ export class ChatComponent implements OnInit {
   disable! : boolean;
 
   showForm: boolean;
-  displayedColums: string[] = ['newMessage', 'author', 'sendingDate', 'nEvenement_Id', 'activity_id']
-displayedColumns: any;
+  isFormEdition: boolean;
+  chatToEdit: ChatModel;
+  displayedColumns: string[] = ['newMessage', 'author', 'sendingDate', 'nEvenement_Id', 'activity_id']
 
   constructor(private chatService: ChatService) {}
 
-  async ngOnInit(): Promise<void> {
+  public async ngOnInit(): Promise<void> {
     await this.getAllChats();
-
-    this.listMessages = [
-      // "chat_Id": 1,
-      // "newMessage": "Bof bof bof bof bof",
-      // "author": "Youry les grands pieds"
-      // "sendingDate": 13-09-2024,
-      // "nEvenement_Id": 1,
-      // "activity_Id": 1
-    ]
-    
   }
-  async getAllChats(): Promise<void> {
+  public async getAllChats(): Promise<void> {
     try {
       this.listMessages = await this.chatService.getAllChats();
+
+      console.log(this.listMessages);
+      
     } catch (error) {
       console.log("Error list Messages");
     }
@@ -52,22 +48,68 @@ displayedColumns: any;
       return;
     }
 
-    const chat: ChatCreationModel = {
-      newMessage: this.newMessage,
-      author: this.author,
-      sendingDate: this.sendingDate,
-      nEvenement_Id: this.nEvenement_Id,
-      activity_Id: this.activity_Id
-    };
+    if (this.isFormEdition) {
+      const chatEdited: ChatEditionModel = {
+        chat_Id: this.chatToEdit.chat_Id,
+        newMessage: this.chatToEdit.newMessage,
+        author: this.chatToEdit.author,
+        sendingDate: this.chatToEdit.sendingDate,
+        nEvenement_Id: this.chatToEdit.nEvenement_Id,
+        activity_Id: this.chatToEdit.activity_Id,
+      };
 
-    console.log(chat);
+      try {
+        const response: ChatModel = await this.chatService.createChat(chatEdited);
 
-    try {
-      const response: ChatModel = await this.chatService.createChat(chat);
-      this.listMessages.push(response);
-    } catch (error) {
-      console.log("Error creating chat!");
+        this.listMessages.filter((c: ChatModel) => c.chat_Id != response.chat_Id);
+
+        this.listMessages.push(response);
+        
+      } catch (error) {
+        console.log("Error creating chat!");
+      }
     }
+    else {
+      const chat: ChatCreationModel = {
+        newMessage: this.newMessage,
+        author: this.author,
+        sendingDate: this.sendingDate,
+        nEvenement_Id: this.nEvenement_Id,
+        activity_Id: this.activity_Id
+      };
+
+      try {
+        const response: ChatModel = await this.chatService.createChat(chat);
+        this.listMessages.push(response);
+
+      } catch (error) {
+        console.log("Error creating chat");
+      }
+    }
+  }
+
+  public onEdition(chat_Id: number): void {
+    this.showForm = true;
+    this.isFormEdition = true;
+
+    this.chatToEdit = this.listMessages.find((c: ChatModel) => c.chat_Id == chat_Id);
+
+    this.newMessage = this.chatToEdit.newMessage;
+    this.author = this.chatToEdit.author;
+    this.sendingDate = this.chatToEdit.sendingDate;
+    this.nEvenement_Id = this.chatToEdit.nEvenement_Id;
+    this.activity_Id = this.chatToEdit.activity_Id;
+  }
+
+  public onCancelForm(): void {
+    this.showForm = false;
+    this.isFormEdition = false;
+
+    this.newMessage = null;
+    this.author = null;
+    this.sendingDate = null;
+    this.nEvenement_Id = null;
+    this.activity_Id = null;
   }
 }
 
