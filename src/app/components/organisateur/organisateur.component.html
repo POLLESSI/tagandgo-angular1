@@ -5,48 +5,43 @@
 <div *ngIf="showForm" class="overlay">
     <div class="overlay-container">
         <div class="exit-button">
-            <div (click)="showForm = false">X</div>
+            <div (click)="onCancelForm()">X</div>
         </div>
+
+        <h1 *ngIf="!isFormEdition">Create Organisator</h1>
+        <h1 *ngIf="isFormEdition">Edit Organisator</h1>
+
+        <form #organisateurForm="ngForm" (ngSubmit)="submit(organisateurForm)">
+          <!-- Company Name -->
+          <mat-form-field>
+              <mat-label>Company Name :</mat-label>
+              <input matInput type="text" name="companyName" [(ngModel)]="companyName" required #companyNameField="ngModel">
+              <mat-error *ngIf="companyNameField.invalid && companyNameField.touched">Company Name is required.</mat-error>
+          </mat-form-field>
+          <!-- Business Number -->
+           <mat-form-field>
+              <mat-label>Business Number :</mat-label>
+              <input matInput type="text" name="businessNumber" [(ngModel)]="businessNumber" required #businessNumberField="ngModel">
+              <mat-error *ngIf="businessNumberField.invalid && businessNumberField.touched">Business number is required.</mat-error>
+           </mat-form-field>
+          <!-- NUser_Id -->
+           <mat-form-field>
+              <mat-label>Id User :</mat-label>
+              <input matInput type="number" name="nUser_Id" [(ngModel)]="nUser_Id" required #nUser_IdField="ngModel">
+              <mat-error *ngIf="nUser_IdField.invalid && nUser_IdField.touched">Id User is required.</mat-error>
+           </mat-form-field>
+          <!-- Point -->
+           <mat-form-field>
+              <mat-label>Point :</mat-label>
+              <input matInput type="text" name="point" [(ngModel)]="point" required #pointField="ngModel">
+              <mat-error *ngIf="pointField.invalid && pointField.touched">Points is required.</mat-error>
+           </mat-form-field>
+          <button mat-flat-button type="submit" [disabled]="organisateurForm.invalid">Submit</button>
+          <!-- <button mat-flat-button type="button" (click)="getAllOrganisateurs()">All Organisators</button> -->
+     </form>
     </div>
-    <form #organisateurForm="ngForm" (ngSubmit)="submit(organisateurForm)">
-        <!-- Company Name -->
-        <mat-form-field>
-            <mat-label>Company Name :</mat-label>
-            <input matInput type="text" name="companyName" [(ngModel)]="companyName" required #companyNameField="ngModel">
-            <mat-error *ngIf="companyNameField.invalid && companyNameField.touched">Company Name is required.</mat-error>
-        </mat-form-field>
-        <!-- Business Number -->
-         <mat-form-field>
-            <mat-label>Business Number :</mat-label>
-            <input matInput type="text" name="businessNumber" [(ngModel)]="businessNumber" required #businessNumberField="ngModel">
-            <mat-error *ngIf="businessNumberField.invalid && businessNumberField.touched">Business number is required.</mat-error>
-         </mat-form-field>
-        <!-- NUser_Id -->
-         <mat-form-field>
-            <mat-label>Id User :</mat-label>
-            <input matInput type="number" name="nUser_Id" [(ngModel)]="nUser_Id" required #nUser_IdField="ngModel">
-            <mat-error *ngIf="nUser_IdField.invalid && nUser_IdField.touched">Id User is required.</mat-error>
-         </mat-form-field>
-        <!-- Point -->
-         <mat-form-field>
-            <mat-label>Point :</mat-label>
-            <input matInput type="text" name="point" [(ngModel)]="point" required #pointField="ngModel">
-            <mat-error *ngIf="pointField.invalid && pointField.touched">Points is required.</mat-error>
-         </mat-form-field>
-        <button mat-flat-button type="submit" [disabled]="organisateurForm.invalid">Submit</button>
-        <!-- <button mat-flat-button type="button" (click)="getAllOrganisateurs()">All Organisators</button> -->
-   </form>
 </div>
 
-<!-- <hr />
-<ul>
-    <li *ngFor="let org of listOrganisateurs">
-        {{org.companyName}}
-        {{org.businessNumber}}
-        {{org.nUser_Id}}
-        {{org.point}}
-    </li>
-</ul> -->
 <table mat-table [dataSource]="listOrganisateurs" class="mat-elevation-z8">
 
     <!--- Note that these columns can be defined in any order.
@@ -83,7 +78,7 @@
               <mat-icon>delete</mat-icon>
             </button>
   
-            <button mat-mini-fab disabled aria-label="edit">
+            <button mat-mini-fab disabled aria-label="edit" (click)="onEdition(element.organisateur_Id)">
               <mat-icon>edit</mat-icon>
             </button>
           </div>

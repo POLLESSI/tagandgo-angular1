@@ -5,51 +5,56 @@
 <div *ngIf="showForm" class="overlay">
     <div class="overlay-container">  
         <div class="exit-button">
-            <div (click)="showForm = false">X</div>
+            <div (click)="onCancelForm()">X</div>
         </div>
-    </div>
-    <form #chatForm="ngForm" (ngSubmit)="submit(chatForm)">
-        <mat-form-field>    
-            <!-- New Message : <input type="text" name="newmessage" [(ngModel)]="newMessage">
-            Id Event : <input type="text" name="nevenement_id" [(ngModel)]="nEvenement_Id">
-            Id Activity : <input type="text" name="activity_id" [(ngModel)]="activity_Id"> -->
-            <!-- New Message -->
-             <mat-label>New Message :</mat-label>
-            <input matInput type="text" name="newmessage" [(ngModel)]="newMessage" required #newMessageField="ngModel">
-            <mat-error *ngIf="newMessageField.invalid && newMessageField.touched">New Message is required.</mat-error>
+
+        <h1 *ngIf="!isFormEdition">Create Chat</h1>
+        <h1 *ngIf="isFormEdition">Edit Chat</h1>
+
+        <form #chatForm="ngForm" (ngSubmit)="submit(chatForm)">
+          <!-- New Message : <input type="text" name="newmessage" [(ngModel)]="newMessage">
+              Id Event : <input type="text" name="nevenement_id" [(ngModel)]="nEvenement_Id">
+              Id Activity : <input type="text" name="activity_id" [(ngModel)]="activity_Id"> -->
+          <mat-form-field>    
+              <!-- New Message -->
+               <mat-label>New Message :</mat-label>
+              <input matInput type="text" name="newmessage" [(ngModel)]="newMessage" required #newMessageField="ngModel">
+              <mat-error *ngIf="newMessageField.invalid && newMessageField.touched">New Message is required.</mat-error>
+          </mat-form-field>
+          <mat-form-field>
             <!-- Author -->
-             <mat-label>Author :</mat-label>
+            <mat-label>Author :</mat-label>
             <input matInput type="text" name="author" [(ngModel)]="author" required #authorField="ngModel">
             <mat-error *ngIf="authorField.invalid && authorField.touched">Name of author is required.</mat-error>
+          </mat-form-field>
+          <mat-form-field>
             <!-- Sending Date -->
-             <mat-label>Sending Date :</mat-label>
+            <mat-label>Sending Date :</mat-label>
             <input matInput type="datetime" name="sendingDate" [(ngModel)]="sendingDate" required #SendingDateField="ngModel">
             <mat-error *ngIf="SendingDateField.invalid && SendingDateField.touched">Name of author is required.</mat-error>
+          </mat-form-field>
+          <mat-form-field>
             <!-- Event Id -->
-             <mat-label>Id Event :</mat-label>
+            <mat-label>Id Event :</mat-label>
             <input matInput type="number" name="nevenement_id" [(ngModel)]="nEvenement_Id" required #nEvenement_IdField="ngModel">
             <mat-error *ngIf="nEvenement_IdField.invalid && nEvenement_IdField.touched">Id of Event is required.</mat-error>
+          </mat-form-field>
+          <mat-form-field>
             <!-- Activity Id -->
-             <mat-label>Id Activity :</mat-label>
+            <mat-label>Id Activity :</mat-label>
             <input matInput type="number" name="activity_id" [(ngModel)]="activity_Id" required #activity_IdField="ngModel">
             <mat-error *ngIf="activity_IdField.invalid && activity_IdField.touched">Id of activity is required.</mat-error>
-        
-            <button mat-flat-button type="submit" [disabled]="chatForm.invalid">Submit</button>
+          </mat-form-field>
+          <button mat-flat-button type="submit" [disabled]="chatForm.invalid">Submit</button>
             <!-- <button mat-flat-button type="button" (click)="getAllChats()">All Chats</button> -->
-        </mat-form-field>
-        
-    </form>
+      </form>
+    </div>
+    
 </div>
 
 
 <hr />
-<!-- <ul *ngFor="let ch of listMessages">
-    <li>
-        {{ch.newMessage}}
-        {{ch.nEvenement_Id}}
-        {{ch.activity_Id}}
-    </li>
-</ul> -->
+
 <table mat-table [dataSource]="listMessages" class="mat-elevation-z8">
 
     <!--- Note that these columns can be defined in any order.
@@ -86,7 +91,7 @@
               <mat-icon>delete</mat-icon>
             </button>
   
-            <button mat-mini-fab disabled aria-label="edit">
+            <button mat-mini-fab disabled aria-label="edit" (click)="onEdition(element.chat_Id)">
               <mat-icon>edit</mat-icon>
             </button>
           </div>

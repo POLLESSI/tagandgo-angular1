@@ -5,40 +5,39 @@
 <div *ngIf="showForm" class="overlay">
     <div class="overlay-container">
         <div class="exit-button">
-            <div (click)="showForm = false">X</div>
+            <div (click)="onCancalForm()">X</div>
         </div>
-    </div>
-    <form #form="ngForm" (ngSubmit)="submit(mediaItemForm)">
-        <!-- media type -->
-         <mat-form-field>
-            <mat-label>Media Type :</mat-label>
-            <input matInput type="text" name="mediatype" [(ngModel)]="mediaType" required #mediaTypeField="ngModel">
-            <mat-error *ngIf="mediaTypeField.invalid && mediaTypeField.touched">Media Type is required.</mat-error>
-         </mat-form-field>
-        <!-- url item -->
-         <mat-form-field>
-            <mat-label>Url Item :</mat-label>
-            <input matInput type="text" name="urlitem" [(ngModel)]="urlItem" required #urlItemField="ngModel">
-            <mat-error *ngIf="urlItemField.invalid && urlItemField.touched">Url of item is required.</mat-error>
-         </mat-form-field>
-        <!-- Description -->
-         <mat-form-field>
-            <mat-label>Description :</mat-label>
-            <input matInput type="text" name="description" [(ngModel)]="description" required #descriptionField="ngModel">
-            <mat-error *ngIf="descriptionField.invalid && descriptionField.touched">Description is required.</mat-error>
-         </mat-form-field>
-        <button mat-flat-button type="submit" [disabled]="mediaItemForm.invalid">Submit</button>
-        <!-- <button mat-flat-button type="button" (click)="getAllMediaItems()">All Media Items</button> -->
-    </form>
+
+        <h1 *ngIf="!isFormEdition">Create Media Item</h1>
+        <h1 *ngIf="isFormEdition">Edit Media Item</h1>
+
+        <form #form="ngForm" (ngSubmit)="submit(mediaItemForm)">
+          <!-- media type -->
+           <mat-form-field>
+              <mat-label>Media Type :</mat-label>
+              <input matInput type="text" name="mediatype" [(ngModel)]="mediaType" required #mediaTypeField="ngModel">
+              <mat-error *ngIf="mediaTypeField.invalid && mediaTypeField.touched">Media Type is required.</mat-error>
+           </mat-form-field>
+          <!-- url item -->
+           <mat-form-field>
+              <mat-label>Url Item :</mat-label>
+              <input matInput type="text" name="urlitem" [(ngModel)]="urlItem" required #urlItemField="ngModel">
+              <mat-error *ngIf="urlItemField.invalid && urlItemField.touched">Url of item is required.</mat-error>
+           </mat-form-field>
+          <!-- Description -->
+           <mat-form-field>
+              <mat-label>Description :</mat-label>
+              <input matInput type="text" name="description" [(ngModel)]="description" required #descriptionField="ngModel">
+              <mat-error *ngIf="descriptionField.invalid && descriptionField.touched">Description is required.</mat-error>
+           </mat-form-field>
+          <button mat-flat-button type="submit" [disabled]="mediaItemForm.invalid">Submit</button>
+          <!-- <button mat-flat-button type="button" (click)="getAllMediaItems()">All Media Items</button> -->
+      </form>
+    </div>  
 </div>
+
 <hr />
-<!-- <ul>
-    <li *ngFor="let medi of listMediaItems">
-        {{medi.mediaType}}
-        {{medi.urlItem}}
-        {{medi.description}}
-    </li>
-</ul> -->
+
 <table mat-table [dataSource]="listMediaItems" class="mat-elevation-z8">
 
     <!--- Note that these columns can be defined in any order.
@@ -71,7 +70,7 @@
               <mat-icon>delete</mat-icon>
             </button>
   
-            <button mat-mini-fab disabled aria-label="edit">
+            <button mat-mini-fab disabled aria-label="edit" (click)="onEdition(element.mediaItem_Id)">
               <mat-icon>edit</mat-icon>
             </button>
           </div>

@@ -9,8 +9,8 @@
         <div (click)="onCancelForm()">X</div>
     </div>
 
-    <h1 *ngIf="!isFormEdition">Creation d'une activité</h1>
-    <h1 *ngIf="isFormEdition">Edition d'une activité</h1>
+    <h1 *ngIf="!isFormEdition">Create Activity</h1>
+    <h1 *ngIf="isFormEdition">Edit Activity</h1>
 
     <form #activityForm="ngForm" (ngSubmit)="submit(activityForm)">
         <!-- Activity Name -->

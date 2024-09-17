@@ -5,71 +5,65 @@
 <div *ngIf="showForm" class="overlay">
     <div class="overlay-container">
         <div class="exit-button">
-            <div (click)="showForm = false">X</div>
+            <div (click)="onCancelForm()">X</div>
         </div>
-    </div>
-    <form #weatherForecastForm="ngForm" (ngSubmit)="submit(weatherForecastForm)">
-        <!-- TemperatureC -->
-         <mat-form-field>
-            <mat-label>Temperature C° :</mat-label>
-            <input matInput type="text" name="temperatureC" [(ngModel)]="temperatureC" required #temperatureCField="ngModel">
-            <mat-error *ngIf="temperatureCField.invalid && temperatureCField.touched">C° is required.</mat-error>
-         </mat-form-field>
-        <!-- TemperatureF -->
-         <mat-form-field>
-            <mat-label>Temperature F° :</mat-label>
-            <input matInput type="text" name="temperatureF" [(ngModel)]="temperatureF" required #temperatureFField="ngModel">
-            <mat-error *ngIf="temperatureFField.invalid && temperatureFField.touched">F° is required.</mat-error>  
-         </mat-form-field>
-        <!-- Summary -->
-         <mat-form-field>
-            <mat-label>Summary :</mat-label>
-            <input matInput type="text" name="summary" [(ngModel)]="summary" required #summaryField="ngModel">
-            <mat-error *ngIf="summaryField.invalid && summaryField.touched">Summary is required.</mat-error>
-         </mat-form-field>
-        <!-- Description -->
-         <mat-form-field>
-            <mat-label>Description :</mat-label>
-            <input matInput type="text" name="description" [(ngModel)]="description" required #descriptionField="ngModel">
-            <mat-error *ngIf="descriptionField.invalid && descriptionField.touched">Description is required.</mat-error>
-         </mat-form-field>
-        <!-- Humidity -->
-         <mat-form-field>
-            <mat-label>Humidity :</mat-label>
-            <input matInput type="text" name="humidity" [(ngModel)]="humidity" required #humidityField="ngModel">
-            <mat-error *ngIf="humidityField.invalid && humidityField.touched">Humidity rate is required.</mat-error>
-         </mat-form-field>
-        <!-- Precipitation -->
-         <mat-form-field>
-            <mat-label>Precipitation :</mat-label>
-            <input matInput type="text" name="precipitation" [(ngModel)]="precipitation" required #precipitationField="ngModel">
-            <mat-error *ngIf="precipitationField.invalid && precipitationField.touched">Precipitation rate is required.</mat-error>
-         </mat-form-field>
-        
-        <!-- NEvenement_Id -->
-        Id Event :
-        <input type="number" name="nEvenement_Id" [(ngModel)]="nEvenement_Id" required #nEvenement_IdField="ngModel">
-        <div *ngIf="nEvenement_IdField.invalid && nEvenement_IdField.touched">
-            Id Event is required.
-        </div>
-    
-        <button type="submit" [disabled]="weatherForecastForm.invalid">Submit</button>
-        <!-- <button type="button" (click)="getAllWeatherForecasts()">All Weather Forecasts</button> -->
-    </form>
+
+        <h1 *ngIf="!isFormEdition">Create Weather Forecast</h1>
+        <h1 *ngIf="isFormEdition">Edit Weather Forecast</h1>
+
+        <form #weatherForecastForm="ngForm" (ngSubmit)="submit(weatherForecastForm)">
+          <!-- TemperatureC -->
+           <mat-form-field>
+              <mat-label>Temperature C° :</mat-label>
+              <input matInput type="text" name="temperatureC" [(ngModel)]="temperatureC" required #temperatureCField="ngModel">
+              <mat-error *ngIf="temperatureCField.invalid && temperatureCField.touched">C° is required.</mat-error>
+           </mat-form-field>
+          <!-- TemperatureF -->
+           <mat-form-field>
+              <mat-label>Temperature F° :</mat-label>
+              <input matInput type="text" name="temperatureF" [(ngModel)]="temperatureF" required #temperatureFField="ngModel">
+              <mat-error *ngIf="temperatureFField.invalid && temperatureFField.touched">F° is required.</mat-error>  
+           </mat-form-field>
+          <!-- Summary -->
+           <mat-form-field>
+              <mat-label>Summary :</mat-label>
+              <input matInput type="text" name="summary" [(ngModel)]="summary" required #summaryField="ngModel">
+              <mat-error *ngIf="summaryField.invalid && summaryField.touched">Summary is required.</mat-error>
+           </mat-form-field>
+          <!-- Description -->
+           <mat-form-field>
+              <mat-label>Description :</mat-label>
+              <input matInput type="text" name="description" [(ngModel)]="description" required #descriptionField="ngModel">
+              <mat-error *ngIf="descriptionField.invalid && descriptionField.touched">Description is required.</mat-error>
+           </mat-form-field>
+          <!-- Humidity -->
+           <mat-form-field>
+              <mat-label>Humidity :</mat-label>
+              <input matInput type="text" name="humidity" [(ngModel)]="humidity" required #humidityField="ngModel">
+              <mat-error *ngIf="humidityField.invalid && humidityField.touched">Humidity rate is required.</mat-error>
+           </mat-form-field>
+          <!-- Precipitation -->
+           <mat-form-field>
+              <mat-label>Precipitation :</mat-label>
+              <input matInput type="text" name="precipitation" [(ngModel)]="precipitation" required #precipitationField="ngModel">
+              <mat-error *ngIf="precipitationField.invalid && precipitationField.touched">Precipitation rate is required.</mat-error>
+           </mat-form-field>
+          
+          <!-- NEvenement_Id -->
+          Id Event :
+          <input type="number" name="nEvenement_Id" [(ngModel)]="nEvenement_Id" required #nEvenement_IdField="ngModel">
+          <div *ngIf="nEvenement_IdField.invalid && nEvenement_IdField.touched">
+              Id Event is required.
+          </div>
+      
+          <button type="submit" [disabled]="weatherForecastForm.invalid">Submit</button>
+          <!-- <button type="button" (click)="getAllWeatherForecasts()">All Weather Forecasts</button> -->
+      </form>
+    </div> 
 </div>
 
 <hr />
-<!-- <ul>
-    <li *ngFor="let wea of listWeatherForecasts">
-        {{wea.temperatureC}}
-        {{wea.temperatureF}}
-        {{wea.summary}}
-        {{wea.description}}
-        {{wea.humidity}}
-        {{wea.precipitation}}
-        {{wea.nEvenement_Id}}
-    </li>
-</ul> -->
+
 <table mat-table [dataSource]="listWeatherForecasts" class="mat-elevation-z8">
 
     <!--- Note that these columns can be defined in any order.
@@ -121,7 +115,7 @@
               <mat-icon>delete</mat-icon>
             </button>
   
-            <button mat-mini-fab disabled aria-label="edit">
+            <button mat-mini-fab disabled aria-label="edit" (click)="onEdition(element.weatherForecast_Id)">
               <mat-icon>edit</mat-icon>
             </button>
           </div>

@@ -5,93 +5,84 @@
 <div *ngIf="showForm" class="overlay">
     <div class="overlay-container">
         <div class="exit-button">
-            <div (click)="showForm = false">X</div>
+            <div (click)="onCancelForm()">X</div>
         </div>
-    </div>
-    <form #npersonForm="ngForm" (ngSubmit)="submit(npersonForm)">
-        <!-- Last Name -->
-         <mat-form-field>
-            <mat-label>Last Name :</mat-label>
-            <input matInput type="text" name="lastname" [(ngModel)]="lastname" required #lastnameField="ngModel">
-            <mat-error *ngIf="lastnameField.invalid && lastnameField.touched">Date of event is required.</mat-error>
-         </mat-form-field>
-        <!-- First Name -->
-         <mat-form-field>
-            <mat-label>First Name :</mat-label>
-            <input matInput type="text" name="firstname" [(ngModel)]="firstname" required #firstnameField="ngModel">
-            <mat-error *ngIf="firstnameField.invalid && firstnameField.touched">First Name is required.</mat-error>
-         </mat-form-field>
-        <!-- Email -->
-         <mat-form-field>
-            <mat-label>Email :</mat-label>
-            <input matInput type="text" name="email" [(ngModel)]="email" required #emailField="ngModel">
-            <mat-error *ngIf="emailField.invalid && emailField.touched">Email is required.</mat-error>
-         </mat-form-field>
-        
-        <!-- Address Street -->
-         <mat-form-field>
-            <mat-label>Street :</mat-label>
-            <input matInput type="text" name="addess_Street" [(ngModel)]="addess_Street" required #address_StreetField="ngModel">
-            <mat-error *ngIf="address_StreetField.invalid && address_StreetField.touched">Street is required.</mat-error>
-         </mat-form-field>
-        <!-- Address Nbr -->
-         <mat-form-field>
-            <mat-label>Number :</mat-label>
-            <input matInput type="text" name="address_Nbr" [(ngModel)]="address_Nbr" required #address_NbrField="ngModel">
-            <mat-error *ngIf="address_NbrField.invalid && address_NbrField.touched">Number is required.</mat-error>
-         </mat-form-field>
-        <!-- Postal Code -->
-         <mat-form-field>
-            <mat-label>Postal Code :</mat-label>
-            <input matInput type="text" name="postalCode" [(ngModel)]="postalCode" required #postalCodeField="ngModel">
-            <mat-error *ngIf="postalCodeField.invalid && postalCodeField.touched">Postal Code is required.</mat-error>
-         </mat-form-field>
-        <!-- address_City -->
-         <mat-form-field>
-            <mat-label>City :</mat-label>
-            <input matInput type="text" name="address_City" [(ngModel)]="address_City" required #address_CityField="ngModel">
-            <mat-error *ngIf="address_CityField.invalid && address_CityField.touched">City is required.</mat-error>
-         </mat-form-field>
-        <!-- address Country -->
-         <mat-form-field>
-            <mat-label>Country :</mat-label>
-            <input matInput type="text" name="address_Country" [(ngModel)]="address_Country" required #address_CountryField="ngModel">
-            <mat-error *ngIf="address_CountryField.invalid && address_CountryField.touched">Country is required.</mat-error>
-         </mat-form-field>
-        <!-- Telephone -->
-         <mat-form-field>
-            <mat-label>Phone :</mat-label>
-            <input matInput type="text" name="telephone" [(ngModel)]="telephone" required #telephoneField="ngModel">
-            <mat-error *ngIf="telephoneField.invalid && telephoneField.touched">Phone is required.</mat-error>
-         </mat-form-field>
-        <!-- Gsm -->
-         <mat-form-field>
-            <mat-label>Gsm :</mat-label>
-            <input matInput type="text" name="gsm" [(ngModel)]="gsm" required #gsmField="ngModel">
-            <mat-error *ngIf="gsmField.invalid && gsmField.touched">Gsm is required.</mat-error>
-         </mat-form-field>
-        
-        <button mat-flat-button type="submit" [disabled]="npersonForm.invalid">Submit</button>
-        <!-- <button mat-flat-button type="button" (click)="getAllNPersons()">All Persons</button> -->
-    </form>
+
+        <h1 *ngIf="!isFormEdition">Create Person</h1>
+        <h1 *ngIf="isFormEdition">Edit Person</h1>
+
+        <form #npersonForm="ngForm" (ngSubmit)="submit(npersonForm)">
+          <!-- Last Name -->
+           <mat-form-field>
+              <mat-label>Last Name :</mat-label>
+              <input matInput type="text" name="lastname" [(ngModel)]="lastname" required #lastnameField="ngModel">
+              <mat-error *ngIf="lastnameField.invalid && lastnameField.touched">Date of event is required.</mat-error>
+           </mat-form-field>
+          <!-- First Name -->
+           <mat-form-field>
+              <mat-label>First Name :</mat-label>
+              <input matInput type="text" name="firstname" [(ngModel)]="firstname" required #firstnameField="ngModel">
+              <mat-error *ngIf="firstnameField.invalid && firstnameField.touched">First Name is required.</mat-error>
+           </mat-form-field>
+          <!-- Email -->
+           <mat-form-field>
+              <mat-label>Email :</mat-label>
+              <input matInput type="text" name="email" [(ngModel)]="email" required #emailField="ngModel">
+              <mat-error *ngIf="emailField.invalid && emailField.touched">Email is required.</mat-error>
+           </mat-form-field>
+          
+          <!-- Address Street -->
+           <mat-form-field>
+              <mat-label>Street :</mat-label>
+              <input matInput type="text" name="addess_Street" [(ngModel)]="addess_Street" required #address_StreetField="ngModel">
+              <mat-error *ngIf="address_StreetField.invalid && address_StreetField.touched">Street is required.</mat-error>
+           </mat-form-field>
+          <!-- Address Nbr -->
+           <mat-form-field>
+              <mat-label>Number :</mat-label>
+              <input matInput type="text" name="address_Nbr" [(ngModel)]="address_Nbr" required #address_NbrField="ngModel">
+              <mat-error *ngIf="address_NbrField.invalid && address_NbrField.touched">Number is required.</mat-error>
+           </mat-form-field>
+          <!-- Postal Code -->
+           <mat-form-field>
+              <mat-label>Postal Code :</mat-label>
+              <input matInput type="text" name="postalCode" [(ngModel)]="postalCode" required #postalCodeField="ngModel">
+              <mat-error *ngIf="postalCodeField.invalid && postalCodeField.touched">Postal Code is required.</mat-error>
+           </mat-form-field>
+          <!-- address_City -->
+           <mat-form-field>
+              <mat-label>City :</mat-label>
+              <input matInput type="text" name="address_City" [(ngModel)]="address_City" required #address_CityField="ngModel">
+              <mat-error *ngIf="address_CityField.invalid && address_CityField.touched">City is required.</mat-error>
+           </mat-form-field>
+          <!-- address Country -->
+           <mat-form-field>
+              <mat-label>Country :</mat-label>
+              <input matInput type="text" name="address_Country" [(ngModel)]="address_Country" required #address_CountryField="ngModel">
+              <mat-error *ngIf="address_CountryField.invalid && address_CountryField.touched">Country is required.</mat-error>
+           </mat-form-field>
+          <!-- Telephone -->
+           <mat-form-field>
+              <mat-label>Phone :</mat-label>
+              <input matInput type="text" name="telephone" [(ngModel)]="telephone" required #telephoneField="ngModel">
+              <mat-error *ngIf="telephoneField.invalid && telephoneField.touched">Phone is required.</mat-error>
+           </mat-form-field>
+          <!-- Gsm -->
+           <mat-form-field>
+              <mat-label>Gsm :</mat-label>
+              <input matInput type="text" name="gsm" [(ngModel)]="gsm" required #gsmField="ngModel">
+              <mat-error *ngIf="gsmField.invalid && gsmField.touched">Gsm is required.</mat-error>
+           </mat-form-field>
+          
+          <button mat-flat-button type="submit" [disabled]="npersonForm.invalid">Submit</button>
+          <!-- <button mat-flat-button type="button" (click)="getAllNPersons()">All Persons</button> -->
+      </form>
+    </div> 
 </div>
 
 
 <hr />
-<!-- <ul>
-    <li *ngFor="let np of listNPersons">
-        {{np.lastname}}
-        {{np.firstname}}
-        {{np.email}}
-        {{np.address_street}}
-        {{np.address_Nbr}}
-        {{np.postalCode}}
-        {{np.address_City}}
-        {{np.address_Country}}
-        {{np.telephone}}
-        {{np.gsm}}
-    </li>
-</ul> -->
+
 <table mat-table [dataSource]="listNPersons" class="mat-elevation-z8">
 
     <!--- Note that these columns can be defined in any order.
@@ -157,7 +148,7 @@
               <mat-icon>delete</mat-icon>
             </button>
   
-            <button mat-mini-fab disabled aria-label="edit">
+            <button mat-mini-fab disabled aria-label="edit" (click)="onEdition(element.NPerson_Id)">
               <mat-icon>edit</mat-icon>
             </button>
           </div>

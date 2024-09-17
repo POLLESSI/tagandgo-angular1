@@ -20,6 +20,8 @@ export class AvatarComponent implements OnInit {
   disable! : boolean;
 
   showForm: boolean;
+  isFormEdition: boolean;
+  avatarToEdit: AvatarModel;
 
   displayedColumns: string[] = ['avatarName', 'avatarUrl', 'description'];
 
@@ -27,39 +29,13 @@ export class AvatarComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     await this.getAllAvatars();
-
-    this.listAvatars = [
-      {
-        "avatar_Id": 1,
-        "avatarName": "Albator",
-        "avatarUrl": "https://images/albator.jpg",
-        "description": "Albator Corsaire de l'espace"
-      },
-      {
-        "avatar_Id": 2,
-        "avatarName": "Capitain Flam",
-        "avatarUrl": "https://images/capitainflam.jpg",
-        "description": "Caaaptain Flam, tu n'es pas"
-      },
-      {
-        "avatar_Id": 3,
-        "avatarName": "Capitain Cavern",
-        "avatarUrl": "https://images/capitaincavern.jpg",
-        "description": "Caapitaaain Caaaveeern!!!!!"
-      },
-      {
-        "avatar_Id": 4,
-        "avatarName": "Scoobedoo",
-        "avatarUrl": "https://images/scoobedoo.jpg",
-        "description": "Scoobodoo be do be do!!!!!"
-      }
-    ]
-
   }
 
-  async getAllAvatars(): Promise<void> {
+  public async getAllAvatars(): Promise<void> {
     try {
       this.listAvatars = await this.avatarService.getAllAvatars();
+
+      console.log(this.listAvatars);
 
     } catch (error) {
       console.log("Error list avatars");
@@ -72,21 +48,57 @@ export class AvatarComponent implements OnInit {
       return;
     }
 
-    const avatar: AvatarCreationModel = {
-      avatarName: this.avatarName,
-      avatarUrl: this.avatarUrl,
-      description: this.description,
-    };
+    if (this.isFormEdition) {
+      const avatar: AvatarCreationModel = {
+        avatarName: this.avatarName,
+        avatarUrl: this.avatarUrl,
+        description: this.description,
+      };
+      try {
+        const response: AvatarModel = await this.avatarService.createAvatar(avatar);
 
-    console.log(avatar);
+        this.listAvatars.filter((a: AvatarModel) => a.avatar_Id != response.avatar_Id);
 
-    try {
-      const response: AvatarModel = await this.avatarService.createAvatar(avatar);
-      this.listAvatars.push(response);
-    } catch (error) {
-      console.log("Error creating avatar!");
+        this.listAvatars.push(response);
+
+      } catch (error) {
+        console.log("Error update avatar!");
+      }
     }
+    else {
+      const avatar: AvatarCreationModel = {
+        avatarName: this.avatarName,
+        avatarUrl: this.avatarUrl,
+        description: this.description
+      };
 
+      try {
+        const response: AvatarModel = await this.avatarService.createAvatar(avatar);
+        this.listAvatars.push(response);
+
+      } catch (error) {
+        console.log("Error creating avatar!");
+      }
+    }
   }
 
+  public onEdition(avatar_Id: number): void {
+    this.showForm = true;
+    this.isFormEdition = true;
+
+    this.avatarToEdit = this.listAvatars.find((a: AvatarModel) => a.avatar_Id == avatar_Id);
+
+    this.avatarName = this.avatarToEdit.avatarName;
+    this.avatarUrl = this.avatarToEdit.avatarUrl;
+    this.description = this.avatarToEdit.description;
+  }
+
+  public onCancelForm(): void {
+    this.showForm = false;
+    this.isFormEdition = false;
+
+    this.avatarName = null;
+    this.avatarUrl = null;
+    this.description = null;
+  }
 }

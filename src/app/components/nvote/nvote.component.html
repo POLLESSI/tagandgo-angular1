@@ -5,41 +5,39 @@
 <div *ngIf="showForm" class="overlay">
     <div class="overlay-container">
         <div class="exit-button">
-            <div (click)="showForm = false">X</div>
+            <div (click)="onCancelForm()">X</div>
         </div>
-    </div>
-    <form #nVoteForm="ngForm" (ngSubmit)="submit(nVoteForm)">
-        <!-- Id Evenement -->
-         <mat-form-field>
-            <mat-label>Id Event :</mat-label>
-            <input matInput type="number" name="nEvenement_Id" [(ngModel)]="nEvenement_Id" required #nEvenement_IdField="ngModel">
-            <mat-error *ngIf="nEvenement_IdField.invalid && nEvenement_IdField.touched">Id Event is required.</mat-error>
-         </mat-form-field>
-        <!-- Fun ? -->
-         <mat-form-field>
-            <mat-label>Fun ? :</mat-label>
-            <input matInput type="text" name="funOrNot" [(ngModel)]="funOrNot" required #funOrNotField="ngModel">
-            <mat-error *ngIf="funOrNotField.invalid && funOrNotField.touched">Your vote is required.</mat-error>
-         </mat-form-field>
-        <!-- Comment -->
-         <mat-form-field>
-            <mat-label>Comment :</mat-label>
-            <input matInput type="text" name="comment" [(ngModel)]="comment" required #commentField="ngModel">
-            <mat-error *ngIf="commentField.invalid && commentField.touched">Your comment is required.</mat-error>
-         </mat-form-field>
-        <button mat-flat-button type="submit" [disabled]="nVoteForm.invalid">Submit</button>
-        <!-- <button mat-flat-button type="button" (click)="getAllNVotes()">All Votes</button> -->
-    </form>
+
+        <h1 *ngIf="!isFormEdition">Create Vote</h1>
+        <h1 *ngIf="isFormEdition">Edit Vote</h1>
+
+        <form #nVoteForm="ngForm" (ngSubmit)="submit(nVoteForm)">
+          <!-- Id Evenement -->
+           <mat-form-field>
+              <mat-label>Id Event :</mat-label>
+              <input matInput type="number" name="nEvenement_Id" [(ngModel)]="nEvenement_Id" required #nEvenement_IdField="ngModel">
+              <mat-error *ngIf="nEvenement_IdField.invalid && nEvenement_IdField.touched">Id Event is required.</mat-error>
+           </mat-form-field>
+          <!-- Fun ? -->
+           <mat-form-field>
+              <mat-label>Fun ? :</mat-label>
+              <input matInput type="text" name="funOrNot" [(ngModel)]="funOrNot" required #funOrNotField="ngModel">
+              <mat-error *ngIf="funOrNotField.invalid && funOrNotField.touched">Your vote is required.</mat-error>
+           </mat-form-field>
+          <!-- Comment -->
+           <mat-form-field>
+              <mat-label>Comment :</mat-label>
+              <input matInput type="text" name="comment" [(ngModel)]="comment" required #commentField="ngModel">
+              <mat-error *ngIf="commentField.invalid && commentField.touched">Your comment is required.</mat-error>
+           </mat-form-field>
+          <button mat-flat-button type="submit" [disabled]="nVoteForm.invalid">Submit</button>
+          <!-- <button mat-flat-button type="button" (click)="getAllNVotes()">All Votes</button> -->
+      </form>
+    </div> 
 </div>
 
 <hr />
-<!-- <ul>
-    <li *ngFor="let vo of listNVotes">
-        {{vo.nEvenement_Id}}
-        {{vo.funOrNot}}
-        {{vo.comment}}
-    </li>
-</ul> -->
+
 <table mat-table [dataSource]="listNVotes" class="mat-elevation-z8">
 
     <!--- Note that these columns can be defined in any order.
@@ -70,7 +68,7 @@
               <mat-icon>delete</mat-icon>
             </button>
   
-            <button mat-mini-fab disabled aria-label="edit">
+            <button mat-mini-fab disabled aria-label="edit" (click)="onEdition(element.nVote_Id)">
               <mat-icon>edit</mat-icon>
             </button>
           </div>

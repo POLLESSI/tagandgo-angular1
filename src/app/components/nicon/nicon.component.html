@@ -4,41 +4,38 @@
 <div *ngIf="showForm" class="overlay">
     <div class="overlay-container">
         <div class="exit-button">
-            <div (click)="showForm = false">X</div>
+            <div (click)="onCancelForm()">X</div>
         </div>
+
+        <h1 *ngIf="!isFormEdition">Create Icon</h1>
+        <h1 *ngIf="isFormEdition">Edit Icon</h1>
+
+        <form #niconForm="ngForm" (ngSubmit)="submit(niconForm)">
+          <!-- Icon Name -->
+           <mat-form-field>
+              <mat-label>Icon Name :</mat-label>
+              <input matInput type="text" name="nIconName" [(ngModel)]="nIconName" required #nIconNameField="ngModel">
+              <mat-error *ngIf="nIconNameField.invalid && nIconNameField.touched">Media Type is required.</mat-error>
+           </mat-form-field>
+          <!-- Description -->
+           <mat-form-field>
+              <mat-label>Description :</mat-label>
+              <input matInput type="text" name="nIconDescription" [(ngModel)]="nIconDescription" required #nIconDescriptionField="ngModel">
+              <mat-error *ngIf="nIconDescriptionField.invalid && nIconDescriptionField.touched">Icon's description is required.</mat-error>
+           </mat-form-field>
+          <!-- url -->
+           <mat-form-field>
+              <mat-label>Url :</mat-label>
+              <input matInput type="text" name="nIconUrl" [(ngModel)]="nIconUrl" required #nIconUrlField="ngModel">
+              <mat-error *ngIf="nIconUrlField.invalid && nIconUrlField.touched">Url of item is required.</mat-error>
+           </mat-form-field>
+          <button mat-flat-button type="submit" [disabled]="niconForm.invalid">Submit</button>
+          <!-- <button mat-flat-button type="button" (click)="getAllNIcons()">All Icons</button> -->
+     </form>
     </div>
-    <form #niconForm="ngForm" (ngSubmit)="submit(niconForm)">
-        <!-- Icon Name -->
-         <mat-form-field>
-            <mat-label>Icon Name :</mat-label>
-            <input matInput type="text" name="nIconName" [(ngModel)]="nIconName" required #nIconNameField="ngModel">
-            <mat-error *ngIf="nIconNameField.invalid && nIconNameField.touched">Media Type is required.</mat-error>
-         </mat-form-field>
-        <!-- Description -->
-         <mat-form-field>
-            <mat-label>Description :</mat-label>
-            <input matInput type="text" name="nIconDescription" [(ngModel)]="nIconDescription" required #nIconDescriptionField="ngModel">
-            <mat-error *ngIf="nIconDescriptionField.invalid && nIconDescriptionField.touched">Icon's description is required.</mat-error>
-         </mat-form-field>
-        
-        <!-- url -->
-         <mat-form-field>
-            <mat-label>Url :</mat-label>
-            <input matInput type="text" name="nIconUrl" [(ngModel)]="nIconUrl" required #nIconUrlField="ngModel">
-            <mat-error *ngIf="nIconUrlField.invalid && nIconUrlField.touched">Url of item is required.</mat-error>
-         </mat-form-field>
-        <button mat-flat-button type="submit" [disabled]="niconForm.invalid">Submit</button>
-        <!-- <button mat-flat-button type="button" (click)="getAllNIcons()">All Icons</button> -->
-   </form>
 </div>
 <hr />
-<!-- <ul>
-    <li *ngFor="let nic of listNIcons">
-        {{nic.nIconName}}
-        {{nic.nIconDescription}}
-        {{nic.nIconUrl}}
-    </li>
-</ul> -->
+
 <table mat-table [dataSource]="listNIcons" class="mat-elevation-z8">
 
     <!--- Note that these columns can be defined in any order.
@@ -68,7 +65,7 @@
             <button mat-mini-fab disabled aria-label="delete">
               <mat-icon>delete</mat-icon>
             </button>
-            <button mat-mini-fab disabled aria-label="edit">
+            <button mat-mini-fab disabled aria-label="edit" (click)="onEdition(element.nIcon_Id)">
               <mat-icon>edit</mat-icon>
             </button>
           </div>

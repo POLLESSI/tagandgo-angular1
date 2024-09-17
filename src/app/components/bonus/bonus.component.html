@@ -5,50 +5,48 @@
 <div *ngIf="showForm" class="overlay">
     <div class="overlay-container">
         <div class="exit-button">
-            <div (click)="showForm = false">X</div>
+            <div (click)="onCancelForm()">X</div>
         </div>
+        <h1 *ngIf="!isFormEdition">Create Bonus</h1>
+      <h1 *ngIf="isFormEdition">Edit Bonus</h1>
+
+      <form #bonusForm="ngForm" (ngSubmit)="submit(bonusForm)">
+          <!-- bonusType -->
+          <mat-form-field>
+              <mat-label>Bonus Type :</mat-label>
+              <input matInput type="text" name="bonusType" [(ngModel)]="bonusType" required #bonusTypeField="ngModel">
+              <mat-error *ngIf="bonusTypeField.invalid && bonusTypeField.touched">Type of bonus is required.</mat-error>
+          </mat-form-field>
+          <!-- Description -->
+          <mat-form-field>
+              <mat-label>Bonus Description :</mat-label>
+              <input matInput type="text" name="bonusDescription" [(ngModel)]="bonusDescription" required #bonusDescriptionField="ngModel">
+              <mat-error *ngIf="bonusDescriptionField.invalid && bonusDescriptionField.touched">Description is required.</mat-error>
+          </mat-form-field>
+          <!-- Application -->
+          <mat-form-field>
+              <mat-label>Application :</mat-label>
+              <input matInput type="text" name="application" [(ngModel)]="application" required #applicationField="ngModel">
+              <mat-error *ngIf="applicationField.invalid && applicationField.touched">Description is required.</mat-error>
+          </mat-form-field>
+          <!-- Granted -->
+          
+          <mat-form-field>
+              <mat-label>Granted :</mat-label>
+              <input matInput type="boolean" name="granted" [(ngModel)]="granted" required #grantedField="ngModel">
+              <mat-error *ngIf="grantedField.invalid && grantedField.touched">Granted is required.</mat-error>
+          </mat-form-field>
+          
+      
+          <button mat-flat-button type="submit" [disabled]="bonusForm.invalid">Submit</button>
+          <!-- <button mat-flat-button type="button" (click)="getAllBonuss()">All Bonus</button> -->
+      </form>
     </div>
-    <form #bonusForm="ngForm" (ngSubmit)="submit(bonusForm)">
-        <!-- bonusType -->
-         <mat-form-field>
-            <mat-label>Bonus Type :</mat-label>
-            <input matInput type="text" name="bonusType" [(ngModel)]="bonusType" required #bonusTypeField="ngModel">
-            <mat-error *ngIf="bonusTypeField.invalid && bonusTypeField.touched">Type of bonus is required.</mat-error>
-         </mat-form-field>
-        <!-- Description -->
-        <mat-form-field>
-            <mat-label>Bonus Description :</mat-label>
-            <input matInput type="text" name="bonusDescription" [(ngModel)]="bonusDescription" required #bonusDescriptionField="ngModel">
-            <mat-error *ngIf="bonusDescriptionField.invalid && bonusDescriptionField.touched">Description is required.</mat-error>
-        </mat-form-field>
-        <!-- Application -->
-        <mat-form-field>
-            <mat-label>Application :</mat-label>
-            <input matInput type="text" name="application" [(ngModel)]="application" required #applicationField="ngModel">
-            <mat-error *ngIf="applicationField.invalid && applicationField.touched">Description is required.</mat-error>
-        </mat-form-field>
-        <!-- Granted -->
-        
-        <mat-form-field>
-            <mat-label>Granted :</mat-label>
-            <input matInput type="boolean" name="granted" [(ngModel)]="granted" required #grantedField="ngModel">
-            <mat-error *ngIf="grantedField.invalid && grantedField.touched">Granted is required.</mat-error>
-        </mat-form-field>
-        
-    
-        <button mat-flat-button type="submit" [disabled]="bonusForm.invalid">Submit</button>
-        <!-- <button mat-flat-button type="button" (click)="getAllBonuss()">All Bonus</button> -->
-    </form>
 </div>
 
-
 <hr />
-<!-- <ul>
-    <li *ngFor="let bo of ListBonus">
-        {{bo.bonusType}} : {{bo.bonusDescription}} : {{bo.application}} Granted : {{bo.granted}}
-    </li>
-</ul> -->
-<table mat-table [dataSource]="ListBonus" class="mat-elevation-z8">
+
+<table mat-table [dataSource]="listBonus" class="mat-elevation-z8">
 
     <!--- Note that these columns can be defined in any order.
           The actual rendered columns are set as a property on the row definition" -->
@@ -76,6 +74,7 @@
       <th mat-header-cell *matHeaderCellDef> Granted </th>
       <td mat-cell *matCellDef="let element"> {{element.granted}} </td>
     </ng-container>
+    <!-- Name Column -->
       <ng-container matColumnDef="bonus_Id">
         <th mat-header-cell *matHeaderCellDef> Option </th>
         <td mat-cell *matCellDef="let element">
@@ -84,12 +83,10 @@
               <mat-icon>delete</mat-icon>
             </button>
   
-            <button mat-mini-fab disabled aria-label="edit">
+            <button mat-mini-fab disabled aria-label="edit" (click)="onEdition(element.bonus_Id)"> 
               <mat-icon>edit</mat-icon>
             </button>
           </div>
-  
-          <!-- {{element.activity_Id}} -->
         </td>
       </ng-container>
   

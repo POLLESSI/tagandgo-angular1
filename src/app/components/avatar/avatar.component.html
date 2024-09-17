@@ -6,14 +6,15 @@
     <div class="overlay-container">
         <div>
             <div class="exit-button">
-                <div (click)="showForm = false">X</div>
+                <div (click)="onCancelForm()">X</div>
             </div>
         </div>
 
+        <h1 *ngIf="!isFormEdition">Create Avatar</h1>
+        <h1 *ngIf="isFormEdition">Edit Avatar</h1>
+
         <form #avatarForm="ngForm" (ngSubmit)="submit(avatarForm)">
-            <!-- Avatar Name : <input [(ngModel)="avatarName"] /><br />
-            Avatar Url : <input [(ngModel)="avatarUrl"] /><br />
-            Description : <input [(ngModel)="description"] />  -->
+          <!-- AvatarName -->
             <mat-form-field>
               <mat-label>Avatar Name :</mat-label>
               <input matInput type="text" name="avatarName" [(ngModel)]="avatarName" required #avatarNameField="ngModel">
@@ -40,15 +41,7 @@
     </div>
 </div>
 
-
-
-
 <hr />
-<!-- <ul>
-<li *ngFor="let av of listAvatars">
-    {{av.avatarName}} : {{av.avatarUrl}} : {{av.description}}
-</li>
-</ul> -->
 
 <table mat-table [dataSource]="listAvatars" class="mat-elevation-z8">
 
@@ -81,7 +74,7 @@
               <mat-icon>delete</mat-icon>
             </button>
   
-            <button mat-mini-fab disabled aria-label="edit">
+            <button mat-mini-fab disabled aria-label="edit" (click)="onEdition(element.avatar_Id)">
               <mat-icon>edit</mat-icon>
             </button>
           </div>
