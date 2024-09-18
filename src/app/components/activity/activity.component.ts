@@ -195,27 +195,6 @@ export class ActivityComponent implements OnInit {
   }
 }
 
-// [HttpPut("{activity_Id}")]
-// public async Task<IActionResult> UpdateActivity(int activity_Id, string activityName, string activityAddress, string activityDescription, string ComplementareInformation, string posLat, string posLong, int organisateur_Id)
-// {
-//     try
-//     {
-//         // Mise à jour de l'activité dans le dépôt
-//         var updatedActivity = await _activityRepository.UpdateActivity(activity_Id, activityName, activityAddress, activityDescription, ComplementareInformation, posLat, posLong, organisateur_Id);
 
-//         // Vérifier si l'activité existe et a été mise à jour
-//         if (updatedActivity == null)
-//         {
-//             return NotFound($"Activity with ID {activity_Id} not found.");
-//         }
-
-//         // Retourner l'activité mise à jour
-//         return Ok(updatedActivity);
-//     }
-//     catch (Exception ex)
-//     {
-//         return StatusCode(500, ex.Message);
-//     }
-// }
 
 
