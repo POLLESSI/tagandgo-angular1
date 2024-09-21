@@ -3,7 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { ActivityComponent } from './components/activity/activity.component';
 import { AvatarComponent } from './components/avatar/avatar.component';
 import { BonusComponent } from './components/bonus/bonus.component';
-import { ChatComponent } from './components/chat/chat.component';   
+// import { ChatActivityComponent } from './components/chatactivity/chatactivity.component';   
+//import { ChatEvenementComponent } from './components/chatevenement/chatevenement.component';
 import { MapComponent } from './components/map/map.component';
 import { MediaitemComponent } from './components/mediaitem/mediaitem.component';
 import { NevenementComponent } from './components/nevenement/nevenement.component';
@@ -19,7 +20,8 @@ const routes: Routes = [
     { path: 'activity', component: ActivityComponent},
     { path: 'avatar', component: AvatarComponent},
     { path: 'bonus', component: BonusComponent},
-    { path: 'chat', component: ChatComponent},
+    // { path: 'chatactivity', component: ChatActivityComponent},
+    // { path: 'chatevenement', component: ChatEvenementComponent},
     { path: 'map', component: MapComponent},
     { path: 'mediaitem', component: MediaitemComponent},
     { path: 'nevenement', component: NevenementComponent},

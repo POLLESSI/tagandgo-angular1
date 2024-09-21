@@ -1,4 +1,4 @@
-<h3>Chat Room</h3>
+<h3>Chat Event Room</h3>
 
 <button mat-flat-button (click)="showForm">Create Chat</button>
 
@@ -11,7 +11,7 @@
         <h1 *ngIf="!isFormEdition">Create Chat</h1>
         <h1 *ngIf="isFormEdition">Edit Chat</h1>
 
-        <form #chatForm="ngForm" (ngSubmit)="submit(chatForm)">
+        <form #chatEvenementForm="ngForm" (ngSubmit)="submit(chatEvenementForm)">
           <!-- New Message : <input type="text" name="newmessage" [(ngModel)]="newMessage">
               Id Event : <input type="text" name="nevenement_id" [(ngModel)]="nEvenement_Id">
               Id Activity : <input type="text" name="activity_id" [(ngModel)]="activity_Id"> -->
@@ -39,12 +39,6 @@
             <input matInput type="number" name="nevenement_id" [(ngModel)]="nEvenement_Id" required #nEvenement_IdField="ngModel">
             <mat-error *ngIf="nEvenement_IdField.invalid && nEvenement_IdField.touched">Id of Event is required.</mat-error>
           </mat-form-field>
-          <mat-form-field>
-            <!-- Activity Id -->
-            <mat-label>Id Activity :</mat-label>
-            <input matInput type="number" name="activity_id" [(ngModel)]="activity_Id" required #activity_IdField="ngModel">
-            <mat-error *ngIf="activity_IdField.invalid && activity_IdField.touched">Id of activity is required.</mat-error>
-          </mat-form-field>
           <button mat-flat-button type="submit" [disabled]="chatForm.invalid">Submit</button>
             <!-- <button mat-flat-button type="button" (click)="getAllChats()">All Chats</button> -->
       </form>
@@ -55,7 +49,7 @@
 
 <hr />
 
-<table mat-table [dataSource]="listMessages" class="mat-elevation-z8">
+<table mat-table [dataSource]="listMessagesEvenement" class="mat-elevation-z8">
 
     <!--- Note that these columns can be defined in any order.
           The actual rendered columns are set as a property on the row definition" -->

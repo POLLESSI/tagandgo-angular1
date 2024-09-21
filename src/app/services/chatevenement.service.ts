@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { ChatModel } from '../models/chat/chat.model';
+import { ChatEvenementModel } from '../models/chatEvenement/chatEvenement.model';
 import { CONST_API } from '../constants/api-constants';
-import { ChatCreationModel } from '../models/chat/chatCreation.model';
+import { ChatEvenementCreationModel } from '../models/chatEvenement/chatEvenementCreation.model';
 
 
 @Injectable({
@@ -13,25 +13,25 @@ export class ChatService {
 
   constructor(private http: HttpClient) { }
 
-  public async getAllChats(): Promise<Array<ChatModel>> {
+  public async getAllChats(): Promise<Array<ChatEvenementModel>> {
     const url: string = `${CONST_API.URL_API}/Chat`;
 
     try {
       const respons: any = await firstValueFrom(this.http.get(url, {responseType: 'json'}));
 
-      return respons as Array<ChatModel>
+      return respons as Array<ChatEvenementModel>
     } catch (error) {
       throw error;
     }
   }
   
-  public async createChat(chatCreated: ChatCreationModel): Promise<ChatModel> {
+  public async createChat(chatCreated: ChatEvenementCreationModel): Promise<ChatEvenementModel> {
     const url: string = `${CONST_API.URL_API}/Chat/create`;
 
     try {
       const response: any = await firstValueFrom(this.http.post(url, chatCreated, {responseType: 'json'}))
 
-      return response as ChatModel
+      return response as ChatEvenementModel
     } catch (error) {
       throw error;
     }

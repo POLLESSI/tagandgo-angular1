@@ -1,8 +1,6 @@
-export interface ChatEditionModel {
-    chat_Id : number;
+export interface ChatActivityCreationModel {
     newMessage : string;
     author: string;
     sendingDate : string;
-    nEvenement_Id : number;
     activity_Id : number;
-}
+  }
