@@ -15,7 +15,7 @@
           <!-- Date Event -->
            <mat-form-field>
               <mat-label>Date Event :</mat-label>
-              <input matInput type="datetime" name="nevenementDate" [(ngModel)]="nEvenementDate" required #nEvenementDateField="ngModel">
+              <input matInput type="date" name="nevenementDate" [(ngModel)]="nEvenementDate" required #nEvenementDateField="ngModel">
               <mat-error *ngIf="nEvenementDateField.invalid && nEvenementDateField.touched">Date of event is required.</mat-error>
            </mat-form-field>
           <!-- Name Event -->
