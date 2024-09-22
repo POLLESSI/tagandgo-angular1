@@ -62,7 +62,7 @@ export class ActivityComponent implements OnInit {
       return;
     }
 
-    console.log(this.isFormEdition, this.activityToEdit.activity_Id);
+    console.log(this.isFormEdition);
 
     if (this.isFormEdition) {
       const activityEdited: ActivityEditionModel = {
