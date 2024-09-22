@@ -76,7 +76,10 @@ export class ActivityComponent implements OnInit {
         organisateur_Id: this.organisateur_Id,
       };
 
+
       try {
+        console.log("Activity to edit:", activityEdited);
+
         const response: ActivityModel = await this.activityService.updateActivity(activityEdited);
 
         this.listActivities.filter((a: ActivityModel) => a.activity_Id != response.activity_Id);
