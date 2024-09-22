@@ -44,14 +44,14 @@
         <!-- Latitude -->
         <mat-form-field>
           <mat-label>Latitude :</mat-label>
-          <input matInput type="text" name="posLat" [(ngModel)]="posLat" required pattern="^-?\d+\.\d{6}$" #posLatField="ngModel">
+          <input matInput type="text" name="posLat" [(ngModel)]="posLat" required pattern="^-?\d+\.\d{5}$" #posLatField="ngModel">
           <mat-error *ngIf="posLatField.invalid && posLatField.touched">Error.</mat-error>
         </mat-form-field>
 
         <!-- Longitude -->
         <mat-form-field>
           <mat-label>Longitude :</mat-label>
-          <input matInput type="text" name="posLong" [(ngModel)]="posLong" required pattern="^-?\d+\.\d{6}$" #posLongField="ngModel">
+          <input matInput type="text" name="posLong" [(ngModel)]="posLong" required pattern="^-?\d+\.\d{5}$" #posLongField="ngModel">
           <mat-error *ngIf="posLongField.invalid && posLongField.touched">Error.</mat-error>
         </mat-form-field>
 
