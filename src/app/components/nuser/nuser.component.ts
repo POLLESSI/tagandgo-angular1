@@ -15,6 +15,7 @@ export class NuserComponent implements OnInit {
 
   email! : string;
   pwd! : string;
+  pwdConfirm! : string;
   nPerson_Id! : number;
   role_Id! : string;
   avatar_Id! : number;
@@ -26,7 +27,7 @@ export class NuserComponent implements OnInit {
   isFormEdition: boolean;
   nuserToEdit: NUserModel;
 
-  displayedColumns: string[] = ['email', 'pwd', 'nPerson_Id', 'role_Id', 'avatar_Id', 'point']
+  displayedColumns: string[] = ['email', 'nPerson_Id', 'role_Id', 'avatar_Id', 'point']
 
   constructor(private nuserService: NuserService) {}
 

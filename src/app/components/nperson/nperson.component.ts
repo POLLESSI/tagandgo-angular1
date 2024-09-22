@@ -15,7 +15,7 @@ export class NpersonComponent implements OnInit {
   lastname! : string;
   firstname! : string;
   email! : string;
-  addess_Street! : string;
+  address_street! : string;
   address_Nbr! : string;
   postalCode! : string;
   address_City! : string;
@@ -28,7 +28,7 @@ export class NpersonComponent implements OnInit {
   showForm: boolean;
   isFormEdition: boolean;
   npersonToEdit: NPersonModel;
-  displayedColumns: string[] = ['lastname', 'firstname', 'email', 'address_Street', 'address_Nbr', 'postalCode', 'address_City', 'address_Country', 'telephone', 'gsm']
+  displayedColumns: string[] = ['lastname', 'firstname', 'email', 'address_street', 'address_Nbr', 'postalCode', 'address_City', 'address_Country', 'telephone', 'gsm']
 
   constructor(private npersonService: NpersonService) {}
 
@@ -66,7 +66,7 @@ export class NpersonComponent implements OnInit {
         address_Country: this.npersonToEdit.address_Country,
         telephone: this.npersonToEdit.telephone,
         gsm: this.npersonToEdit.gsm,
-        
+
       };
       try {
         const response: NPersonModel = await this.npersonService.createNPerson(npersonEdited);
@@ -84,7 +84,7 @@ export class NpersonComponent implements OnInit {
         lastname: this.lastname,
         firstname: this.firstname,
         email: this.email,
-        address_street: this.addess_Street,
+        address_street: this.address_street,
         address_Nbr: this.address_Nbr,
         postalCode: this.postalCode,
         address_City: this.address_City,
@@ -99,7 +99,7 @@ export class NpersonComponent implements OnInit {
       } catch (error) {
         console.log("Error creating new person");
       }
-    } 
+    }
   }
 
   public onEdition(nPerson_Id: number): void {
@@ -111,7 +111,7 @@ export class NpersonComponent implements OnInit {
     this.lastname = this.npersonToEdit.lastname;
     this.firstname = this.npersonToEdit.firstname;
     this.email = this.npersonToEdit.email;
-    this.addess_Street = this.npersonToEdit.address_street;
+    this.address_street = this.npersonToEdit.address_street;
     this.address_Nbr = this.npersonToEdit.address_Nbr;
     this.postalCode = this.npersonToEdit.postalCode;
     this.address_City = this.npersonToEdit.address_City;
@@ -127,7 +127,7 @@ export class NpersonComponent implements OnInit {
     this.lastname = null;
     this.firstname = null;
     this.email = null;
-    this.addess_Street = null;
+    this.address_street = null;
     this.address_Nbr = null;
     this.postalCode = null;
     this.address_City = null;

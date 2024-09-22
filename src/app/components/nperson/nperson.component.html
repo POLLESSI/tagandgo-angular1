@@ -30,12 +30,12 @@
               <input matInput type="text" name="email" [(ngModel)]="email" required #emailField="ngModel">
               <mat-error *ngIf="emailField.invalid && emailField.touched">Email is required.</mat-error>
            </mat-form-field>
-          
+
           <!-- Address Street -->
            <mat-form-field>
               <mat-label>Street :</mat-label>
-              <input matInput type="text" name="addess_Street" [(ngModel)]="addess_Street" required #address_StreetField="ngModel">
-              <mat-error *ngIf="address_StreetField.invalid && address_StreetField.touched">Street is required.</mat-error>
+              <input matInput type="text" name="address_street" [(ngModel)]="address_street" required #address_streetField="ngModel">
+              <mat-error *ngIf="address_streetField.invalid && address_streetField.touched">Street is required.</mat-error>
            </mat-form-field>
           <!-- Address Nbr -->
            <mat-form-field>
@@ -73,11 +73,11 @@
               <input matInput type="text" name="gsm" [(ngModel)]="gsm" required #gsmField="ngModel">
               <mat-error *ngIf="gsmField.invalid && gsmField.touched">Gsm is required.</mat-error>
            </mat-form-field>
-          
+
           <button mat-flat-button type="submit" [disabled]="npersonForm.invalid">Submit</button>
           <!-- <button mat-flat-button type="button" (click)="getAllNPersons()">All Persons</button> -->
       </form>
-    </div> 
+    </div>
 </div>
 
 
@@ -87,19 +87,19 @@
 
     <!--- Note that these columns can be defined in any order.
           The actual rendered columns are set as a property on the row definition" -->
-  
+
     <!-- Position Column -->
     <ng-container matColumnDef="lastname">
       <th mat-header-cell *matHeaderCellDef>Last Name : </th>
       <td mat-cell *matCellDef="let element"> {{element.lastname}} </td>
     </ng-container>
-  
+
     <!-- Name Column -->
     <ng-container matColumnDef="firstname">
       <th mat-header-cell *matHeaderCellDef>First Name :  </th>
       <td mat-cell *matCellDef="let element"> {{element.firstname}} </td>
     </ng-container>
-  
+
     <!-- Weight Column -->
     <ng-container matColumnDef="email">
       <th mat-header-cell *matHeaderCellDef> email : </th>
@@ -147,16 +147,16 @@
             <button mat-mini-fab disabled aria-label="delete">
               <mat-icon>delete</mat-icon>
             </button>
-  
+
             <button mat-mini-fab disabled aria-label="edit" (click)="onEdition(element.NPerson_Id)">
               <mat-icon>edit</mat-icon>
             </button>
           </div>
-  
+
           <!-- {{element.activity_Id}} -->
         </td>
       </ng-container>
-  
+
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>

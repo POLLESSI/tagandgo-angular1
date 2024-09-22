@@ -66,14 +66,14 @@
               <input matInput type="number" name="recompense_Id" [(ngModel)]="recompense_Id" required #recompense_IdField="ngModel">
               <mat-error *ngIf="recompense_IdField.invalid && recompense_IdField.touched">Id recompense is required.</mat-error>
            </mat-form-field>
-          
+
           <!-- Bonus -->
            <mat-form-field>
               <mat-label>Bonus Id :</mat-label>
               <input matInput type="number" name="bonus_Id" [(ngModel)]="bonus_Id" required #bonus_IdField="ngModel">
               <mat-error *ngIf="bonus_IdField.invalid && bonus_IdField.touched">Id bonus is required.</mat-error>
            </mat-form-field>
-          
+
           <!-- Media Item -->
            <mat-form-field>
               <mat-label>Organisateur Id :</mat-label>
@@ -83,7 +83,7 @@
           <button mat-flat-button type="submit" [disabled]="nevenementForm.invalid">Submit</button>
           <!-- <button mat-flat-button type="button" (click)="getAllNEvenements()">All Events</button> -->
       </form>
-    </div> 
+    </div>
 </div>
 
 <hr />
@@ -92,17 +92,17 @@
 
     <!--- Note that these columns can be defined in any order.
           The actual rendered columns are set as a property on the row definition" -->
-  
+
     <!-- Position Column -->
-    <ng-container matColumnDef="nevenementDate">
+    <ng-container matColumnDef="nEvenementDate">
       <th mat-header-cell *matHeaderCellDef>Date of Event : </th>
       <td mat-cell *matCellDef="let element"> {{element.nEvenementDate}} </td>
     </ng-container>
-  
+
     <!-- Name Column -->
-    <ng-container matColumnDef="nevenementName">
+    <ng-container matColumnDef="nEvenementName">
       <th mat-header-cell *matHeaderCellDef>Name of Event : </th>
-      <td mat-cell *matCellDef="let element"> {{element.nevenementName}} </td>
+      <td mat-cell *matCellDef="let element"> {{element.nEvenementName}} </td>
     </ng-container>
     <!-- Weight Column -->
     <ng-container matColumnDef="nEvenementDescription">
@@ -156,14 +156,14 @@
             <button mat-mini-fab disabled aria-label="delete">
               <mat-icon>delete</mat-icon>
             </button>
-  
+
             <button mat-mini-fab disabled aria-label="edit" (click)="onEdition(element.nEvenement_Id)">
               <mat-icon>edit</mat-icon>
             </button>
           </div>
         </td>
       </ng-container>
-  
+
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
