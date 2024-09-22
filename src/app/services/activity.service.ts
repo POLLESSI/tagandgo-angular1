@@ -43,6 +43,8 @@ export class ActivityService {
     const url: string = `${CONST_API.URL_API}/Activity/update`;
 
     try {
+      console.log("UPDATE : ", url, activityUpdated);
+
       const respons: any = await firstValueFrom(this.http.put(url, activityUpdated, {responseType: 'json'}));
 
       return respons as ActivityModel
