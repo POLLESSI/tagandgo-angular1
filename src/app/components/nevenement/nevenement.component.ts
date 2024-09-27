@@ -1,18 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { NEvenementModel } from 'src/app/models/nevenement/nevenement.model';
 import { NEvenementCreationModel } from 'src/app/models/nevenement/nevenementCreation.model';
 import { NEvenementEditionModel } from 'src/app/models/nevenement/nevenementEdition.model';
 import { NevenementService } from 'src/app/services/nevenement.service';
+import * as L from 'leaflet';
 //import { error } from 'console';
+
+export type MarkerFactory = { values: any[], markerFn: Function, popupFn?: Function}
 
 @Component({
   selector: 'app-nevenement',
   templateUrl: './nevenement.component.html',
   styleUrl: './nevenement.component.css'
 })
-export class NevenementComponent implements OnInit {
-  listNEvenements: NEvenementModel[] = []
+export class NevenementComponent implements OnInit, AfterViewInit {
+  private map!: L.Map;
+  private markers: L.Marker[] = [];
+  listNEvenements: NEvenementModel[] = [];
 
   nEvenementDate! : string;
   nEvenementName! : string;
@@ -35,6 +40,38 @@ export class NevenementComponent implements OnInit {
   displayedColumns: string[] = ['nEvenementDate', 'nEvenementName', 'nEvenementDescription', 'posLat', 'posLong', 'positif', 'organisateur_Id', 'nIcon_Id', 'recompense_Id', 'bonus_Id', 'mediaItem_Id']
 
   constructor(private nevenementService: NevenementService) {}
+
+  ngAfterViewInit(): void {
+    this.initMap();
+    //throw new Error('Method not implemented.');
+  }
+  private initMap(): void {
+    this.map = L.map('map', {
+      center: [50.82788, 4.37218],
+      zoom: 13
+    });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+    }).addTo(this.map);
+  }
+
+  // private addOrUpdateMarker(nevenement: NEvenementModel): void {
+  //   //Find existing marker
+  //   let existingMarker = this.markers.find(marker => marker.options.title ===nevenement.nEvenementName);
+
+  //   if (existingMarker) {
+  //     existingMarker.setLatLng([nevenement.posLat, nevenement.posLong]);
+  //     existingMarker.bindPopup('<b>$${nevenement.nEvenementName}</b><br />${nEvenement.nEvenementDescription}').openPopup();
+  //   } else {
+  //     //Create new marker
+  //     let newMarker = L.marker([nevenement.posLat, nevenement.posLong], { title: nevenement.nEvenementName })
+  //     newMarker.bindPopup('<b>${nevenement.nEvenementName}</b><br />${nevenement.nEvenementDescription}');
+  //     newMarker.addTo(this.map);
+  //     this.markers.push(newMarker);
+  //   } 
+  // }
+
 
   public async ngOnInit(): Promise<void> {
     await this.getAllNEvenements();

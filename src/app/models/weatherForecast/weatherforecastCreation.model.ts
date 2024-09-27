@@ -1,4 +1,5 @@
 export interface WeatherForecastCreationModel {
+    date : string;
     temperatureC : string;
     temperatureF : string;
     summary : string;

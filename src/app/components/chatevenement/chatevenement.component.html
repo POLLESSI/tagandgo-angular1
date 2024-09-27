@@ -39,7 +39,7 @@
             <input matInput type="number" name="nevenement_id" [(ngModel)]="nEvenement_Id" required #nEvenement_IdField="ngModel">
             <mat-error *ngIf="nEvenement_IdField.invalid && nEvenement_IdField.touched">Id of Event is required.</mat-error>
           </mat-form-field>
-          <button mat-flat-button type="submit" [disabled]="chatForm.invalid">Submit</button>
+          <button mat-flat-button type="submit" [disabled]="chatEvenementForm.invalid">Submit</button>
             <!-- <button mat-flat-button type="button" (click)="getAllChats()">All Chats</button> -->
       </form>
     </div>

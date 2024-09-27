@@ -1,18 +1,25 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivityModel } from 'src/app/models/activity/activity.model'
 import { ActivityCreationModel } from 'src/app/models/activity/activityCreation.model';
 import { ActivityEditionModel } from 'src/app/models/activity/activityEdition.model';
 import { ActivityService } from 'src/app/services/activity.service';
+import * as L from 'leaflet';
+
+export type MarkerFactory = { values: any[], markerFn: Function, popupFn?: Function }
+
 @Component({
   selector: 'app-activity',
   templateUrl: './activity.component.html',
   styleUrl: './activity.component.css'
 })
-export class ActivityComponent implements OnInit {
+export class ActivityComponent implements OnInit, AfterViewInit {
+  private map!: L.Map;
+  private markers: L.Marker[] = [];
 
   listActivities: ActivityModel[] = [];
 
+  activity_Id! : number;
   activityName! : string;
   activityAddress! : string;
   activityDescription! : string;
@@ -31,10 +38,41 @@ export class ActivityComponent implements OnInit {
 
   constructor(private activityService: ActivityService) {
   }
+  ngAfterViewInit(): void {
+    this.initMap();
+    //throw new Error('Method not implemented.');
+  }
 
   public async ngOnInit(): Promise<void> {
     await this.getAllActivities();``
   }
+
+  private initMap(): void {
+    this.map = L.map('map', {
+      center: [50.82788, 4.37218],
+      zoom: 13
+    });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+    }).addTo(this.map);
+  }
+
+  // private addOrUpdateMarker(activity: ActivityModel): void {
+  //   // Find existing marker
+  //   let existingMarker = this.markers.find(marker => marker.options.title === activity.activityName);
+
+  //   if (existingMarker) {
+  //     existingMarker.setLatLng([activity.posLat, activity.posLong]);
+  //     existingMarker.bindPopup('<b>${activity.activityName}</b><br />${activity.activityDescription}').openPopup();
+  //   } else {
+  //     // Create new marker
+  //     let newMarker = L.marker([activity.posLat, activity.posLong], { title: activity.activityName });
+  //     newMarker.bindPopup('<b>${activity.activityName}</b><br />${activity.activityDescription}');
+  //     newMarker.addTo(this.map);
+  //     this.markers.push(newMarker);
+  //   }
+  // }
 
   public async getAllActivities(): Promise<void> {
     try {
