@@ -4,7 +4,7 @@ import { ActivityModel } from 'src/app/models/activity/activity.model'
 import { ActivityCreationModel } from 'src/app/models/activity/activityCreation.model';
 import { ActivityEditionModel } from 'src/app/models/activity/activityEdition.model';
 import { ActivityService } from 'src/app/services/activity.service';
-import * as L from 'leaflet';
+// import * as L from 'leaflet';
 
 export type MarkerFactory = { values: any[], markerFn: Function, popupFn?: Function }
 
@@ -14,8 +14,8 @@ export type MarkerFactory = { values: any[], markerFn: Function, popupFn?: Funct
   styleUrl: './activity.component.css'
 })
 export class ActivityComponent implements OnInit, AfterViewInit {
-  private map!: L.Map;
-  private markers: L.Marker[] = [];
+  // private map!: L.Map;
+  // private markers: L.Marker[] = [];
 
   listActivities: ActivityModel[] = [];
 
@@ -39,7 +39,7 @@ export class ActivityComponent implements OnInit, AfterViewInit {
   constructor(private activityService: ActivityService) {
   }
   ngAfterViewInit(): void {
-    this.initMap();
+    //this.initMap();
     //throw new Error('Method not implemented.');
   }
 
@@ -47,16 +47,16 @@ export class ActivityComponent implements OnInit, AfterViewInit {
     await this.getAllActivities();``
   }
 
-  private initMap(): void {
-    this.map = L.map('map', {
-      center: [50.82788, 4.37218],
-      zoom: 13
-    });
+  // private initMap(): void {
+  //   this.map = L.map('map', {
+  //     center: [50.82788, 4.37218],
+  //     zoom: 13
+  //   });
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-    }).addTo(this.map);
-  }
+  //   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  //     maxZoom: 19,
+  //   }).addTo(this.map);
+  // }
 
   // private addOrUpdateMarker(activity: ActivityModel): void {
   //   // Find existing marker
