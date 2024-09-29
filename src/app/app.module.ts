@@ -8,8 +8,8 @@ import { AppComponent } from "./app.component";
 import { ActivityComponent } from "./components/activity/activity.component";
 import { AvatarComponent } from "./components/avatar/avatar.component";
 import { BonusComponent } from "./components/bonus/bonus.component";
-// import { ChatActivityComponent } from "./components/chatactivity/chatactivity.component";
-// import { ChatEvenementComponent } from "./components/chatevenement/chatevenement.component";
+import { ChatActivityComponent } from "./components/chatactivity/chatactivity.component";
+import { ChatEvenementComponent } from "./components/chatevenement/chatevenement.component";
 import { MapComponent } from "./components/map/map.component";
 import { MediaitemComponent } from "./components/mediaitem/mediaitem.component";
 import { NevenementComponent } from "./components/nevenement/nevenement.component";
@@ -35,8 +35,8 @@ import { MatIconModule } from '@angular/material/icon';
         ActivityComponent,
         AvatarComponent,
         BonusComponent,
-        // ChatActivityComponent,
-        //ChatEvenementComponent,
+        ChatActivityComponent,
+        ChatEvenementComponent,
         MapComponent,
         MediaitemComponent,
         NevenementComponent,

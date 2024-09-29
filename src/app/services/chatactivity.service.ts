@@ -26,7 +26,7 @@ export class ChatActivityService {
   }
   
   public async createChat(chatCreated: ChatActivityCreationModel): Promise<ChatActivityModel> {
-    const url: string = `${CONST_API.URL_API}/Chat/create`;
+    const url: string = `${CONST_API.URL_API}/ChatActivity/create`;
 
     try {
       const response: any = await firstValueFrom(this.http.post(url, chatCreated, {responseType: 'json'}))

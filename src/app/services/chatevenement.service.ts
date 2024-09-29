@@ -9,7 +9,7 @@ import { ChatEvenementCreationModel } from '../models/chatEvenement/chatEvenemen
 @Injectable({
   providedIn: 'root'
 })
-export class ChatService {
+export class ChatEvenementService {
 
   constructor(private http: HttpClient) { }
 
@@ -26,7 +26,7 @@ export class ChatService {
   }
   
   public async createChat(chatCreated: ChatEvenementCreationModel): Promise<ChatEvenementModel> {
-    const url: string = `${CONST_API.URL_API}/Chat/create`;
+    const url: string = `${CONST_API.URL_API}/ChatEvenement/create`;
 
     try {
       const response: any = await firstValueFrom(this.http.post(url, chatCreated, {responseType: 'json'}))

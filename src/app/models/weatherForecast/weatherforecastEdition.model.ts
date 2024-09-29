@@ -1,5 +1,6 @@
 export interface WeatherForecastEditionModel {
     weatherForecast_Id : number;
+    date : string;
     temperatureC : string;
     temperatureF : string;
     summary : string;

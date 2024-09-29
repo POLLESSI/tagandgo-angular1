@@ -13,6 +13,7 @@ import { WeatherforecastService } from 'src/app/services/weatherforecast.service
 export class WeatherforecastComponent {
   listWeatherForecasts: WeatherForecastModel[] = [];
 
+  date! : string;
   temperatureC! : string;
   temperatureF! : string;
   summary! : string;
@@ -27,7 +28,7 @@ export class WeatherforecastComponent {
   isFormEdition: boolean;
   weatherForecastToEdit: WeatherForecastModel;
 
-  displayedColumns: string[] = ['temperatureC', 'temperatureF', 'summary', 'description', 'humidity', 'precipitation', 'nEvenement_Id'];
+  displayedColumns: string[] = ['date', 'temperatureC', 'temperatureF', 'summary', 'description', 'humidity', 'precipitation', 'nEvenement_Id'];
 
   constructor(private weatherForecastService: WeatherforecastService) {}
 
@@ -54,6 +55,7 @@ export class WeatherforecastComponent {
     if (this.isFormEdition) {
       const weatherforecastEdited: WeatherForecastEditionModel = {
         weatherForecast_Id: this.weatherForecastToEdit.weatherForecast_Id,
+        date: this.weatherForecastToEdit.date,
         temperatureC: this.weatherForecastToEdit.temperatureC,
         temperatureF: this.weatherForecastToEdit.temperatureF,
         summary: this.weatherForecastToEdit.summary,
@@ -76,6 +78,7 @@ export class WeatherforecastComponent {
     }
     else {
       const weatherForecast: WeatherForecastCreationModel = {
+        date: this.date,
         temperatureC: this.temperatureC,
         temperatureF: this.temperatureF,
         summary: this.summary,
@@ -101,6 +104,7 @@ export class WeatherforecastComponent {
 
     this.weatherForecastToEdit = this.listWeatherForecasts.find((w: WeatherForecastModel) => w.weatherForecast_Id == weatherForecast_Id);
 
+    this.date = this.weatherForecastToEdit.date;
     this.temperatureC = this.weatherForecastToEdit.temperatureC;
     this.temperatureF = this.weatherForecastToEdit.temperatureF;
     this.summary = this.weatherForecastToEdit.summary;
@@ -114,6 +118,7 @@ export class WeatherforecastComponent {
     this.showForm = false;
     this.isFormEdition = false;
 
+    this.date = null;
     this.temperatureC = null;
     this.temperatureF = null;
     this.summary = null;
