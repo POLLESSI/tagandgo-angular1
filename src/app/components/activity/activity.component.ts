@@ -147,6 +147,7 @@ export class ActivityComponent implements OnInit, AfterViewInit {
 
       try {
         const response: ActivityModel = await this.activityService.createActivity(activity);
+        console.log(response);
 
         this.listActivities.push(response);
 

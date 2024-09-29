@@ -37,7 +37,7 @@ export class NevenementComponent implements OnInit, AfterViewInit {
   isFormEdition: boolean;
   nEvenementToEdit: NEvenementModel;
 
-  displayedColumns: string[] = ['nEvenementDate', 'nEvenementName', 'nEvenementDescription', 'posLat', 'posLong', 'positif', 'organisateur_Id', 'nIcon_Id', 'recompense_Id', 'bonus_Id', 'mediaItem_Id']
+  displayedColumns: string[] = ['nEvenement_id','nEvenementDate', 'nEvenementName', 'nEvenementDescription', 'posLat', 'posLong', 'positif', 'organisateur_Id', 'nIcon_Id', 'recompense_Id', 'bonus_Id', 'mediaItem_Id']
 
   constructor(private nevenementService: NevenementService) {}
 
@@ -69,7 +69,7 @@ export class NevenementComponent implements OnInit, AfterViewInit {
   //     newMarker.bindPopup('<b>${nevenement.nEvenementName}</b><br />${nevenement.nEvenementDescription}');
   //     newMarker.addTo(this.map);
   //     this.markers.push(newMarker);
-  //   } 
+  //   }
   // }
 
 
