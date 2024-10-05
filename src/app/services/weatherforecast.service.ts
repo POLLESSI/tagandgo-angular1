@@ -23,6 +23,13 @@ export class WeatherforecastService {
       throw error;
     }
   }
+  public async getByIdWeatherForecast(): Promise<void> {
+    try {
+      
+    } catch (error) {
+      
+    }
+  }
 
   public async createWeatherForecast(weatherforecastCreated: WeatherForecastCreationModel): Promise<WeatherForecastModel> {
     const url: string = `${CONST_API.URL_API}/WeatherForecast/create`;

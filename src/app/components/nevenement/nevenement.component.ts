@@ -4,7 +4,7 @@ import { NEvenementModel } from 'src/app/models/nevenement/nevenement.model';
 import { NEvenementCreationModel } from 'src/app/models/nevenement/nevenementCreation.model';
 import { NEvenementEditionModel } from 'src/app/models/nevenement/nevenementEdition.model';
 import { NevenementService } from 'src/app/services/nevenement.service';
-import * as L from 'leaflet';
+//import * as L from 'leaflet';
 //import { error } from 'console';
 
 export type MarkerFactory = { values: any[], markerFn: Function, popupFn?: Function}
@@ -42,19 +42,19 @@ export class NevenementComponent implements OnInit, AfterViewInit {
   constructor(private nevenementService: NevenementService) {}
 
   ngAfterViewInit(): void {
-    this.initMap();
+  //   this.initMap();
     //throw new Error('Method not implemented.');
   }
-  private initMap(): void {
-    this.map = L.map('map', {
-      center: [50.82788, 4.37218],
-      zoom: 13
-    });
+  // private initMap(): void {
+  //   this.map = L.map('map', {
+  //     center: [50.82788, 4.37218],
+  //     zoom: 13
+  //   });
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-    }).addTo(this.map);
-  }
+  //   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  //     maxZoom: 19,
+  //   }).addTo(this.map);
+  // }
 
   // private addOrUpdateMarker(nevenement: NEvenementModel): void {
   //   //Find existing marker

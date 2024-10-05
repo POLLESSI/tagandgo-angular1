@@ -3,5 +3,5 @@ export interface ChatActivityModel {
     author: string;
     sendingDate : string;
     activity_Id : number;
-    chat_Id : number;
+    chatActivity_Id : number;
   }

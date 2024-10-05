@@ -1,5 +1,5 @@
 export interface ChatEvenementEditionModel {
-    chat_Id : number;
+    chatEvenement_Id : number;
     newMessage : string;
     author: string;
     sendingDate : string;

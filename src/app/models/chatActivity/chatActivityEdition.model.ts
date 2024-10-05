@@ -1,5 +1,5 @@
 export interface ChatActivityEditionModel {
-    chat_Id : number;
+    chatActivity_Id : number;
     newMessage : string;
     author: string;
     sendingDate : string;
