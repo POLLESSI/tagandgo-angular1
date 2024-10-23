@@ -78,10 +78,11 @@ export class ActivityComponent implements OnInit, AfterViewInit {
     try {
       this.listActivities = await this.activityService.getAllActivities();
 
-      console.log(this.listActivities);
+      console.log('List of activities:', this.listActivities);
 
     } catch (error) {
-      console.log("Error List activities!");
+      console.error('Error fetching activities:', error);
+      alert('Failed to fetch activities. Please try again later.');
     }
   }
 
@@ -161,6 +162,33 @@ export class ActivityComponent implements OnInit, AfterViewInit {
       }
     }
   }
+  public async createActivity(activityForm: NgForm): Promise<void> {
+    if (activityForm.invalid) {
+      console.log('Form is invalid');
+      return;
+    }
+
+    const newActivity: ActivityCreationModel = {
+      activityName: this.activityName,
+      activityAddress: this.activityAddress,
+      activityDescription: this.activityDescription,
+      complementareInformation:this.complementareInformation,
+      posLat: this.posLat,
+      posLong: this.posLong,
+      organisateur_Id: this.organisateur_Id,
+    };
+    try {
+      const response = await this.activityService.createActivity(newActivity);
+      this.listActivities.push(response); //Update the list with the new activity
+      console.log('Activity created:', response);
+      activityForm.resetForm();
+      this.cancelForm();
+      alert('Activity created successfully');
+    } catch (error) {
+      console.error("Error creating activity:", error);
+      alert('Failed to create activity. Please try again.');
+    }
+  }
 
   public onIdition(activity_Id: number): void {
     this.showForm = true;
@@ -192,6 +220,49 @@ export class ActivityComponent implements OnInit, AfterViewInit {
     this.posLat = null;
     this.posLong = null;
     this.organisateur_Id = null;
+  }
+
+  public async deleteActivity(activity_Id: number): Promise<void> {
+    try {
+      await this.activityService.deleteActivity(activity_Id);
+      this.listActivities = this.listActivities.filter(a => a.activity_Id !== activity_Id);
+      alert('Activity deleted successfully');
+    } catch (error) {
+      console.log("Error deleting activity:", error);
+    }
+  }
+  public async updateActivity(activityForm: NgForm): Promise<void> {
+    if (activityForm.invalid) {
+      console.log('Form is invalid');
+      return;
+    }
+
+    const activityUpdated: ActivityEditionModel = {
+      activity_Id: this.activityToEdit.activity_Id,
+      activityName: this.activityName,
+      activityAddress: this.activityAddress, 
+      activityDescription: this.activityDescription,
+      complementareInformation: this.complementareInformation,
+      posLat: this.posLat,
+      posLong: this.posLong,
+      organisateur_Id: this.organisateur_Id,
+    };
+
+    try {
+      const updatedActivity = await this.activityService.updateActivity(activityUpdated);
+      //Update the list with the updated activity
+      const index = this.listActivities.findIndex(a => a.activity_Id === updatedActivity.activity_Id);
+      if (index !== -1) {
+        this.listActivities[index] = updatedActivity;
+      }
+      console.log('Activity updated:', updatedActivity);
+      activityForm.resetForm();
+      this.cancelForm();
+      alert('Activity updated susseccfully');
+    } catch (error) {
+      console.error('Error updating activity:', error);
+      alert('Failed to update activity. Please try again');
+    }
   }
 }
 
