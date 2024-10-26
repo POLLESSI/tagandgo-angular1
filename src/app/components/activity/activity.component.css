@@ -15,3 +15,39 @@ form {
   flex-direction: row;
   gap: 10px;
 }
+
+.activity-row {
+  display: flex;
+  margin-bottom: 20px;
+  align-items: flex-start;
+}
+
+.activity-info {
+  width: 70%;
+}
+
+.activity-stats {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 30px;
+  margin-left: 20px;
+}
+
+.vote-bar, .feedback-bar {
+  width: 10px;
+  margin: 2px 0;
+  border-radius: 3px;
+}
+
+.upvote-bar {
+  background-color: chartreuse;
+}
+
+.downvote-bar {
+  background-color: red;
+}
+
+.feedback-bar {
+  background-color: lightblue;
+}

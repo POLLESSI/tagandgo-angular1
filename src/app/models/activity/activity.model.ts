@@ -1,4 +1,5 @@
 export interface ActivityModel {
+
   activity_Id : number;
   activityName : string;
   activityAddress : string;
@@ -7,4 +8,7 @@ export interface ActivityModel {
   posLat : string;
   posLong : string;
   organisateur_Id : number;
+  upVotes: any;
+  downVotes: any;
+  positiveFeedback: number;
 }
