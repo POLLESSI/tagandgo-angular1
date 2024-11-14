@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { AvatarModel } from '../models/avatar/avatar.model';
 import { CONST_API } from '../constants/api-constants';
 import { AvatarCreationModel } from '../models/avatar/avatarCreation.model';
+import { AvatarEditionModel } from '../models/avatar/avatarEdition.model';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,7 @@ export class AvatarService {
       return respons as Array<AvatarModel>
 
     } catch (error) {
-      throw error;
+      throw new error('Error getting avatar : ${error}');
     }
   }
 
@@ -38,19 +39,30 @@ export class AvatarService {
     }
   }
 
-  public async updateAvatar(): Promise<void>  {
-    try {
+  // public async updateAvatar(avatarUpdated: AvatarEditionModel): Observable<AvatarEditionModel>  {
 
+  //   try {
+  //     const url: string = `${CONST_API.URL_API}/Avatar/update`;
+
+  //     console.log("UPDATE : ", url, avatarUpdated);
+
+  //     return this.http.put<AvatarModel>(url, avatarUpdated, { responseType: 'json'});
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
+
+  public async deleteAvatar(avatar_Id: number): Promise<void>  {
+    const url: string = `${CONST_API.URL_API}/Avatar/delete/${avatar_Id}`;
+
+    try {
+      await firstValueFrom(this.http.delete(url, {responseType: 'json'}));
+      console.log(`Avatar with ID ${avatar_Id} deleted successfully`)
     } catch (error) {
-      throw error;
+      throw new error('Error deleting activity: ${error}');
     }
   }
-
-  public async deleteAvatar(): Promise<void>  {
-    try {
-
-    } catch (error) {
-      throw error;
-    }
-  }
+}
+function from(promise: Promise<AvatarModel[]>): Observable<AvatarModel[]> {
+  throw new Error('Function not implemented');
 }

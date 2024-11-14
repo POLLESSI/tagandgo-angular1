@@ -12,19 +12,19 @@ import { ActivityEditionModel } from '../models/activity/activityEdition.model';
 })
 export class ActivityService {
   //private baseUrl = 'https://localhost:7069/api/activities'
+  
 
   constructor(private http: HttpClient) { }
 
   public async getAllActivities(): Promise<Array<ActivityModel>> {
     const url: string = `${CONST_API.URL_API}/Activity`;
-
     try {
       const respons: any = await firstValueFrom(this.http.get(url, {responseType: 'json'}));
 
-      return respons as Array<ActivityModel>
+      return respons as Array<ActivityModel>;
 
     } catch (error) {
-      throw error;
+      throw new error('Error getting activity : ${error}'); 
     }
   }
 
@@ -67,3 +67,7 @@ export class ActivityService {
     }
   }
 }
+function from(promise: Promise<ActivityModel[]>): Observable<ActivityModel[]> {
+  throw new Error('Function not implemented.');
+}
+

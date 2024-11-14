@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { CONST_API } from 'src/app/constants/api-constants';
 import { AvatarModel } from 'src/app/models/avatar/avatar.model';
 import { AvatarCreationModel } from 'src/app/models/avatar/avatarCreation.model';
+import { AvatarEditionModel } from 'src/app/models/avatar/avatarEdition.model';
 import { AvatarService } from 'src/app/services/avatar.service';
 
 @Component({
@@ -26,8 +28,11 @@ export class AvatarComponent implements OnInit {
   displayedColumns: string[] = ['avatarName', 'avatarUrl', 'description'];
 
   constructor(private avatarService: AvatarService) {}
-
-  async ngOnInit(): Promise<void> {
+  ngAfterViewInit(): void{
+    //this.initMap();
+    //throw new Error('Method not implemented.')
+  }
+  public async ngOnInit(): Promise<void> {
     await this.getAllAvatars();
   }
 
@@ -94,6 +99,10 @@ export class AvatarComponent implements OnInit {
   }
 
   public onCancelForm(): void {
+    this.cancelForm();
+    
+  }
+  public cancelForm(): void {
     this.showForm = false;
     this.isFormEdition = false;
 
@@ -101,4 +110,28 @@ export class AvatarComponent implements OnInit {
     this.avatarUrl = null;
     this.description = null;
   }
+  public async deleteAvatar(avatar_Id: number): Promise<void> {
+    if (confirm('Are you sure you want to delete this avatar?')){
+      try {
+        this.listAvatars = this.listAvatars.filter(av => av.avatar_Id !== avatar_Id);
+        console.log('Avatar with ID ${avatar_Id} has been deleted');
+      } catch (error) {
+        console .log("Error deleting avatar:", error);
+      }
+    }
+  }
+
+  public async updateAvatar(avatarUpdated: AvatarEditionModel): Promise<void> {
+    const url: string = `${CONST_API.URL_API}/Avatar/update`;
+    // Checking required fields
+    if (!avatarUpdated.avatar_Id || !avatarUpdated.avatarName || !avatarUpdated.avatarUrl || !avatarUpdated.description) {
+      console.log('Missing required fields for avatar update');
+      return;
+    }
+    try {
+    
+    } catch (error) {
+      console.error("Error updating avatar:", error);
+    }    
+  } 
 }

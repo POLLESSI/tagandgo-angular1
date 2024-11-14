@@ -4,6 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import { NEvenementModel } from '../models/nevenement/nevenement.model';
 import { CONST_API } from '../constants/api-constants';
 import { NEvenementCreationModel } from '../models/nevenement/nevenementCreation.model';
+import { NevenementComponent } from '../components/nevenement/nevenement.component';
 
 @Injectable({
   providedIn: 'root'
@@ -43,4 +44,18 @@ export class NevenementService {
     }
   }
 
+  public async deleteNEvenement(nEvenement_Id: number): Promise<void> {
+    const url: string = `${CONST_API.URL_API}/Activity/delete/${nEvenement_Id}`;
+
+    try {
+      await firstValueFrom(this.http.delete(url, {responseType: 'json'}));
+      console.log(`Event with ID ${nEvenement_Id} deleted successfully`)
+    } catch (error) {
+      throw new Error('Error deleting event: ${error}')
+    }
+  }
 }
+// function from(promise: Promise<NEvenementModel[]>): Observable<NEvenementModel[]>{
+//   throw new Error('Function not implemented.');
+// }
+

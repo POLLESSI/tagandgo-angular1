@@ -1,12 +1,16 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, ComponentRef, ElementRef, EmbeddedViewRef, HostBinding, HostListener, Input, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+//import { SignalRService } from 'src/app/services/signalr.service';
 import { NgForm } from '@angular/forms';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom} from 'rxjs';
 import { CONST_API } from 'src/app/constants/api-constants';
 import { ActivityModel } from 'src/app/models/activity/activity.model'
 import { ActivityCreationModel } from 'src/app/models/activity/activityCreation.model';
 import { ActivityEditionModel } from 'src/app/models/activity/activityEdition.model';
 import { ActivityService } from 'src/app/services/activity.service';
-//import * as L from 'leaflet';
+import * as L from 'leaflet';
+import {marker, Util} from "leaflet";
+import isArray = Util.isArray;
+//import * as signalR from '@microsoft/signalr';
 
 export type MarkerFactory = { values: any[], markerFn: Function, popupFn?: Function }
 
@@ -17,18 +21,18 @@ export type MarkerFactory = { values: any[], markerFn: Function, popupFn?: Funct
 })
 export class ActivityComponent implements OnInit, AfterViewInit {
   
-  // private map!: L.Map;
-  // private markers: L.Marker[] = [];
+  private map!: L.Map;
+  private markers: L.Marker[] = [];
 
   listActivities: ActivityModel[] = [];
-
+  
   activity_Id! : number;
   activityName! : string;
   activityAddress! : string;
   activityDescription! : string;
   complementareInformation! : string;
-  posLat! : string;
-  posLong! : string;
+  posLat! : number;
+  posLong! : number;
   organisateur_Id! : number;
 
   disable! : boolean;
@@ -37,46 +41,90 @@ export class ActivityComponent implements OnInit, AfterViewInit {
   isFormEdition: boolean;
   activityToEdit: ActivityModel;
 
-  displayedColumns: string[] = ['activityName', 'activityAddress', 'activityDescription', 'complementareInformation', 'posLat', 'posLong', 'organisateur_Id', 'activity_Id'];
-activity: any;
+  displayedColumns: string[] = [
+    'activityName', 
+    'activityAddress', 
+    'activityDescription', 
+    'complementareInformation',
+    'posLat', 
+    'posLong', 
+    'organisateur_Id', 
+    'activity_Id'
+  ];
+  activity: any;
+  constructor(private activityService: ActivityService) {}
 
-  constructor(private activityService: ActivityService) {
-  }
-  ngAfterViewInit(): void {
-    //this.initMap();
-    //throw new Error('Method not implemented.');
-  }
+  // 
 
   public async ngOnInit(): Promise<void> {
+       
+   
     await this.getAllActivities();``
+    //this.initMap();
+    //Chargez les activités depuis le service avant de créer la carte
+    // this.activityService.getAllActivities().subscribe((activities: ActivityModel[]) => {
+    //   this.listActivities = activities;
+    //   this.initMap(); // Initialiser la carte après avoir chargé les activités
+    // });
   }
 
-  // private initMap(): void {
-  //   this.map = L.map('map', {
-  //     center: [50.82788, 4.37218],
-  //     zoom: 13
-  //   });
+  ngAfterViewInit(): void {
+    this.initMap();
+    //throw new Error('Method not implemented.');
+    //Loop through the activity list to add markers
+    this.listActivities.forEach(activity => {
+      //this.addMarker(activity.activityName, activity.posLat, activity.posLong);
+    });
+  
+  }
 
-  //   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  //     maxZoom: 19,
-  //   }).addTo(this.map);
-  // }
+  private initMap() {
+    //Initializing the map and setting the initial position
+    this.map = L.map('map').setView([50.82788, 4.37218], 13);
+    //Configuring the OpenStreetMap tile layer
+    const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(this.map);  
 
-  // private addOrUpdateMarker(activity: ActivityModel): void {
-  //   // Find existing marker
-  //   let existingMarker = this.markers.find(marker => marker.options.title === activity.activityName);
+    //Adding markers for each activity
+    // this.listActivities.forEach(activity => {
+    //   this.addMarker(activity.activity_Id, activity.posLat, activity.posLong);
+    // });
+  }
 
-  //   if (existingMarker) {
-  //     existingMarker.setLatLng([activity.posLat, activity.posLong]);
-  //     existingMarker.bindPopup('<b>${activity.activityName}</b><br />${activity.activityDescription}').openPopup();
-  //   } else {
-  //     // Create new marker
-  //     let newMarker = L.marker([activity.posLat, activity.posLong], { title: activity.activityName });
-  //     newMarker.bindPopup('<b>${activity.activityName}</b><br />${activity.activityDescription}');
-  //     newMarker.addTo(this.map);
-  //     this.markers.push(newMarker);
+
+  //Method to add markers on the map if necessary
+  // private addMarker(latitude: number, longitude: number, popupText: string): void {
+  //   //L.marker([latitude, longitude]).addTo(this.map)
+  //   const lat = parseFloat(latitude);
+  //   const long = parseFloat(longitude);
+  //   if (!isNaN(lat) && !isNaN(long)) {
+  //     const marker = L.marker([lat, long]).addTo(this.map)
+  //     .bindPopup(`<b>${name}</b>`)
+  //     .openPopup();
+  //     this.markers.push(marker);
   //   }
+
+      
   // }
+  
+
+  private addOrUpdateMarker(activity: ActivityModel): void {
+    // Find existing marker
+    let existingMarker = this.markers.find(marker => marker.options.title === activity.activityName);
+
+    if (existingMarker) {
+      existingMarker.setLatLng([activity.posLat, activity.posLong]);
+      existingMarker.bindPopup('<b>${activity.activityName}</b><br />${activity.activityDescription}').openPopup();
+    } else {
+      // Create new marker
+      let newMarker = L.marker([activity.posLat, activity.posLong], { title: activity.activityName });
+      newMarker.bindPopup('<b>${activity.activityName}</b><br />${activity.activityDescription}');
+      newMarker.addTo(this.map);
+      this.markers.push(newMarker);
+    }
+  }
 
   public async getAllActivities(): Promise<void> {
     try {
@@ -148,10 +196,10 @@ activity: any;
     // Validation supplémentaire pour la latitude
     const latPattern = /^-?\d+\.\d{1,6}$/;
     const longPattern = latPattern;
-    if (!latPattern.test(this.posLat) || !longPattern.test(this.posLat)) {
-      console.log("Must be a decimal with up to 5 digits after the decimal point");
-      return;
-    }
+    // if (!latPattern.test(this.posLat) || !longPattern.test(this.posLat)) {
+    //   console.log("Must be a decimal with up to 5 digits after the decimal point");
+    //   return;
+    // }
 
     console.log(this.isFormEdition);
 
@@ -169,13 +217,13 @@ activity: any;
 
 
       try {
-        // console.log("Activity to edit:", activityEdited);
+        console.log("Activity to edit:", activityEdited);
 
-        // const response: ActivityModel = await this.activityService.updateActivity(activityEdited);
+        const response: ActivityModel = await this.activityService.createActivity(activityEdited);
 
-        // this.listActivities.filter((a: ActivityModel) => a.activity_Id != response.activity_Id);
+        this.listActivities.filter((a: ActivityModel) => a.activity_Id != response.activity_Id);
 
-        // this.listActivities.push(response);
+        this.listActivities.push(response);
 
         // activityForm.resetForm();
 
@@ -275,7 +323,7 @@ activity: any;
   }
 
   public async deleteActivity(activity_Id: number): Promise<void> {
-    if (confirm('Are you sure you want to delete this activity')){
+    if (confirm('Are you sure you want to delete this activity?')){
       try {
         this.listActivities = this.listActivities.filter(a => a.activity_Id !== activity_Id);
         console.log('Activity with ID ${activity_Id} has been deleted');

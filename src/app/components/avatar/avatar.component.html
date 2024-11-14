@@ -20,18 +20,21 @@
               <input matInput type="text" name="avatarName" [(ngModel)]="avatarName" required #avatarNameField="ngModel">
               <mat-error *ngIf="avatarNameField.invalid && avatarNameField.touched">Activity Name is required.</mat-error>
             </mat-form-field>
+
             <!-- Url -->
              <mat-form-field>
               <mat-label>Avatar Url :</mat-label>
               <input type="text" name="avatarUrl" [(ngModel)]="avatarUrl" required #avatarUrlField="ngModel">
               <mat-error *ngIf="avatarUrlField.invalid && avatarUrlField.touched">Url is required.</mat-error>
              </mat-form-field>
+
             <!-- Description -->
-            Description :
-            <input type="text" name="description" [(ngModel)]="description" required #descriptionField="ngModel">
-            <div *ngIf="descriptionField.invalid && descriptionField.touched">
-                Description is required.
-            </div>
+             <mat-form-field>
+              <mat-label>Description :</mat-label>
+              <input type="text" name="description" [(ngModel)]="description" required #descriptionField="ngModel">
+              <mat-error *ngIf="descriptionField.invalid && descriptionField.touched">Description is required.</mat-error>
+             </mat-form-field>
+            
             <button mat-flat-button type="submit" [disabled]="avatarForm.invalid">Submit</button>
             <!-- <button mat-flat-button type="button" (click)="getAllAvatars()">All Avatars</button> -->
             <!-- <button (click)="deleteAvatar(avatar_Id)">Delete</button>
@@ -66,22 +69,22 @@
       <td mat-cell *matCellDef="let element"> {{element.description}} </td>
     </ng-container>
   
-      <ng-container matColumnDef="avatar_Id">
-        <th mat-header-cell *matHeaderCellDef> Option </th>
-        <td mat-cell *matCellDef="let element">
-          <div class="buttonList">
-            <button mat-mini-fab disabled aria-label="delete">
-              <mat-icon>delete</mat-icon>
-            </button>
-  
-            <button mat-mini-fab disabled aria-label="edit" (click)="onEdition(element.avatar_Id)">
-              <mat-icon>edit</mat-icon>
-            </button>
-          </div>
-  
-          <!-- {{element.activity_Id}} -->
-        </td>
-      </ng-container>
+    <ng-container matColumnDef="avatar_Id">
+      <th mat-header-cell *matHeaderCellDef> Option </th>
+      <td mat-cell *matCellDef="let element">
+        <div class="buttonList">
+          <button mat-mini-fab disabled aria-label="delete" (click)="deleteAvatar(element.avatar_Id)">
+            <mat-icon>delete</mat-icon>
+          </button>
+
+          <button mat-mini-fab disabled aria-label="edit" (click)="onEdition(element.avatar_Id)">
+            <mat-icon>edit</mat-icon>
+          </button>
+        </div>
+
+        <!-- {{element.activity_Id}} -->
+      </td>
+    </ng-container>
   
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>

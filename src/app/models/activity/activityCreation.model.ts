@@ -3,7 +3,7 @@ export interface ActivityCreationModel {
   activityAddress : string;
   activityDescription : string;
   complementareInformation : string;
-  posLat : string;
-  posLong : string;
+  posLat : number;
+  posLong : number;
   organisateur_Id : number;
 }

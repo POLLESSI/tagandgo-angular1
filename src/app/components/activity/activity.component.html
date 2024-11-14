@@ -132,6 +132,15 @@
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
 
+<!-- <div *ngFor="let activity of listActivities">
+  <h3>{{ activity.activityName }}</h3>
+  <p>{{ activity.activityDescription }}</p>
+</div> -->
+<div class="map-container">
+  <div class="map-frame">
+    <div id="map"></div>
+  </div>
+</div>
 <!-- <button mat-flat-button (click)="showForm = true")>Delete activity</button>
 
 <div *ngIf="showForm" class="overlay">
@@ -145,19 +154,4 @@
   </div>
 </div> -->
 
-<!-- <div *ngFor="let activity of listActivities" class="activity-row"> -->
-  <!-- Viewing activity information -->
-   <!-- <div class="activity-info">
-    <h3>{{ activity.activityName }}</h3>
-    <p>{{ activity.activityDescription }}</p>
-    <p>Votes for: {{ activity.upVotes}} | Votes against: {{ activity.downVotes }}</p>
-   </div> -->
-<!-- </div> -->
-  <!-- Visual indicators column -->
-<!-- <div *ngIf="activity.upVotes !== undefined && activity.downVotes !== undefined && activity.positiveFeedback !== undefined"> -->
-  <!-- <div class="activity-stats">
-    <div class="vote-bar upvote-bar" [style.height]="getBarHeight(activity.upVotes) + 'px'" [style.backgroundColor]="getBarColor(activity.upVotes, true)"></div>
-    <div class="vote-bar downvote-bar" [style.height]="getBarHeight(activity.downVotes) + 'px'" [style.backgroundColor]="getBarColor(activity.downVotes, false)"></div>
-    <div class="feedback-bar" [style.height]="getBarHeight(activity.positiveFeedback) + 'px'" [style.backgroundColor]="getFeedbackColor(activity.positiveFeedback)"></div>
-  </div> -->
-<!-- </div> -->
+
