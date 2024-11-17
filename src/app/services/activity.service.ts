@@ -12,7 +12,7 @@ import { ActivityEditionModel } from '../models/activity/activityEdition.model';
 })
 export class ActivityService {
   //private baseUrl = 'https://localhost:7069/api/activities'
-  
+
 
   constructor(private http: HttpClient) { }
 
@@ -24,7 +24,7 @@ export class ActivityService {
       return respons as Array<ActivityModel>;
 
     } catch (error) {
-      throw new error('Error getting activity : ${error}'); 
+      throw new error('Error getting activity : ${error}');
     }
   }
 
@@ -42,7 +42,7 @@ export class ActivityService {
   }
 
   public updateActivity(activityUpdated: ActivityEditionModel): Observable<ActivityEditionModel> {
-    
+
 
     try {
       const url: string = `${CONST_API.URL_API}/Activity/update`;
@@ -56,12 +56,12 @@ export class ActivityService {
     }
   }
 
-  public async deleteActivity(activity_Id: number): Promise<void> {
-    const url: string = `${CONST_API.URL_API}/Activity/delete/${activity_Id}`;
+  public async deleteActivity(id: number): Promise<void> {
+    const url: string = `${CONST_API.URL_API}/Activity/delete/`;
 
     try {
       await firstValueFrom(this.http.delete(url, {responseType: 'json'}));
-      console.log(`Activity with ID ${activity_Id} deleted successfully`)
+      console.log(`Activity with ID ${id} deleted successfully`)
     } catch (error) {
       throw new Error('Error deleting activity: ${error}');
     }

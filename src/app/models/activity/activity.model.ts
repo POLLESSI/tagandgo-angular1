@@ -1,14 +1,13 @@
-export interface ActivityModel {
+import { DateTime } from 'luxon';
 
-  activity_Id : number;
-  activityName : string;
-  activityAddress : string;
-  activityDescription : string;
-  complementareInformation : string;
-  posLat : string;
-  posLong : string;
-  organisateur_Id : number;
-  upVotes: any;
-  downVotes: any;
-  positiveFeedback: number;
+export interface ActivityModel {
+  Id: number;
+  Name: string;
+  Address: string;
+  StartDate: DateTime;
+  EndDate: DateTime;
+  Description: string;
+  AdditionalInformation: string;
+  Location: string;
+  Active: Boolean;
 }
