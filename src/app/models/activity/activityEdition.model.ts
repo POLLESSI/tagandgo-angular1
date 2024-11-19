@@ -4,7 +4,7 @@ export interface ActivityEditionModel {
   activityAddress : string;
   activityDescription : string;
   complementareInformation : string;
-  posLat : number;
-  posLong : number;
+  posLat : string;
+  posLong : string;
   organisateur_Id : number;
 }

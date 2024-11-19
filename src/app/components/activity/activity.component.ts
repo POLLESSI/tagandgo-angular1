@@ -1,6 +1,6 @@
 import { Component, ComponentRef, ElementRef, EmbeddedViewRef, HostBinding, HostListener, Input, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 //import { SignalRService } from 'src/app/services/signalr.service';
-import { NgForm } from '@angular/forms';
+import { NgForm, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { firstValueFrom} from 'rxjs';
 import { CONST_API } from 'src/app/constants/api-constants';
 import { ActivityModel } from 'src/app/models/activity/activity.model'
@@ -13,6 +13,13 @@ import isArray = Util.isArray;
 //import * as signalR from '@microsoft/signalr';
 
 export type MarkerFactory = { values: any[], markerFn: Function, popupFn?: Function }
+
+export function coordinateValidator(): ValidatorFn{
+  return (control: AbstractControl): ValidationErrors | null => {
+    const valid = /^-?\d+\.\d{1,6}$/.test(control.value);
+    return valid ? null : {invalidCoordinate: true}
+  }
+}
 
 @Component({
   selector: 'app-activity',
@@ -31,15 +38,15 @@ export class ActivityComponent implements OnInit, AfterViewInit {
   activityAddress! : string;
   activityDescription! : string;
   complementareInformation! : string;
-  posLat! : number;
-  posLong! : number;
+  posLat! : string;
+  posLong! : string;
   organisateur_Id! : number;
 
   disable! : boolean;
 
   showForm: boolean;
   isFormEdition: boolean;
-  activityToEdit: ActivityModel;
+  activityToEdit: ActivityModel | null = null;
 
   displayedColumns: string[] = [
     'activityName', 
@@ -68,12 +75,15 @@ export class ActivityComponent implements OnInit, AfterViewInit {
     // });
   }
 
-  ngAfterViewInit(): void {
+  async ngAfterViewInit(): Promise<void> {
+    if (!this.listActivities || this.listActivities.length === 0) {
+      await this.getAllActivities();
+    }
     this.initMap();
     //throw new Error('Method not implemented.');
     //Loop through the activity list to add markers
     this.listActivities.forEach(activity => {
-      //this.addMarker(activity.activityName, activity.posLat, activity.posLong);
+      //this.addMarker(activity.activityName, activity.posLat, activity.posLong, activity.activityDescription);
     });
   
   }
@@ -84,7 +94,7 @@ export class ActivityComponent implements OnInit, AfterViewInit {
     //Configuring the OpenStreetMap tile layer
     const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
-      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(this.map);  
 
     //Adding markers for each activity
@@ -95,94 +105,135 @@ export class ActivityComponent implements OnInit, AfterViewInit {
 
 
   //Method to add markers on the map if necessary
-  // private addMarker(latitude: number, longitude: number, popupText: string): void {
-  //   //L.marker([latitude, longitude]).addTo(this.map)
-  //   const lat = parseFloat(latitude);
-  //   const long = parseFloat(longitude);
-  //   if (!isNaN(lat) && !isNaN(long)) {
-  //     const marker = L.marker([lat, long]).addTo(this.map)
-  //     .bindPopup(`<b>${name}</b>`)
-  //     .openPopup();
-  //     this.markers.push(marker);
-  //   }
-
-      
-  // }
-  
-
-  private addOrUpdateMarker(activity: ActivityModel): void {
-    // Find existing marker
-    let existingMarker = this.markers.find(marker => marker.options.title === activity.activityName);
-
-    if (existingMarker) {
-      existingMarker.setLatLng([activity.posLat, activity.posLong]);
-      existingMarker.bindPopup('<b>${activity.activityName}</b><br />${activity.activityDescription}').openPopup();
-    } else {
-      // Create new marker
-      let newMarker = L.marker([activity.posLat, activity.posLong], { title: activity.activityName });
-      newMarker.bindPopup('<b>${activity.activityName}</b><br />${activity.activityDescription}');
-      newMarker.addTo(this.map);
-      this.markers.push(newMarker);
+  private addMarker(name: string,latitude: string, longitude: string, popupText: string): void {
+    const lat = parseFloat(latitude);
+    const long = parseFloat(longitude);
+    if (!isNaN(lat) && !isNaN(long)) {
+      const marker = L.marker([lat, long]).addTo(this.map)
+      .bindPopup(popupText)
+      .openPopup();
+    this.markers.push(marker);
     }
+    
   }
+
+
+  // private addOrUpdateMarker(activity: ActivityModel): void {
+  //   // Find existing marker
+  //   let existingMarker = this.markers.find(marker => marker.options.title === activity.activityName);
+
+  //   if (existingMarker) {
+  //     existingMarker.setLatLng([activity.posLat, activity.posLong]);
+  //     existingMarker.bindPopup('<b>${activity.activityName}</b><br />${activity.activityDescription}').openPopup();
+  //   } else {
+  //     // Create new marker
+  //     let newMarker = L.marker([activity.posLat, activity.posLong], { title: activity.activityName });
+  //     newMarker.bindPopup('<b>${activity.activityName}</b><br />${activity.activityDescription}');
+  //     newMarker.addTo(this.map);
+  //     this.markers.push(newMarker);
+  //   }
+  // }
 
   public async getAllActivities(): Promise<void> {
     try {
       this.listActivities = await this.activityService.getAllActivities();
 
-      // //Initialize properties if they are not already present
-      // this.listActivities.forEach(activity => {
-      //   activity.upVotes = activity.upVotes || 0;
-      //   activity.downVotes = activity.downVotes || 0;
-      //   activity.positiveFeedback = activity.positiveFeedback || 0;
-      // });
+      //Initialize properties if they are not already present
+      this.listActivities.forEach(activity => {
+        activity.upVotes = activity.upVotes || 0;
+        activity.downVotes = activity.downVotes || 0;
+        activity.positiveFeedback = activity.positiveFeedback || 0;
+      });
 
-      // this.listActivities.forEach(activity => {
-      //   if (activity.upVotes === undefined) {
-      //     console.error("Activity missing upVotes", activity);
-      //   }
-      //   if (activity.downVotes === undefined) {
-      //     console.error("Activity missing downVotes", activity);
-      //   }
-      //   if (activity.positiveFeedback === undefined) {
-      //     console.error("Activity missing positiveFeedback:", activity);
-      //   }
-      // });
+      this.listActivities.forEach(activity => {
+        if (activity.upVotes === undefined) {
+          console.error("Activity missing upVotes", activity);
+        }
+        if (activity.downVotes === undefined) {
+          console.error("Activity missing downVotes", activity);
+        }
+        if (activity.positiveFeedback === undefined) {
+          console.error("Activity missing positiveFeedback:", activity);
+        }
+      });
 
       console.log('List of activities:', this.listActivities);
 
     } catch (error) {
       console.error('Error fetching activities:', error);
-      alert('Failed to fetch activities. Please try again later.');
+      alert('Unable to load activities. Check your internet connection or try again later.');
     }
   }
 
-  // // Method to calculate column height based on votes/comments
-  // public getBarHeight(votes: number): number {
-  //   const maxHeight = 100;  //Maximum height in pixels
-  //   const scale = 10;  //Scale factor to adjust height
-  //   //Limit the height to maxHeight to avoid columns that are too tall
-  //   return Math.min(votes * scale, maxHeight);
-  //   return votes * 10; //Adjust this value according to the size of your bar
-  // }
+  // Method to calculate column height based on votes/comments
+  public getBarHeight(votes: number): number {
+    const maxHeight = 100;  //Maximum height in pixels
+    const scale = 10;  //Scale factor to adjust height
+    //Limit the height to maxHeight to avoid columns that are too tall
+    return Math.min(votes * scale, maxHeight);
+    return votes * 10; //Adjust this value according to the size of your bar
+  }
 
-  // //Method for determining the color of the bars
-  // public getBarColor(votes: number, isUpvote: boolean): string {
-  //   if (isUpvote) {
-  //     //The higher the votes for, the darker the color
-  //     return `rgb(0, ${Math.min(255, votes * 10)}, 0)`;
+  //Method for determining the color of the bars
+  public getBarColor(votes: number, isUpvote: boolean): string {
+    if (isUpvote) {
+      //The higher the votes for, the darker the color
+      return `rgb(0, ${Math.min(255, votes * 10)}, 0)`;
+    } else {
+      //The higher the downvotes, the darker the color
+      return `rgb(${Math.min(255, votes * 10)}, 0, 0)`;
+    }
+    return isUpvote ? 'chartreuse' : 'red'; //Vert pour les votes positifs, rouge pour les négatifs
+  }
+
+  //Method to calculate the color of positive reviews
+  public getFeedbackColor(feedback: number): string {
+    //The higher the positive reviews, the darker blue the color
+    return `rgb(0, 0, ${Math.min(255, feedback * 10)})`;
+    return feedback > 50 ? 'ligthblue' : 'darkgrey'; //Blue for high positive reviews
+  }
+
+  // async submit<T extends { id?: number }> (
+  //   form: NgForm,
+  //   isEditing: boolean,
+  //   createFn: (item: any) => Promise<any>,
+  //   updateFn: (item: any) => Promise<any>,
+  //   list: T[],
+  //   item: T
+  // ): Promise<void> {
+
+  //   if (isEditing) {
+  //     updateFn(form.value).then(() => console.log('Activity updated'));
   //   } else {
-  //     //The higher the downvotes, the darker the color
-  //     return `rgb(${Math.min(255, votes * 10)}, 0, 0)`;
+  //     createFn(form.value).then(() => console.log('Activity created'));
   //   }
-  //   return isUpvote ? 'chartreuse' : 'red'; //Vert pour les votes positifs, rouge pour les négatifs
+
+  //   if (form.invalid) {
+  //     return;
+  //   }
+  //   try {
+  //     const result = isEditing ? await updateFn(item) : await createFn(item);
+  //     if (isEditing) {
+  //       const index = list.findIndex((i) => i.id === result.id);
+  //       if (index > -1) list[index] = result;
+  //     } else {
+  //       list.push(result);
+  //     }
+
+  //     form.resetForm();
+  //     alert("Operation successful");
+  //   } catch (error) {
+  //     console.error('Error during submission', error);
+  //     alert('Failed to complete the operation.')
+  //   }
   // }
 
-  // //Method to calculate the color of positive reviews
-  // public getFeedbackColor(feedback: number): string {
-  //   //The higher the positive reviews, the darker blue the color
-  //   return `rgb(0, 0, ${Math.min(255, feedback * 10)})`;
-  //   return feedback > 50 ? 'ligthblue' : 'darkgrey'; //Blue for high positive reviews
+  // submit(form: NgForm) {
+  //   if (this.isFormEdition) {
+  //     this.updateActivity(form.value);
+  //   } else {
+  //     this.createActivity(form.value);
+  //   }
   // }
 
 
@@ -196,10 +247,10 @@ export class ActivityComponent implements OnInit, AfterViewInit {
     // Validation supplémentaire pour la latitude
     const latPattern = /^-?\d+\.\d{1,6}$/;
     const longPattern = latPattern;
-    // if (!latPattern.test(this.posLat) || !longPattern.test(this.posLat)) {
-    //   console.log("Must be a decimal with up to 5 digits after the decimal point");
-    //   return;
-    // }
+    if (!latPattern.test(this.posLat) || !longPattern.test(this.posLat)) {
+      console.log("Must be a decimal with up to 5 digits after the decimal point");
+      return;
+    }
 
     console.log(this.isFormEdition);
 
@@ -262,7 +313,8 @@ export class ActivityComponent implements OnInit, AfterViewInit {
       }
     }
   }
-  public async createActivity(activityForm: NgForm): Promise<void> {
+  public async createActivity(activity: any,activityForm: NgForm): Promise<void> {
+    console.log('Creating activity:', activity);
     if (activityForm.invalid) {
       console.log('Form is invalid');
       return;
@@ -366,7 +418,7 @@ export class ActivityComponent implements OnInit, AfterViewInit {
   //     alert('Failed to update activity. Please try again');
   //   }
   // }
-  public async updateActivity(activityUpdated: ActivityEditionModel): Promise<void> {
+  public async updateActivity(activity: any,activityUpdated: ActivityEditionModel): Promise<void> {
     const url: string = `${CONST_API.URL_API}/Activity/update`;
     //Checking required fields
     if (!activityUpdated.activity_Id ||  !activityUpdated.activityName || !activityUpdated.activityAddress) {

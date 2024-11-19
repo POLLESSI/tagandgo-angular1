@@ -46,6 +46,7 @@ export class MapComponent implements OnInit, AfterViewInit {
 
     L.tileLayer('https/::{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
+      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(this.map);
   }
 
