@@ -5,7 +5,6 @@ import { ActivityModel } from 'src/app/models/activity/activity.model'
 import { ActivityCreationModel } from 'src/app/models/activity/activityCreation.model';
 import { ActivityEditionModel } from 'src/app/models/activity/activityEdition.model';
 import { ActivityService } from 'src/app/services/activity.service';
-import * as L from 'leaflet';
 
 export type MarkerFactory = { values: any[], markerFn: Function, popupFn?: Function }
 
