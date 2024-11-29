@@ -1,7 +1,9 @@
 import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { HttpClientModule } from '@angular/common/http'; // Importer HttpClientModule
-
+import { ToastrModule } from "ngx-toastr";
+import { NotificationBarComponent } from "./components/notification-bar.component";
+import { NotificationService } from "./services/notification.service";
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from "./app.component";
@@ -28,10 +30,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
+import { CommonModule } from "@angular/common";
 
 @NgModule({
     declarations: [
         AppComponent,
+        NotificationBarComponent,
         ActivityComponent,
         AvatarComponent,
         BonusComponent,
@@ -49,22 +53,32 @@ import { MatIconModule } from '@angular/material/icon';
         WeatherforecastComponent
 
     ],
-    imports: [
-    BrowserModule,
-    AppRoutingModule,
-    FormsModule,
-    HttpClientModule,
+        imports: [
+        BrowserModule,
+        CommonModule,
+        AppRoutingModule,
+        FormsModule,
+        HttpClientModule,
 
-    // Material Angular
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatTableModule,
-    MatIconModule
-],
-    providers: [
-    provideAnimationsAsync()
-  ],
-    bootstrap: [AppComponent]
+        // Material Angular
+        MatButtonModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatTableModule,
+        MatIconModule,
+        ToastrModule.forRoot({
+            timeOut: 3000,
+            positionClass: 'toast-bottom-right',
+            preventDuplicates: true,
+        })
+
+    ],
+    exports: [
+        NotificationBarComponent
+    ],
+        providers: [
+        provideAnimationsAsync(), NotificationService
+    ],
+        bootstrap: [AppComponent]
 })
 export class AppModule { }

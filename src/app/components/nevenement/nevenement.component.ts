@@ -1,11 +1,14 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { NEvenementModel } from 'src/app/models/nevenement/nevenement.model';
 import { NEvenementCreationModel } from 'src/app/models/nevenement/nevenementCreation.model';
 import { NEvenementEditionModel } from 'src/app/models/nevenement/nevenementEdition.model';
 import { NevenementService } from 'src/app/services/nevenement.service';
 import * as L from 'leaflet';
-//import { error } from 'console';
+import { NEvenementSyncService } from '../../services/nevenementsync.service';
+import { SignalRService } from 'src/app/services/signalr.service';
+import * as signalR from '@microsoft/signalr';
+import { firstValueFrom } from 'rxjs';
 
 export type MarkerFactory = { values: any[], markerFn: Function, popupFn?: Function}
 
@@ -14,7 +17,7 @@ export type MarkerFactory = { values: any[], markerFn: Function, popupFn?: Funct
   templateUrl: './nevenement.component.html',
   styleUrl: './nevenement.component.css'
 })
-export class NevenementComponent implements OnInit, AfterViewInit {
+export class NevenementComponent implements OnInit, AfterViewInit, OnDestroy {
   private map!: L.Map;
   private markers: L.Marker[] = [];
 
@@ -54,7 +57,11 @@ export class NevenementComponent implements OnInit, AfterViewInit {
     'mediaItem_Id'
   ];
 
-  constructor(private nevenementService: NevenementService) {}
+  constructor(
+    private nevenementService: NevenementService,
+    private nevenementSyncService: NEvenementSyncService,
+    private signalRService: SignalRService
+  ) {}
 
   ngAfterViewInit(): void {
     this.initMap();
@@ -63,39 +70,59 @@ export class NevenementComponent implements OnInit, AfterViewInit {
       //this.addMarker(nevenement.nEvenementName, nevenement.posLat, nevenement.posLong );
     });
   }
-  
-
-  // private initMap(): void {
-  //   this.map = L.map('map', {
-  //     center: [50.82788, 4.37218],
-  //     zoom: 13
-  //   });
-
-  //   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  //     maxZoom: 19,
-  //   }).addTo(this.map);
-  // }
-
-  
-
 
   public async ngOnInit(): Promise<void> {
     await this.getAllNEvenements();
     this.initMap();
+    this.loadData();
+    this.nevenementSyncService.nEvenements$.subscribe(events => {
+      this.listNEvenements = events; // Syncronise la liste locale
+    });
+
+    //Chargement des éléments depuis l'API au démarrage
+    const events = await this.nevenementService.getAllNEvenements();
+    this.nevenementSyncService.setNEvenements(events);
+  }
+  public async loadData() {
+    try {
+      const data = await firstValueFrom(this.nevenementService.getData());
+      this.nEvenementName = data || null;
+    } catch (error) {
+      console.error('Error while retrieving data:', error);
+    }
   }
 
-  private initMap() {
-    this.map = L.map('map').setView([51.505, -0.09], 13);
+  private initMap(): void {
+    const containerId = 'map';
+
+    //Vérifier si la carte existe déjà
+    if (this.map) {
+      this.map.remove();
+    }
+
+    //Initialiser une nouvelle carte
+    this.map = L.map('nevenement-map').setView([50.82790, 4.37240], 13);
 
     //Configuring the OpenStreetMap tile layer
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(this.map);
-    //Adding markers for each activity
-    // this.listActivities.forEach(activity => {
-    //   this.addMarker(activity.activity_Id, activity.posLat, activity.posLong);
-    // });
+    
+    console.log('Map initialized successfully');
+  }
+
+  public mapContainerVisible = true;
+
+  ngOnDestroy(): void {
+    //Désactiver le containeur avant de détruire le composant
+    this.mapContainerVisible = false;
+
+    if (this.map) {
+      this.map.remove(); //Supprimer la carte proprement
+      this.map = null;
+      console.log('Map instance destroyed');
+    }
   }
 
   //Method to add markers on the map if necessary
@@ -104,21 +131,7 @@ export class NevenementComponent implements OnInit, AfterViewInit {
       .bindPopup(popupText)
       .openPopup();
   }
-  //Method to add markers on the map if necessary
-  // private addMarker(latitude: number, longitude: number, popupText: string): void {
-  //   //L.marker([latitude, longitude]).addTo(this.map)
-  //   const lat = parseFloat(latitude);
-  //   const long = parseFloat(longitude);
-  //   if (!isNaN(lat) && !isNaN(long)) {
-  //     const marker = L.marker([lat, long]).addTo(this.map)
-  //     .bindPopup(`<b>${name}</b>`)
-  //     .openPopup();
-  //     this.markers.push(marker);
-  //   }
-
-      
-  // }
-
+  
   private addOrUpdateMarker(nevenement: NEvenementModel): void {
     //Find existing marker
     let existingMarker = this.markers.find(marker => marker.options.title ===nevenement.nEvenementName);
@@ -179,16 +192,39 @@ export class NevenementComponent implements OnInit, AfterViewInit {
       try {
         console.log("Event to edit:", nevenementEdited);
         const response: NEvenementModel = await this.nevenementService.createNEvenement(nevenementEdited);
-
+        if (this.isFormEdition) {
+          const updatedNEvenement = { ...this.nEvenementToEdit };
+          await this.nevenementService.updateNEvenement(updatedNEvenement);
+          this.nevenementSyncService.addOrUpdateNEvenement(updatedNEvenement); // Mise à jour du service
+          this.signalRService.emitEventUpdate(updatedNEvenement); // Notifie SignalR
+        } else {
+          const newNEvenement = {
+            nEvenementDate: this.nEvenementDate,
+            nEvenementName: this.nEvenementName,
+            nEvenementDescription: this.nEvenementDescription,
+            posLat: this.posLat,
+            posLong: this.posLong,
+            positif: this.positif,
+            organisateur_Id: this.organisateur_Id,
+            nIcon_Id: this.nIcon_Id,
+            recompense_Id: this.recompense_Id,
+            bonus_Id: this.bonus_Id,
+            mediaItem_Id: this.mediaItem_Id
+          };
+          const response = await this.nevenementService.createNEvenement(newNEvenement);
+          this.nevenementSyncService.addOrUpdateNEvenement(response);
+          this.signalRService.emitEventUpdate(response);
+        }
+        
         this.listNEvenements.filter((e: NEvenementModel) => e.nEvenement_Id != response.nEvenement_Id);
 
         this.listNEvenements.push(response);
 
         // activityForm.resetForm();
-        // this.cancelForm();
+        this.onCancelForm();
 
       } catch (error) {
-        console.log("Error update Event!");
+        console.log("Error update Event!", error);
       }
     }
     else {

@@ -1,16 +1,13 @@
-import { Component, ComponentRef, ElementRef, EmbeddedViewRef, HostBinding, HostListener, Input, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
-//import { SignalRService } from 'src/app/services/signalr.service';
+import { Component, OnInit } from '@angular/core';
+import { SignalRService } from 'src/app/services/signalr.service';
 import { NgForm, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { firstValueFrom} from 'rxjs';
 import { CONST_API } from 'src/app/constants/api-constants';
 import { ActivityModel } from 'src/app/models/activity/activity.model'
 import { ActivityCreationModel } from 'src/app/models/activity/activityCreation.model';
 import { ActivityEditionModel } from 'src/app/models/activity/activityEdition.model';
 import { ActivityService } from 'src/app/services/activity.service';
 import * as L from 'leaflet';
-import {marker, Util} from "leaflet";
-import isArray = Util.isArray;
-//import * as signalR from '@microsoft/signalr';
+import { MapService } from '../../services/map.service';
 
 export type MarkerFactory = { values: any[], markerFn: Function, popupFn?: Function }
 
@@ -24,14 +21,12 @@ export function coordinateValidator(): ValidatorFn{
 @Component({
   selector: 'app-activity',
   templateUrl: './activity.component.html',
-  styleUrl: './activity.component.css'
+  styleUrls: ['./activity.component.css']
 })
-export class ActivityComponent implements OnInit, AfterViewInit {
-  
-  private map!: L.Map;
-  private markers: L.Marker[] = [];
-
-  listActivities: ActivityModel[] = [];
+export class ActivityComponent implements OnInit {
+  [x: string]: any;
+  activities: ActivityModel[] = [];
+  isLoading = false;
   
   activity_Id! : number;
   activityName! : string;
@@ -59,109 +54,133 @@ export class ActivityComponent implements OnInit, AfterViewInit {
     'activity_Id'
   ];
   activity: any;
-  constructor(private activityService: ActivityService) {}
-
-  // 
+  constructor(
+    private signalRservice: SignalRService,
+    private activityService: ActivityService,
+    private mapService: MapService
+  ) {}
 
   public async ngOnInit(): Promise<void> {
-       
-   
-    await this.getAllActivities();``
-    //this.initMap();
-    //Chargez les activités depuis le service avant de créer la carte
-    // this.activityService.getAllActivities().subscribe((activities: ActivityModel[]) => {
-    //   this.listActivities = activities;
-    //   this.initMap(); // Initialiser la carte après avoir chargé les activités
-    // });
+    this.isLoading = true;
+
+    //Synchronisation avec SignalR
+    this.signalRservice.startConnection();
+    this.signalRservice.onActivityUpdate(this.handleActivityUpdate.bind(this));
+
+    //Charger les activités depuis l'API
+    await this.loadActivities();
+
+    this.isLoading = false;
   }
 
-  async ngAfterViewInit(): Promise<void> {
-    if (!this.listActivities || this.listActivities.length === 0) {
-      await this.getAllActivities();
+  private async loadActivities(): Promise<void> {
+    try {
+      this.activities = await this.activityService.getAllActivities();
+      this.mapService.loadMarkers(this.activities);
+    } catch (err) {
+      console.error('Error loading activities:', err);
     }
-    this.initMap();
-    //throw new Error('Method not implemented.');
-    //Loop through the activity list to add markers
-    this.listActivities.forEach(activity => {
-      //this.addMarker(activity.activityName, activity.posLat, activity.posLong, activity.activityDescription);
-    });
-  
+    const mockActivities: ActivityModel[] = [
+      {
+        activity_Id: 1, 
+        activityName: 'Hiking', 
+        activityAddress: '', 
+        activityDescription: 'activity', 
+        complementareInformation: '', 
+        posLat: '48.858844', 
+        posLong: '2.294351', 
+        organisateur_Id: 1,
+        upVotes: undefined,
+        downVotes: undefined,
+        positiveFeedback: 1
+      },
+      {
+        activity_Id: 2,
+        activityName: 'Cycling',
+        activityAddress: '',
+        activityDescription: '',
+        posLat: '40.712776',
+        posLong: '-74.005974',
+        organisateur_Id: 2,
+        complementareInformation: '',
+        upVotes: undefined,
+        downVotes: undefined,
+        positiveFeedback: 0
+      },
+    ];
+
+    this.activities = mockActivities;
+
+    this.signalRservice.updateActivities(this.activities);
   }
 
-  private initMap() {
-    //Initializing the map and setting the initial position
-    this.map = L.map('map').setView([50.82788, 4.37218], 13);
-    //Configuring the OpenStreetMap tile layer
-    const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    }).addTo(this.map);  
-
-    //Adding markers for each activity
-    // this.listActivities.forEach(activity => {
-    //   this.addMarker(activity.activity_Id, activity.posLat, activity.posLong);
-    // });
-  }
-
-
-  //Method to add markers on the map if necessary
-  private addMarker(name: string,latitude: string, longitude: string, popupText: string): void {
-    const lat = parseFloat(latitude);
-    const long = parseFloat(longitude);
-    if (!isNaN(lat) && !isNaN(long)) {
-      const marker = L.marker([lat, long]).addTo(this.map)
-      .bindPopup(popupText)
-      .openPopup();
-    this.markers.push(marker);
+  private handleActivityUpdate(updatedActivity: ActivityModel): void {
+    const index = this.activities.findIndex(a => a.activity_Id === updatedActivity.activity_Id);
+    if (index !== -1) {
+      this.activities.push(updatedActivity);
+    } else {
+      this.activities.push(updatedActivity);
     }
-    
+    this.mapService.updateMarker(updatedActivity);
   }
 
+  public async onActivitySubmit(activity: ActivityModel): Promise<void> {
+    try {
+      const savedActivity = await this.activityService.saveActivity(activity); // Sauvegarder l'activité
+      this['signalRService'].sendActivityUpdate(savedActivity); // Notifier SignalR
+    } catch (error) {
+      console.error('Error saving activity:', error);
+    }
+  }
 
-  // private addOrUpdateMarker(activity: ActivityModel): void {
-  //   // Find existing marker
-  //   let existingMarker = this.markers.find(marker => marker.options.title === activity.activityName);
+  public async updateActivityPosition(activityId: number, newLat: number, newLng: number): Promise<void> {
+    try {
+      // Update activity data
+      const activity = this.activities.find(a => a.activity_Id === activityId);
+      if (activity) {
+        activity.posLat = newLat.toString();
+        activity.posLong = newLng.toString();
+        this.signalRservice.sendMarkerUpdate(activityId.toString(), { lat: newLat, lng: newLng });
+      }
+    } catch (err) {
+      console.error('Error updating activity position:', err);
+    }
+  }
 
-  //   if (existingMarker) {
-  //     existingMarker.setLatLng([activity.posLat, activity.posLong]);
-  //     existingMarker.bindPopup('<b>${activity.activityName}</b><br />${activity.activityDescription}').openPopup();
-  //   } else {
-  //     // Create new marker
-  //     let newMarker = L.marker([activity.posLat, activity.posLong], { title: activity.activityName });
-  //     newMarker.bindPopup('<b>${activity.activityName}</b><br />${activity.activityDescription}');
-  //     newMarker.addTo(this.map);
-  //     this.markers.push(newMarker);
+  // private updateMarkersBasedOnVotes(voteData: any): void {
+  //   //Trouver l'activité associée au `nEvenement_Id` du vote
+  //   const associatedActivity = this.listActivities.find(
+  //     (activity) => activity.activity_Id === voteData.nEvenement_Id
+  //   );
+
+  //   if (associatedActivity) {
+  //     // Exemple: mettre à jour le popup du marqueur
+  //     const marker = this.markers.find(
+  //       (m) => m.getPopup()?.getContent() === associatedActivity.activityName
+  //     );
+
+  //     if (marker) {
+  //       marker
+  //         .bindPopup(
+  //           `<b>${associatedActivity.activityName}</b><br />Fun? ${
+  //             voteData.funOrNot ? 'Yes' : 'No'
+  //           }<br />Comment: ${voteData.comment}`
+  //         )
+  //         .openPopup();
+  //     }
   //   }
   // }
 
   public async getAllActivities(): Promise<void> {
     try {
-      this.listActivities = await this.activityService.getAllActivities();
-
-      //Initialize properties if they are not already present
-      this.listActivities.forEach(activity => {
-        activity.upVotes = activity.upVotes || 0;
-        activity.downVotes = activity.downVotes || 0;
-        activity.positiveFeedback = activity.positiveFeedback || 0;
-      });
-
-      this.listActivities.forEach(activity => {
-        if (activity.upVotes === undefined) {
-          console.error("Activity missing upVotes", activity);
-        }
-        if (activity.downVotes === undefined) {
-          console.error("Activity missing downVotes", activity);
-        }
-        if (activity.positiveFeedback === undefined) {
-          console.error("Activity missing positiveFeedback:", activity);
-        }
-      });
-
-      console.log('List of activities:', this.listActivities);
-
+      const activities = await this.activityService.getAllActivities();
+      //this.activitySyncService.setActivityList(activities); // Synchronisation
+      console.log('Activities fetched and synced', activities);
+      
     } catch (error) {
       console.error('Error fetching activities:', error);
       alert('Unable to load activities. Check your internet connection or try again later.');
+      //this.toastr.error('Error retrieving activities.', 'Error');
     }
   }
 
@@ -192,50 +211,6 @@ export class ActivityComponent implements OnInit, AfterViewInit {
     return `rgb(0, 0, ${Math.min(255, feedback * 10)})`;
     return feedback > 50 ? 'ligthblue' : 'darkgrey'; //Blue for high positive reviews
   }
-
-  // async submit<T extends { id?: number }> (
-  //   form: NgForm,
-  //   isEditing: boolean,
-  //   createFn: (item: any) => Promise<any>,
-  //   updateFn: (item: any) => Promise<any>,
-  //   list: T[],
-  //   item: T
-  // ): Promise<void> {
-
-  //   if (isEditing) {
-  //     updateFn(form.value).then(() => console.log('Activity updated'));
-  //   } else {
-  //     createFn(form.value).then(() => console.log('Activity created'));
-  //   }
-
-  //   if (form.invalid) {
-  //     return;
-  //   }
-  //   try {
-  //     const result = isEditing ? await updateFn(item) : await createFn(item);
-  //     if (isEditing) {
-  //       const index = list.findIndex((i) => i.id === result.id);
-  //       if (index > -1) list[index] = result;
-  //     } else {
-  //       list.push(result);
-  //     }
-
-  //     form.resetForm();
-  //     alert("Operation successful");
-  //   } catch (error) {
-  //     console.error('Error during submission', error);
-  //     alert('Failed to complete the operation.')
-  //   }
-  // }
-
-  // submit(form: NgForm) {
-  //   if (this.isFormEdition) {
-  //     this.updateActivity(form.value);
-  //   } else {
-  //     this.createActivity(form.value);
-  //   }
-  // }
-
 
   public async submit(activityForm: NgForm): Promise<void> {
     // Validation via le formulaire
@@ -272,9 +247,9 @@ export class ActivityComponent implements OnInit, AfterViewInit {
 
         const response: ActivityModel = await this.activityService.createActivity(activityEdited);
 
-        this.listActivities.filter((a: ActivityModel) => a.activity_Id != response.activity_Id);
+        this.activities.filter((a: ActivityModel) => a.activity_Id != response.activity_Id);
 
-        this.listActivities.push(response);
+        this.activities.push(response);
 
         // activityForm.resetForm();
 
@@ -299,10 +274,10 @@ export class ActivityComponent implements OnInit, AfterViewInit {
 
       try {
         const response: ActivityModel = await this.activityService.createActivity(activity);
-        console.log(this.listActivities);
+        console.log(this.activities);
         console.log(response);
 
-        this.listActivities.push(response);
+        this.activities.push(response);
 
         activityForm.resetForm();
 
@@ -331,7 +306,7 @@ export class ActivityComponent implements OnInit, AfterViewInit {
     };
     try {
       const response = await this.activityService.createActivity(newActivity);
-      this.listActivities.push(response); //Update the list with the new activity
+      this.activities.push(response); //Update the list with the new activity
       console.log('Activity created:', response);
       activityForm.resetForm();
       this.cancelForm();
@@ -346,7 +321,7 @@ export class ActivityComponent implements OnInit, AfterViewInit {
     this.showForm = true;
     this.isFormEdition = true;
 
-    this.activityToEdit = this.listActivities.find((a: ActivityModel) => a.activity_Id == activity_Id);
+    this.activityToEdit = this.activities.find((a: ActivityModel) => a.activity_Id == activity_Id);
 
     this.activityName = this.activityToEdit.activityName;
     this.activityAddress = this.activityToEdit.activityAddress;
@@ -377,7 +352,7 @@ export class ActivityComponent implements OnInit, AfterViewInit {
   public async deleteActivity(activity_Id: number): Promise<void> {
     if (confirm('Are you sure you want to delete this activity?')){
       try {
-        this.listActivities = this.listActivities.filter(a => a.activity_Id !== activity_Id);
+        this.activities = this.activities.filter(a => a.activity_Id !== activity_Id);
         console.log('Activity with ID ${activity_Id} has been deleted');
       } catch (error) {
         console.log("Error deleting activity:", error);
@@ -385,39 +360,6 @@ export class ActivityComponent implements OnInit, AfterViewInit {
     }
   }
 
-  // public async updateActivity(activityForm: NgForm): Promise<void> {
-  //   if (activityForm.invalid) {
-  //     console.log('Form is invalid');
-  //     return;
-  //   }
-
-  //   const activityUpdated: ActivityEditionModel = {
-  //     activity_Id: this.activityToEdit.activity_Id,
-  //     activityName: this.activityName,
-  //     activityAddress: this.activityAddress, 
-  //     activityDescription: this.activityDescription,
-  //     complementareInformation: this.complementareInformation,
-  //     posLat: this.posLat,
-  //     posLong: this.posLong,
-  //     organisateur_Id: this.organisateur_Id,
-  //   };
-
-  //   try {
-  //     const updatedActivity = await this.activityService.updateActivity(activityUpdated);
-  //     //Update the list with the updated activity
-  //     const index = this.listActivities.findIndex(a => a.activity_Id === updatedActivity.activity_Id);
-  //     if (index !== -1) {
-  //       this.listActivities[index] = updatedActivity;
-  //     }
-  //     console.log('Activity updated:', updatedActivity);
-  //     activityForm.resetForm();
-  //     this.cancelForm();
-  //     alert('Activity updated susseccfully');
-  //   } catch (error) {
-  //     console.error('Error updating activity:', error);
-  //     alert('Failed to update activity. Please try again');
-  //   }
-  // }
   public async updateActivity(activity: any,activityUpdated: ActivityEditionModel): Promise<void> {
     const url: string = `${CONST_API.URL_API}/Activity/update`;
     //Checking required fields
@@ -444,7 +386,3 @@ export class ActivityComponent implements OnInit, AfterViewInit {
     }
   }
 }
-
-
-
-

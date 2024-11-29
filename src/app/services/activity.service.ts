@@ -66,6 +66,23 @@ export class ActivityService {
       throw new Error('Error deleting activity: ${error}');
     }
   }
+
+  public async saveActivity(activity: ActivityModel): Promise<ActivityModel> {
+    try {
+      if (activity.activity_Id) {
+        return await this.http
+          .put<ActivityModel>(`${CONST_API.URL_API}/Activity/update/${activity.activity_Id}`, activity)
+          .toPromise();
+      } else {
+        return await this.http
+          .post<ActivityModel>(CONST_API.URL_API, activity)
+          .toPromise();
+      }
+    } catch (error) {
+      console.error('Error saving activity', error);
+      throw error;
+    }
+  }
 }
 function from(promise: Promise<ActivityModel[]>): Observable<ActivityModel[]> {
   throw new Error('Function not implemented.');

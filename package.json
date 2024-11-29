@@ -23,6 +23,7 @@
     "@asymmetrik/ngx-leaflet": "^18.0.1",
     "@microsoft/signalr": "^8.0.7",
     "leaflet": "^1.9.4",
+    "ngx-toastr": "^19.0.0",
     "primeng": "^17.18.9",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

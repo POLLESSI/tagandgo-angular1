@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { NEvenementModel } from '../models/nevenement/nevenement.model';
 import { CONST_API } from '../constants/api-constants';
 import { NEvenementCreationModel } from '../models/nevenement/nevenementCreation.model';
@@ -10,6 +10,7 @@ import { NevenementComponent } from '../components/nevenement/nevenement.compone
   providedIn: 'root'
 })
 export class NevenementService {
+  private apiUrl = "https://localhost:7069/nEvenement"; //URL API
 
   constructor(private http: HttpClient) { }
 
@@ -36,7 +37,7 @@ export class NevenementService {
     }
   }
 
-  public async updateNEvenement(): Promise<void> {
+  public async updateNEvenement(updatedNEvenement?: { nEvenementDate: string; nEvenementName: string; nEvenementDescription: string; posLat: number; posLong: number; positif: boolean; organisateur_Id: number; nIcon_Id: number; recompense_Id: number; bonus_Id: number; mediaItem_Id: number; nEvenement_Id: number; }): Promise<void> {
     try {
 
     } catch (error) {
@@ -54,8 +55,10 @@ export class NevenementService {
       throw new Error('Error deleting event: ${error}')
     }
   }
-}
+  public getData(): Observable<any> {
+    return this.http.get<any>(this.apiUrl); //Appel HTTP GET
+  }
 // function from(promise: Promise<NEvenementModel[]>): Observable<NEvenementModel[]>{
 //   throw new Error('Function not implemented.');
 // }
-
+}

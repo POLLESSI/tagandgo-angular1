@@ -4,12 +4,18 @@ import { NVoteModel } from 'src/app/models/nvote/nvote.model';
 import { NVoteCreationModel } from 'src/app/models/nvote/nvoteCreation.model';
 import { NVoteEditionModel } from 'src/app/models/nvote/nvoteEdition.model';
 import { NvoteService } from 'src/app/services/nvote.service';
+import { MarkerService } from 'src/app/services/marker.service';
+import { ActivityService } from '../../services/activity.service';
+import { SignalRService } from 'src/app/services/signalr.service';
+import { ActivitySyncService } from 'src/app/services/activitysync.service';
+import { NEvenementSyncService } from '../../services/nevenementsync.service';
 @Component({
   selector: 'app-nvote',
   templateUrl: './nvote.component.html',
   styleUrl: './nvote.component.css'
 })
 export class NvoteComponent implements OnInit {
+  [x: string]: any;
   listNVotes: NVoteModel[] = [];
 
   nEvenement_Id! : number;
@@ -24,15 +30,38 @@ export class NvoteComponent implements OnInit {
 
   displayedColumns: string[] = ['nEvenement_Id', 'funOrNot', 'comment']
 
-  constructor(private nvoteService: NvoteService) {}
+  constructor(
+    private signalRService: SignalRService,
+    private nvoteService: NvoteService, 
+    private markerService: MarkerService,
+    private activitySyncService: ActivitySyncService,
+    private nevenementSyncService: NEvenementSyncService
+  ) {}
 
   public async ngOnInit(): Promise<void> {
+    this.signalRService.startConnection();
+    // Ecouter les mises à jour des marqueurs
+    this.signalRService.onMarkerUpdate((activityId, markerData) => {
+      console.log(`Activity ${activityId} marker updated:`, markerData);
+    });
+    this.activitySyncService.activityList$.subscribe(activities => {
+      console.log('Activity list in NVoteComponent updated:', activities)
+    });
     await this.getAllNVotes();
+    this.activitySyncService.activityList$.subscribe(activities => {
+      console.log('Updated activities:', activities);
+    });
+    this.nevenementSyncService.nEvenements$.subscribe(events => {
+      console.log('Updated list of events in NVoteComponent:', events);
+    });
   }
 
   public async getAllNVotes(): Promise<void> {
     try {
       this.listNVotes = await this.nvoteService.getAllNVotes();
+      this.signalRService.onEventUpdate(updatedEvent => {
+        this.nevenementSyncService.addOrUpdateNEvenement(updatedEvent);
+      })
 
       console.log(this.listNVotes);
 
@@ -44,6 +73,18 @@ export class NvoteComponent implements OnInit {
     if (nVoteForm.invalid) {
       console.log("Form is invalid");
       return;
+    }
+
+    if (!nVoteForm.invalid) {
+      const updatedVote = {
+        nEvenement_Id: this.nEvenement_Id,
+        funOrNot: this.funOrNot,
+        comment: this.comment,
+      };
+
+      //Emettre une mise à jour vers le service
+      this.markerService.updateMarker(updatedVote);
+      this['ActivityService'].refreshActivities();
     }
 
     if (this.isFormEdition) {

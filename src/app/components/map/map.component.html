@@ -81,3 +81,7 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
+  <div>
+    <div *ngIf="mapContainerVisible" id="map" style="height: 1400px; width: 100%;"></div>
+  </div>
+  
