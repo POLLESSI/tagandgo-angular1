@@ -11,7 +11,7 @@
         <h1 *ngIf="!isFormEdition">Create Event</h1>
         <h1 *ngIf="isFormEdition">Edit Event</h1>
 
-        <form #nevenementForm="ngForm" (ngSubmit)="submit(nevenementForm)">
+        <form #nevenementForm="ngForm" (ngSubmit)="onNEvenementSubmit(nevenementForm.value)" #evenement="ngForm">
           <!-- Date Event -->
            <mat-form-field>
               <mat-label>Date Event :</mat-label>
@@ -88,7 +88,7 @@
 
 <hr />
 
-<table mat-table [dataSource]="listNEvenements" class="mat-elevation-z8">
+<table mat-table [dataSource]="evenements" class="mat-elevation-z8">
 
     <!--- Note that these columns can be defined in any order.
           The actual rendered columns are set as a property on the row definition" -->
@@ -167,4 +167,11 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
-  
+  <div *ngIf="evenements.length > 0">
+    <h3>List of events </h3>
+      <ul>
+        <li *ngFor="let evenement of evenements">
+          {{ evenement.nEvenementName }} - {{ evenement.nEvenementDescription }} - {{ evenement.posLat }}, {{ evenement.posLong }}
+        </li>
+      </ul>
+  </div>

@@ -176,8 +176,10 @@ export class ActivityComponent implements OnInit {
       const activities = await this.activityService.getAllActivities();
       //this.activitySyncService.setActivityList(activities); // Synchronisation
       console.log('Activities fetched and synced', activities);
+      console.log('Activities loaded:', activities);
       
     } catch (error) {
+      //this['errorMessage'] = 'Failed to load activities.'
       console.error('Error fetching activities:', error);
       alert('Unable to load activities. Check your internet connection or try again later.');
       //this.toastr.error('Error retrieving activities.', 'Error');

@@ -8,27 +8,94 @@ import { MapCreationModel } from '../models/map/mapCreation.model';
 import { MapEditionModel } from '../models/map/mapEdition.model';
 import { marker } from 'leaflet';
 import { ActivityModel } from '../models/activity/activity.model';
+import { NevenementService } from './nevenement.service';
+import { ActivityService } from './activity.service';
+
+export interface MappableEntity {
+  posLat: string;
+  posLong: string;
+  activityName?: string; // Optionnel si non applicable
+  nEvenementName?: string; // Optionnel si non applicable
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class MapService {
-  private map: L.Map;
+  // activities: any;
+  // activityService: any;
+  // evenements: any;
+  // nevenementService: any;
+  // mapService: any;
+  public map: L.Map;
   private markers: Map<number, L.Marker> = new Map();
 
+  getMap(): L.Map | null {
+    return this.map || null;
+  }
+
+  destroyMap(): void {
+    if (this.map) {
+      this.map.remove();
+      this.map = null;
+      console.log('Map instance destroyed');
+    }
+  }
+
+  public loadMarkers(entities: MappableEntity[]): void {
+    entities.forEach(entity => {
+      const name = entity.activityName || entity.nEvenementName || 'UnKnown';
+      const lat = parseFloat(entity.posLat);
+      const long = parseFloat(entity.posLong);
+  
+      if (!isNaN(lat) && !isNaN(long)) {
+        const marker = L.marker([lat, long]).bindPopup(name);
+        marker.addTo(this.map);
+      }
+    });
+  }
+  
+
+  constructor(private http: HttpClient) { }
+
   initMap(containerId: string): void {
-    this.map = L.map(containerId).setView([50.82790, 4.37240], 13);
+
+    const container = document.getElementById(containerId) as HTMLElement & {_leaflet_id?: number };
+
+    if (!container) {
+      console.error('Map container with ID "${containerId}" not found.');
+      return;
+    }
+
+    if (container._leaflet_id) {
+      console.warn('Existing Leaflet map detected. Reinitializing...');
+      container.innerHTML = '';
+    }
+
+    // Vérifiez si la carte est déjà initialisée
+    if (this.map) {
+      console.warn('Map instance already exists. Removing the previous instance.');
+      this.map.remove(); // Efface l'ancienne instance si elle existe déjà. 
+      this.map = null;
+    }
+
+    this.map = L.map(containerId).setView([50.82790, 4.37240], 13); // Initialisation de la map.
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution: '&copy; OpenStreetMap contributors',
     }).addTo(this.map);
 
-    console.log('Map initialized.');
+    console.log('Map initialized successfully.');
   }
 
-  loadMarkers(activities: ActivityModel[]): void {
-    activities.forEach(activity => this.addMarker(activity));
+  private async loadNEvenements(): Promise<void> {
+    try {
+      // this.evenements = await this.nevenementService.getAllNEvenements();
+      // this.mapService.loadMarkers(this.evenements);
+    } catch (error) {
+      console.error('Erreur de chargement des événements :', error);
+    }
   }
 
   addMarker(activity: ActivityModel): void {
@@ -60,8 +127,6 @@ export class MapService {
       this.markers.delete(activityId);
     }
   }
-
-  constructor(private http: HttpClient) { }
 
   public async getAllMaps(): Promise<Array<MapModel>> {
     const url: string = `${CONST_API.URL_API}/Map`;

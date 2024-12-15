@@ -1,9 +1,10 @@
 import { Injectable, OnDestroy } from "@angular/core";
 import * as signalR from '@microsoft/signalr';
-import { Subject, BehaviorSubject } from 'rxjs';
+import { Subject, BehaviorSubject, Subscription } from 'rxjs';
 import { ActivityModel } from "../models/activity/activity.model";
 import { NEvenementModel } from "../models/nevenement/nevenement.model";
 import { CONST_API } from '../constants/api-constants';
+//import { subscribe } from "diagnostics_channel";
 @Injectable({
     providedIn: 'root',
 })
@@ -62,47 +63,90 @@ export class SignalRService implements OnDestroy {
         });
     }
 
+    private isStartingConnection = false;
+
     public async startConnection(): Promise<void> {
+        console.log('SignalR connection state', this.hubConnection.state);
+        if (this.isStartingConnection || this.hubConnection.state !== signalR.HubConnectionState.Disconnected) {
+            console.warn('SignalR connection is already active or being established.');
+
+            setTimeout(() => this.onMarkerUpdate(callback), 3000)
+            return;
+        }
+        
+        this.isStartingConnection = true; //Active le verrou
+
         try {
             await this.hubConnection.start();
             console.log('SignalR connection started.');
+
+            this.processPendingSubscriptions(); // Traite les abonnements en attente
+            // Ajoute les abonnements ici
+            this.listenToSignalRUpdate();
+             
         } catch (err) {
             console.error('Error starting SignalR connection:', err);
+            setTimeout(() => this.startConnection(), 5000);
+            //console.debug('SignalR connection state:', this.hubConnection.state);
+        } finally {
+            this.isStartingConnection = false; //Libère le verrou
         }
-        // if (this.hubConnection.state === signalR.HubConnectionState.Disconnected) {
-        //     return this.hubConnection
-        //         .start()
-        //         .then(() => console.log('Hub Connection started'))
-        //         .catch((err) => console.error('Error while starting connection:', err));
-        // } else {
-        //     console.warn('SignalR hub connection already started or in progress.');
-        //     return Promise.resolve();
-        // }
+        
     }
 
     onActivityUpdate(callback: (updatedActivity: ActivityModel) => void): void {
-        this.hubConnection.on('ActivityUpdated', callback);
+        //this.hubConnection.on('ActivityUpdated',  callback);
         if (!this.hubConnection) {
             console.error('SignalR connection is not established');
             return;
         }
+        
+        const subscription = () => {
 
-        this.hubConnection.on('ReceiveActivityUpdate', callback);
+            //Nettoye l'ancien gestionnaire pour éviter les doublons.
+
+            this.hubConnection.off('ActivityUpdate'); //Supprime les gestionnaires précédents
+            this.hubConnection.on('ActivityUpdate', (updatedActivity : ActivityModel) => {
+                console.log('ActivityUpdated event received:', updatedActivity);
+                callback(updatedActivity);
+            });
+        };
+
+        if (this.hubConnection.state === signalR.HubConnectionState.Connected) {
+            subscription();
+        } else {
+            console.warn('SignalR connection not ready. Adding to pending subscriptions.');
+            this.pendingSubscriptions.push(subscription);
+        }
     }
 
     sendActivityUpdate(activity: ActivityModel): void {
-        this.hubConnection.invoke('UpdateActivity', activity).catch(err =>
-            console.error('Error sending activity update:', err)
-        );
-        if (!this.hubConnection) {
-            console.error('SignalR connection is not established');
+        if (!this.hubConnection || this.hubConnection.state !== signalR.HubConnectionState.Connected) {
+            console.error('Cannot send activity update; SignalR connection is not established');
             return;
         }
+        this.hubConnection.invoke('UpdateActivity', activity)
+            .then(() => console.log('Activity update sent'))
+            .catch(err => console.error('Error sending activity update: ', err));
 
         this.hubConnection
             .invoke('SendActivityUpdate', activity)
             .then(() => console.log('Activity update sent'))
             .catch(error => console.error('Error sending activity update', error));
+    }
+
+    public sendNEvenementUpdate(evenement: NEvenementModel): void {
+        this.hubConnection.invoke('SendEvenementUpdate', evenement).catch(err =>
+             console.error('Error sending event update: ',err)
+        );
+        if (!this.hubConnection) {
+            console.error('Cannot send event update; signalR connection is not established');
+            return;
+        }
+        this.hubConnection
+            .invoke('SendNEvenementUpdate', evenement)
+            .then(() => console.log('Event update sent'))
+            .catch(error => console.error('Error sending event update', error));
     }
 
     public updateActivities(activities: ActivityModel[]): void {
@@ -118,41 +162,82 @@ export class SignalRService implements OnDestroy {
     }
 
     public async stopConnection(): Promise<void> {
-        if (this.hubConnection.state === signalR.HubConnectionState.Connected) {
-            return this.hubConnection
-                .stop()
-                .then(() => console.log('Hub connection stopped.'))
-                .catch((err) => console.error('Error while stopping SignalR connection:', err));
+        if (this.hubConnection.state !== signalR.HubConnectionState.Disconnected) {
+            try {
+                await this.hubConnection.stop();
+                console.log('SignalR connetcion stopped.');
+            } catch (err) {
+                console.error('Error stopping connection:', err);
+            }
         }
         return Promise.resolve();
+        this.hubConnection.on('error', (error) => {
+            console.error('SignalR global error: ', error);
+        });
+    }
+
+    // Création d'une file d'attente
+    private pendingSubscriptions: (() => void)[] = [];
+
+    private processPendingSubscriptions(): void {
+        if (this.hubConnection.state === signalR.HubConnectionState.Connected) {
+            this.pendingSubscriptions.forEach(Subscription => Subscription());
+            this.pendingSubscriptions = []; // Vide la file.
+        }
     }
     
     public onMarkerUpdate(callback: (activityId: number, markerData: any) => void): void {
-        if (this.hubConnection.state !== signalR.HubConnectionState.Connected) {
+
+        const subscription = () => {
+            this.hubConnection.off('MarkerUpdate'); // Supprime le gestionnaire précédent.
+            this.hubConnection.on('MarkerUpdate', (activityId: number, markerData: any) => {
+                console.log('MarkerUpdate event received:', { activityId, markerData });
+                callback(activityId, markerData);
+            });
+            console.log('Subscribed to MarkerUpdate.');
+        };
+
+        if (this.hubConnection.state === signalR.HubConnectionState.Connected) {
+            subscription();
+        } else {
+            console.warn('SignalR connection not established. Adding subscription to queue.');
+            this.pendingSubscriptions.push(subscription);
+        }
+
+        /*if (this.hubConnection.state !== signalR.HubConnectionState.Connected) {
             console.error('Cannot subscribe to MarkerUpdate; SignalR connection not established.');
             return;
         }
-        this.hubConnection.on('MarkerUpdate', (activityId: number, markerdata: any) => {
-            callback(activityId, markerdata);
-        });
+
+        this.hubConnection.on('MarkerUpdate', callback);
         this.hubConnection.on('ActivityUpdated', (updatedActivity: ActivityModel) => {
             console.log('Activity updated from SignalR:', updatedActivity);
             //this.activitySyncService.updateActivity(updatedActivity);
-        })
+        });*/
+
+        if (!this.hubConnection) {
+            console.error('SignalR connection is not established.');
+            return;
+        }
     }
 
     public sendMarkerUpdate(activityId: string, markerData: any): void {
         if (this.hubConnection.state === signalR.HubConnectionState.Connected) {
             this.hubConnection
                 .invoke('BroadcastMarkerUpdate', activityId, markerData)
+                .then(() => console.log('Marker update sent successfully.'))
                 .catch(err => console.error('Error sending marker update: ', err));
         } else {
-            console.error('Cannot send marker update; SignalR connection not established.')
+            console.error('Cannot send marker update; SignalR connection not established.');
         }      
     }
 
     public onEventUpdate(callback: (event: any) => void): void {
         this.eventSubject.asObservable().subscribe(callback);
+    }
+
+    public onNEvenementUpdate(callback: (evenement: NEvenementModel) => void): void {
+        this.hubConnection.on('ReceiveNEvenementUpdate', callback);
     }
 
     public emitEventUpdate(updatedEvent: any): void {
@@ -175,9 +260,9 @@ export class SignalRService implements OnDestroy {
     }
 
     public listenToSignalRUpdate(): void {
-        this.hubConnection.on('ActivityUpdated', (updatedActivities: ActivityModel[]) => {
-            console.log('Receive update activities from SignalR:', updatedActivities);
-            this.updateActivities(updatedActivities);
+        this.hubConnection.on('ActivityUpdated', (updatedActivity: ActivityModel) => {
+            console.log('Receive update activities from SignalR:', updatedActivity);
+            this.activitySubject.next([...this.activitySubject.getValue(), updatedActivity]);
         });
 
         this.hubConnection.on('NEvenementUpdated', (updateEvenements: NEvenementModel[]) => {
@@ -185,4 +270,8 @@ export class SignalRService implements OnDestroy {
             this.updateEvenements(updateEvenements);
         });
     }
+}
+
+function callback(activityId: number, markerData: any): void {
+    console.log('Marker updated:', { activityId, markerData });
 }

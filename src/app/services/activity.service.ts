@@ -6,30 +6,37 @@ import { ActivityModel } from '../models/activity/activity.model';
 import { CONST_API } from '../constants/api-constants';
 import { ActivityCreationModel } from '../models/activity/activityCreation.model';
 import { ActivityEditionModel } from '../models/activity/activityEdition.model';
+//import { error } from 'console';
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class ActivityService {
-  //private baseUrl = 'https://localhost:7069/api/activities'
+  private apiUrl = 'https://localhost:7069/api/activities'; //URL API
   
 
   constructor(private http: HttpClient) { }
 
   public async getAllActivities(): Promise<Array<ActivityModel>> {
-    const url: string = `${CONST_API.URL_API}/Activity`;
+    const url: string = `${this.apiUrl}/Activities`;
     try {
-      const respons: any = await firstValueFrom(this.http.get(url, {responseType: 'json'}));
+      const respons = await firstValueFrom(
+        this.http.get<ActivityModel[]>(url , {responseType: 'json'})
+      );
 
       return respons as Array<ActivityModel>;
 
     } catch (error) {
-      throw new error('Error getting activity : ${error}'); 
+      console.error('Error loading activities:', error)
+      throw new Error('Error getting activity : ${error}'); 
     }
+    console.log('URL:', url);
+    console.error('Caught error:')
   }
 
   public async createActivity(activityCreated: ActivityCreationModel): Promise<ActivityModel> {
-    const url: string = `${CONST_API.URL_API}/Activity/create`;
+    const url: string = `${this.apiUrl}/Activity/create`;
 
     try {
       const respons: any = await firstValueFrom(this.http.post(url, activityCreated, {responseType: 'json'}));
@@ -45,7 +52,7 @@ export class ActivityService {
     
 
     try {
-      const url: string = `${CONST_API.URL_API}/Activity/update`;
+      const url: string = `${this.apiUrl}/Activity/update`;
       // const url = '${this.baseUrl}/${activityUpdated.activity_Id}';
       console.log("UPDATE : ", url, activityUpdated);
 
@@ -57,7 +64,7 @@ export class ActivityService {
   }
 
   public async deleteActivity(activity_Id: number): Promise<void> {
-    const url: string = `${CONST_API.URL_API}/Activity/delete/${activity_Id}`;
+    const url: string = `${this.apiUrl}/Activity/delete/${activity_Id}`;
 
     try {
       await firstValueFrom(this.http.delete(url, {responseType: 'json'}));
@@ -71,11 +78,11 @@ export class ActivityService {
     try {
       if (activity.activity_Id) {
         return await this.http
-          .put<ActivityModel>(`${CONST_API.URL_API}/Activity/update/${activity.activity_Id}`, activity)
+          .put<ActivityModel>(`${this.apiUrl}/Activity/update/${activity.activity_Id}`, activity)
           .toPromise();
       } else {
         return await this.http
-          .post<ActivityModel>(CONST_API.URL_API, activity)
+          .post<ActivityModel>(this.apiUrl, activity)
           .toPromise();
       }
     } catch (error) {

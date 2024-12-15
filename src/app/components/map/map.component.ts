@@ -14,7 +14,7 @@ export type MarkerFactory = { values: any[], markerFn: Function, popupFn?: Funct
   styleUrls: ['./map.component.css']
 })
 export class MapComponent implements OnInit, AfterViewInit {
-  private map!: L.Map;
+  public map: L.Map | null = null;
   private markers: L.Marker[] = [];
   listMaps: MapModel[] = [];
 
@@ -31,16 +31,46 @@ export class MapComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['dateCreation', 'mapUrl', 'description']
 
   constructor(private mapService: MapService) {}
+
   ngAfterViewInit(): void {
+    const containerId = 'map';
+
+    this.mapService.initMap(containerId);
+
+    this.mapService.getAllMaps()
+      .then(() => {
+        console.log('Maps loaded successfully.');
+      })
+      .catch((error) => {
+        console.error('Error loading maps:', error);
+      });
+    // Initialize la carte via MapService
+    if (!this.map) {
+      this.mapService.initMap(containerId);
+    } else {
+      console.warn('Map is already initialized. Skipping initialization.');
+    }
+    
+
+    this.mapService.getAllMaps()
+       .then(() => {
+        console.log('Maps loaded successfully');
+       })
+       .catch((error) => {
+        console.error('Error loading maps:', error);
+       });
+
+    setTimeout(() => this.mapService.initMap('map'), 0); // Initialisation de la map.
+
     try {
       //Initialiser la map Leaflet
       this.map = L.map('map').setView([50.82788, 4.37218], 13);
-      if (this.map) {
-        const marker = L.marker([50.82788, 4.37218]).addTo(this.map);
-        marker.bindPopup('Hello, Leaflet!').openPopup();
-      } else {
-        console.error('Cannot add marker: map is undefined');
-      }
+      // if (this.map) {
+      //   const marker = L.marker([50.82788, 4.37218]).addTo(this.map);
+      //   marker.bindPopup("C'est ici que ça se passe!").openPopup();
+      // } else {
+      //   console.error('Cannot add marker: map is undefined');
+      // }
 
       if (!this.map) {
         console.error('Map initialization failed');
@@ -63,16 +93,30 @@ export class MapComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.mapService.initMap('map');
+    //this.mapService.initMap('map');
     //await this.getAllMaps();
   }
 
-  initMap(): void {
-    const containerId = 'map';
+  initMap(containerId: string): void {
+    let container = document.getElementById(containerId) as HTMLElement & {_leaflet_id?: number };
+
+    if (!container) {
+      console.error('Map container with ID "${containerId}" not found.');
+      return;
+    }
+
+    // Recréer le container si nécessaire
+    if (container._leaflet_id) {
+      console.warn('Existing Leaflet map detected. Reinitializing...');
+      container.innerHTML = "" //Vide le contenu pour éviter les conflits.
+    }
+    //const containerId = 'map';
 
     //Vérifiez si la carte existe déjà
     if (this.map) {
+      console.warn('Map already initialized.');
       this.map.remove(); //Supprime l'ancienne instance
+      this.map = null;
     }
 
     //Initialisez une nouvelle carte
@@ -91,7 +135,9 @@ export class MapComponent implements OnInit, AfterViewInit {
     //Désactiver le containeur avant de détruire le composant
     this.mapContainerVisible = false;
 
-    if (this.map) {
+    this.mapService.destroyMap();
+
+    if (this.mapService.map) {
       this.map.remove(); //Supprimer la carte proprement
       this.map = null;
       console.log('Map instance destroyed');

@@ -18,7 +18,7 @@ export class NevenementService {
     const url: string = `${CONST_API.URL_API}/NEvenement`;
     
     try {
-      const respons: any = await firstValueFrom(this.http.get(url, {responseType: 'json'}));
+      const respons: any = await firstValueFrom(this.http.get<NEvenementModel[]>(`${this.apiUrl}/evenements`,{responseType: 'json'}));
 
       return respons as Array<NEvenementModel>
     } catch (error) {
@@ -58,7 +58,8 @@ export class NevenementService {
   public getData(): Observable<any> {
     return this.http.get<any>(this.apiUrl); //Appel HTTP GET
   }
-// function from(promise: Promise<NEvenementModel[]>): Observable<NEvenementModel[]>{
-//   throw new Error('Function not implemented.');
-// }
+
+  public saveNEvenement(evenement: NEvenementModel): Promise<NEvenementModel> {
+    return this.http.post<NEvenementModel>(`${this.apiUrl}/evenements`, evenement).toPromise();
+  }
 }

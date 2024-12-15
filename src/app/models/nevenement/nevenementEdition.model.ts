@@ -3,8 +3,8 @@ export interface NEvenementEditionModel {
     nEvenementDate : string;
     nEvenementName : string;
     nEvenementDescription : string;
-    posLat : number;
-    posLong : number;
+    posLat : string;
+    posLong : string;
     positif : boolean;
     organisateur_Id : number;
     nIcon_Id : number;
