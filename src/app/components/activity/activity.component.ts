@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SignalRService } from 'src/app/services/signalr.service';
 import { NgForm, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { CONST_API } from 'src/app/constants/api-constants';
@@ -9,22 +9,22 @@ import { ActivityService } from 'src/app/services/activity.service';
 import * as L from 'leaflet';
 import { MapService } from '../../services/map.service';
 
-export type MarkerFactory = { values: any[], markerFn: Function, popupFn?: Function }
+// export type MarkerFactory = { values: any[], markerFn: Function, popupFn?: Function }
 
-export function coordinateValidator(): ValidatorFn{
-  return (control: AbstractControl): ValidationErrors | null => {
-    const valid = /^-?\d+\.\d{1,6}$/.test(control.value);
-    return valid ? null : {invalidCoordinate: true}
-  }
-}
+// export function coordinateValidator(): ValidatorFn{
+//   return (control: AbstractControl): ValidationErrors | null => {
+//     const valid = /^-?\d+\.\d{1,6}$/.test(control.value);
+//     return valid ? null : {invalidCoordinate: true}
+//   }
+// }
 
 @Component({
   selector: 'app-activity',
   templateUrl: './activity.component.html',
   styleUrls: ['./activity.component.css']
 })
-export class ActivityComponent implements OnInit {
-  [x: string]: any;
+export class ActivityComponent implements OnInit, OnDestroy {
+  // [x: string]: any;
   activities: ActivityModel[] = [];
   isLoading = false;
   
@@ -60,58 +60,65 @@ export class ActivityComponent implements OnInit {
     private mapService: MapService
   ) {}
 
-  public async ngOnInit(): Promise<void> {
-    this.isLoading = true;
+  ngOnInit(): void {
+    // this.isLoading = true;
 
-    //Synchronisation avec SignalR
-    this.signalRservice.startConnection();
-    this.signalRservice.onActivityUpdate(this.handleActivityUpdate.bind(this));
+    // //Synchronisation avec SignalR
+    // this.signalRservice.startConnection();
+    // this.signalRservice.onActivityUpdate(this.handleActivityUpdate.bind(this));
 
-    //Charger les activités depuis l'API
-    await this.loadActivities();
+    // //Charger les activités depuis l'API
+    // await this.loadActivities();
 
-    this.isLoading = false;
+    // this.isLoading = false;
+    this.loadActivities();
+  }
+
+  ngOnDestroy(): void {
+      // this.activityService.stopSignalRConnection();
   }
 
   private async loadActivities(): Promise<void> {
     try {
       this.activities = await this.activityService.getAllActivities();
-      this.mapService.loadMarkers(this.activities);
+      this.activities.forEach(activity => {
+        this.mapService.addMarker(this.mapService.getMap(), activity.posLat, activity.posLong, activity.activityName);
+      });
     } catch (err) {
       console.error('Error loading activities:', err);
     }
-    const mockActivities: ActivityModel[] = [
-      {
-        activity_Id: 1, 
-        activityName: 'Hiking', 
-        activityAddress: '', 
-        activityDescription: 'activity', 
-        complementareInformation: '', 
-        posLat: '48.858844', 
-        posLong: '2.294351', 
-        organisateur_Id: 1,
-        upVotes: undefined,
-        downVotes: undefined,
-        positiveFeedback: 1
-      },
-      {
-        activity_Id: 2,
-        activityName: 'Cycling',
-        activityAddress: '',
-        activityDescription: '',
-        posLat: '40.712776',
-        posLong: '-74.005974',
-        organisateur_Id: 2,
-        complementareInformation: '',
-        upVotes: undefined,
-        downVotes: undefined,
-        positiveFeedback: 0
-      },
-    ];
+    // const mockActivities: ActivityModel[] = [
+    //   {
+    //     activity_Id: 1, 
+    //     activityName: 'Hiking', 
+    //     activityAddress: '', 
+    //     activityDescription: 'activity', 
+    //     complementareInformation: '', 
+    //     posLat: '48.858844', 
+    //     posLong: '2.294351', 
+    //     organisateur_Id: 1,
+    //     upVotes: undefined,
+    //     downVotes: undefined,
+    //     positiveFeedback: 1
+    //   },
+    //   {
+    //     activity_Id: 2,
+    //     activityName: 'Cycling',
+    //     activityAddress: '',
+    //     activityDescription: '',
+    //     posLat: '40.712776',
+    //     posLong: '-74.005974',
+    //     organisateur_Id: 2,
+    //     complementareInformation: '',
+    //     upVotes: undefined,
+    //     downVotes: undefined,
+    //     positiveFeedback: 0
+    //   },
+    // ];
 
-    this.activities = mockActivities;
+    //this.activities = mockActivities;
 
-    this.signalRservice.updateActivities(this.activities);
+    //this.signalRservice.updateActivities(this.activities);
   }
 
   private handleActivityUpdate(updatedActivity: ActivityModel): void {

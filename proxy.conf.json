@@ -1,0 +1,99 @@
+{
+    "/api": {
+      "target": "https://localhost:7069",
+      "secure": false,
+      "changeOrigin": true,
+      "logLevel": "debug"
+    },
+    "/activityhub": {
+      "target": "https://localhost:7069",
+      "secure": false,
+      "ws": true,
+      "logLevel": "debug"
+    },
+    "/avatarhub": {
+        "target": "https://localhost:7069",
+        "secure": false,
+        "ws": true,
+        "logLevel": "debug"
+    },
+    "/bonushub": {
+        "target": "https://localhost:7069",
+        "secure": false,
+        "ws": true,
+        "logLevel": "debug"
+    },
+    "/chatactivityhub": {
+        "target": "https://localhost:7069",
+        "secure": false,
+        "ws": true,
+        "logLevel": "debug"
+    },
+    "/chatevenementhub": {
+        "target": "https://localhost:7069",
+        "secure": false,
+        "ws": true,
+        "logLevel": "debug"
+    },
+    "/maphub": {
+        "target": "https://localhost:7069",
+        "secure": false,
+        "ws": true,
+        "logLevel": "debug"
+    },
+    "/mediaItemhub": {
+        "target": "https://localhost:7069",
+        "secure": false,
+        "ws": true,
+        "logLevel": "debug"
+    },
+    "/nevenementhub": {
+        "target": "https://localhost:7069",
+        "secure": false,
+        "ws": true,
+        "logLevel": "debug"
+    },
+    "/niconhub": {
+        "target": "https://localhost:7069",
+        "secure": false,
+        "ws": true,
+        "logLevel": "debug"
+    },
+    "/npersonhub": {
+        "target": "https://localhost:7069",
+        "secure": false,
+        "ws": true,
+        "logLevel": "debug"
+    },
+    "/nuserhub": {
+        "target": "https://localhost:7069",
+        "secure": false,
+        "ws": true,
+        "logLevel": "debug"
+    },
+    "/nvotehub": {
+        "target": "https://localhost:7069",
+        "secure": false,
+        "ws": true,
+        "logLevel": "debug"
+    },
+    "/organisateurhub": {
+        "target": "https://localhost:7069",
+        "secure": false,
+        "ws": true,
+        "logLevel": "debug"
+    },
+    "/recompensehub": {
+        "target": "https://localhost:7069",
+        "secure": false,
+        "ws": true,
+        "logLevel": "debug"
+    },
+    "/weatherforecast": {
+        "target": "https://localhost:7069",
+        "secure": false,
+        "ws": true,
+        "logLevel": "debug"
+    }
+  }
+  

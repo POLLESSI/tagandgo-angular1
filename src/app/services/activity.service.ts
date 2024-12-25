@@ -6,23 +6,59 @@ import { ActivityModel } from '../models/activity/activity.model';
 import { CONST_API } from '../constants/api-constants';
 import { ActivityCreationModel } from '../models/activity/activityCreation.model';
 import { ActivityEditionModel } from '../models/activity/activityEdition.model';
-//import { error } from 'console';
-
+import * as signalR from '@microsoft/signalr';
 @Injectable({
   providedIn: 'root'
 })
 
 export class ActivityService {
   private apiUrl = 'https://localhost:7069/api/activities'; //URL API
+  private hubConnection!: signalR.HubConnection;
   
+  constructor(private http: HttpClient) { 
+    this.startSignalRConnection();
+  }
 
-  constructor(private http: HttpClient) { }
+  private startSignalRConnection(): void {
+    this.hubConnection = new signalR.HubConnectionBuilder()
+      .withUrl('https://localhost:7069/hub/activities')
+      .configureLogging(signalR.LogLevel.Information)
+      .build();
+
+    this.hubConnection
+      .start()
+      .then(() => console.log('SignalR connection started.'))
+      .catch(err => console.error('SignalR connection error:', err));
+
+    this.registerHubEvents();
+  }
+
+  private registerHubEvents(): void {
+    this.hubConnection.on('ActivityCreated', (activity: ActivityModel) => {
+      console.log('New activity created :', activity);
+    });
+
+    this.hubConnection.on('ActivityUpdated', (activity: ActivityModel) => {
+      console.log('Activity updated :', activity);
+    });
+
+    this.hubConnection.on('ActivityDeleted', (id: number) => {
+      console.log('Activity deleted with ID : ${activity_Id}');
+    })
+  }
+
+  public stopSignalRConnection(): void {
+    this.hubConnection
+      .stop()
+      .then(() => console.log('SignalR connection stopped.'))
+      .catch(err => console.error('Error stopping SignalR:', err));
+  }
 
   public async getAllActivities(): Promise<Array<ActivityModel>> {
-    const url: string = `${this.apiUrl}/Activities`;
+    //const url: string = `${this.apiUrl}/Activities`;
     try {
       const respons = await firstValueFrom(
-        this.http.get<ActivityModel[]>(url , {responseType: 'json'})
+        this.http.get<ActivityModel[]>(this.apiUrl , {responseType: 'json'})
       );
 
       return respons as Array<ActivityModel>;
@@ -31,7 +67,7 @@ export class ActivityService {
       console.error('Error loading activities:', error)
       throw new Error('Error getting activity : ${error}'); 
     }
-    console.log('URL:', url);
+    console.log('URL:', this.apiUrl);
     console.error('Caught error:')
   }
 
@@ -52,42 +88,35 @@ export class ActivityService {
     
 
     try {
-      const url: string = `${this.apiUrl}/Activity/update`;
-      // const url = '${this.baseUrl}/${activityUpdated.activity_Id}';
-      console.log("UPDATE : ", url, activityUpdated);
+      console.log("UPDATE : ", this.apiUrl, activityUpdated);
 
-      return this.http.put<ActivityModel>(url, activityUpdated, { responseType: 'json'});
+      return this.http.put<ActivityModel>(this.apiUrl, activityUpdated, { responseType: 'json'});
 
     } catch (error) {
       throw error;
     }
   }
 
+  public async saveActivity(activity: ActivityModel): Promise<ActivityModel> {
+    const url = activity.activity_Id
+      ? `${this.apiUrl}/${activity.activity_Id}` // Update
+      : this.apiUrl; // Create
+
+    return firstValueFrom(
+        activity.activity_Id
+          ? this.http.put<ActivityModel>(url, activity)
+          : this.http.post<ActivityModel>(url, activity)
+      );
+  }
   public async deleteActivity(activity_Id: number): Promise<void> {
-    const url: string = `${this.apiUrl}/Activity/delete/${activity_Id}`;
+    const url: string = `${this.apiUrl}/${activity_Id}`;
 
     try {
       await firstValueFrom(this.http.delete(url, {responseType: 'json'}));
       console.log(`Activity with ID ${activity_Id} deleted successfully`)
     } catch (error) {
+      console.error('Error deleting activity with ID ${activity_Id}:', error)
       throw new Error('Error deleting activity: ${error}');
-    }
-  }
-
-  public async saveActivity(activity: ActivityModel): Promise<ActivityModel> {
-    try {
-      if (activity.activity_Id) {
-        return await this.http
-          .put<ActivityModel>(`${this.apiUrl}/Activity/update/${activity.activity_Id}`, activity)
-          .toPromise();
-      } else {
-        return await this.http
-          .post<ActivityModel>(this.apiUrl, activity)
-          .toPromise();
-      }
-    } catch (error) {
-      console.error('Error saving activity', error);
-      throw error;
     }
   }
 }

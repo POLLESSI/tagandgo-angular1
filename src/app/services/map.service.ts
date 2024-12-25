@@ -27,39 +27,59 @@ export class MapService {
   // evenements: any;
   // nevenementService: any;
   // mapService: any;
-  public map: L.Map;
-  private markers: Map<number, L.Marker> = new Map();
-
-  getMap(): L.Map | null {
-    return this.map || null;
+  private map: L.Map | null = null;
+  mapService: any;
+  listMaps: any;
+  get currentMap(): L.Map | null {
+    return this.map;
   }
 
-  destroyMap(): void {
-    if (this.map) {
-      this.map.remove();
-      this.map = null;
-      console.log('Map instance destroyed');
-    }
+  initMap(map: L.Map): void {
+    this.map = map;
   }
 
-  public loadMarkers(entities: MappableEntity[]): void {
-    entities.forEach(entity => {
-      const name = entity.activityName || entity.nEvenementName || 'UnKnown';
-      const lat = parseFloat(entity.posLat);
-      const long = parseFloat(entity.posLong);
+  addMarker(map: L.Map, lat: string, lng: string, popupText: string): void {
+    L.marker([parseFloat(lat), parseFloat(lng)]).addTo(map)
+    .bindPopup(popupText)
+    .openPopup();
+  }
+
+  updateMarker(map: L.Map, lat: string, lng: string, popupText: string): void {
+    this.map = map;
+    this.addMarker(map, lat, lng, popupText);
+  }
+
+  // public loadMarkers(entities: MappableEntity[]): void {
+  //   entities.forEach(entity => {
+  //     const name = entity.activityName || entity.nEvenementName || 'UnKnown';
+  //     const lat = parseFloat(entity.posLat);
+  //     const long = parseFloat(entity.posLong);
   
-      if (!isNaN(lat) && !isNaN(long)) {
-        const marker = L.marker([lat, long]).bindPopup(name);
-        marker.addTo(this.map);
-      }
-    });
-  }
+  //     if (!isNaN(lat) && !isNaN(long)) {
+  //       const marker = L.marker([lat, long]).bindPopup(name);
+  //       marker.addTo(this.map);
+  //     }
+  //   });
+  // }
   
 
   constructor(private http: HttpClient) { }
 
-  initMap(containerId: string): void {
+  // Méthode utilitaire pour vérifier si la carte est initialisée
+  private isMapInitialized(): boolean {
+    if (!this.map) {
+      console.error('map is not initialized.');
+      return this.map !== null;
+    }
+    return true;
+  }
+  // Méthode utilitaire pour gérer les erreurs
+  private logError(message: string): void {
+    console.error(`[MapService Error]: ${message}`)
+  }
 
+  // Initialiser la carte
+  initMap(containerId: string, options: L.MapOptions): void {
     const container = document.getElementById(containerId) as HTMLElement & {_leaflet_id?: number };
 
     if (!container) {
@@ -72,21 +92,27 @@ export class MapService {
       container.innerHTML = '';
     }
 
-    // Vérifiez si la carte est déjà initialisée
     if (this.map) {
       console.warn('Map instance already exists. Removing the previous instance.');
       this.map.remove(); // Efface l'ancienne instance si elle existe déjà. 
       this.map = null;
+      return;
     }
 
-    this.map = L.map(containerId).setView([50.82790, 4.37240], 13); // Initialisation de la map.
+    // Initialisez une nouvelle carte
+    this.map = L.map(containerId, options).setView([50.82790, 4.37240], 13);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '&copy; OpenStreetMap contributors',
-    }).addTo(this.map);
+    try {
+      
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      }).addTo(this.map);
 
-    console.log('Map initialized successfully.');
+      console.log('Map initialized successfully.');
+    } catch (error) {
+      console.error('Failed to initialized map: ${error}');
+    }
   }
 
   private async loadNEvenements(): Promise<void> {
@@ -98,15 +124,77 @@ export class MapService {
     }
   }
 
-  addMarker(activity: ActivityModel): void {
-    const marker = L.marker(
-      [parseFloat(activity.posLat), parseFloat(activity.posLong)],
-      { title: activity.activity_Id.toString() }
-    )
-      .bindPopup(`<b>${activity.activityName}</b><br>${activity.activityDescription}`)
-      .addTo(this.map);
-    this.markers.set(activity.activity_Id, marker);
+  // Méthode pour charger les données des cartes
+  public async getAllMaps(simulate: boolean = false): Promise<MapModel[]> {
+    if (simulate) {
+      // Simuler un appel API pour les tests.
+      console.log('Using simulated data for maps.');
+      return [];
+    }
+
+    const urlAPI: string = `${CONST_API.URL_API}/Map`;
+
+    try {
+      //Simulez un appel API ou chargez les cartes depuis une source de données
+      const maps: MapModel[] = [];
+      const response: any = await firstValueFrom(
+        this.http.get<MapModel[]>(urlAPI, { responseType: 'json' })
+      );
+      return response as MapModel[];
+    } catch (error) {
+      console.error('Error fetching maps:', error);
+      throw error;
+    }
   }
+
+  public async loadMaps(): Promise<void> {
+    try {
+      const maps = await this.mapService.getAllMaps();
+      console.log('Maps loaded successfully:', maps);
+      this.listMaps = maps;
+    } catch (error) {
+      console.error('Error loading maps:', error);
+    }
+  }
+
+  // Détruire la map
+  destroyMap(): void {
+    if (!this.isMapInitialized()) {
+      return;
+    }
+    if (this.map) {
+      this.map?.remove();
+      this.map = null;
+      console.log('Map destroyed successfully.');
+    }
+  }
+
+  // Ajout des marqueurs à la carte
+  addMarker(mapService: MapService, posLat: string, posLong: string, activityName: string, lat: number, lng: number, options?: L.MarkerOptions): L.Marker | null {
+    if (!this.isMapInitialized()) {
+      return null;
+    }
+    try {
+      const marker = L.marker([lat, lng], options);
+      marker.addTo(this.map!);
+      return marker;
+    } catch (error) {
+      this.logError('Failed to add marker: ${error}');
+      return null;
+    };
+    
+    // const marker = L.marker(
+    //   [parseFloat(activity.posLat), parseFloat(activity.posLong)],
+    //   { title: activity.activity_Id.toString() }
+    // )
+    //   .bindPopup(`<b>${activity.activityName}</b><br>${activity.activityDescription}`)
+    //   .addTo(this.map);
+    // this.markers.set(activity.activity_Id, marker);
+  }
+
+  // updateMarker(activity: any): void {
+  //   if (!this.isMapInitialized()) return;
+  // }
 
   updateMarker(activity: ActivityModel): void {
     const marker = this.markers.get(activity.activity_Id);
@@ -116,7 +204,11 @@ export class MapService {
         .bindPopup(`<b>${activity.activityName}</b><br>${activity.activityDescription}`)
         .openPopup();
     } else {
-      this.addMarker(activity);
+      this.addMarker(
+        parseFloat(activity.posLat),
+        parseFloat(activity.posLong),
+        {title: activity.activity_Id.toString() }
+      );
     }
   }
 
@@ -125,18 +217,6 @@ export class MapService {
     if (marker) {
       this.map.removeLayer(marker);
       this.markers.delete(activityId);
-    }
-  }
-
-  public async getAllMaps(): Promise<Array<MapModel>> {
-    const url: string = `${CONST_API.URL_API}/Map`;
-
-    try {
-      const respons: any = await firstValueFrom(this.http.get(url, {responseType: 'json'}));
-
-      return respons as Array<MapModel>
-    } catch (error) {
-      throw error;
     }
   }
 

@@ -20,7 +20,7 @@ export type MarkerFactory = { values: any[], markerFn: Function, popupFn?: Funct
   styleUrls: ['./nevenement.component.css']
 })
 export class NevenementComponent implements OnInit, AfterViewInit, OnDestroy {
-  private map!: L.Map;
+  //private map!: L.Map;
   //private markers: L.Marker[] = [];
 
   evenements: NEvenementModel[] = [];
@@ -67,16 +67,20 @@ export class NevenementComponent implements OnInit, AfterViewInit, OnDestroy {
     private mapService: MapService
   ) {}
 
-  ngAfterViewInit(): void {
-    this.initMap();
-    //throw new Error('Method not implemented.');
-    this.evenements.forEach(nevenement => {
-      //this.addMarker(nevenement.nEvenementName, nevenement.posLat, nevenement.posLong );
-    });
-    setTimeout(() => {
-      this.initMap();
-    }, 100);
+  ngOnInit(): void {
+    this.loadNEvenements();
   }
+
+  // ngAfterViewInit(): void {
+  //   this.initMap();
+  //   //throw new Error('Method not implemented.');
+  //   this.evenements.forEach(nevenement => {
+  //     //this.addMarker(nevenement.nEvenementName, nevenement.posLat, nevenement.posLong );
+  //   });
+  //   setTimeout(() => {
+  //     this.initMap();
+  //   }, 100);
+  // }
 
   private initMap(): void {
     const containerId = document.getElementById('map');
@@ -184,13 +188,23 @@ export class NevenementComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    //Désactiver le containeur avant de détruire le composant
-    this.mapContainerVisible = false;
+    // //Désactiver le containeur avant de détruire le composant
+    // this.mapContainerVisible = false;
 
-    if (this.map) {
-      this.map.remove(); //Supprimer la carte proprement
-      this.map = null;
-      console.log('Map instance destroyed');
+    // if (this.map) {
+    //   this.map.remove(); //Supprimer la carte proprement
+    //   this.map = null;
+    //   console.log('Map instance destroyed');
+    // }
+  }
+  private async loadNEvenements(): Promise<void> {
+    try {
+      this.evenements = await this.nevenementService.getAllNEvenements();
+      this.evenements.forEach(nevenement => {
+        this.mapService.addMarker(this.mapService.getMap(), nevenement.posLat, nevenement.posLong, nevenement.nEvenementName);
+      });
+    } catch (error) {
+      console.error('Error loading events:', error);
     }
   }
 
