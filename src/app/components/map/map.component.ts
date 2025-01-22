@@ -113,11 +113,11 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private loadMarkers(): void {
     this.activities.forEach(activity => {
-      this.mapService.addMarker(this.map, activity.posLat, activity.posLong, activity.activityName, parseFloat(activity.posLat), parseFloat(activity.posLong));
+      //this.mapService.addMarker(this.map, activity.posLat, activity.posLong, activity.activityName);
     });
     this.evenements.forEach(evenement => {
-      this.mapService.addMarker(this.map, evenement.posLat, evenement.posLong, evenement.nEvenementName, parseFloat(evenement.posLat), parseFloat(evenement.posLong));
-    })
+      //this.mapService.addMarker(this.map, evenement.posLat, evenement.posLong, evenement.nEvenementName);
+    });
   }
 
   //public mapContainerVisible = true;
@@ -138,16 +138,16 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   //     });
   //   }
 
-  public async getAllMaps(): Promise<void> {
-    try {
-      this.listMaps = await this.mapService.getAllMaps();
+  // public async getAllMaps(): Promise<void> {
+  //   try {
+  //     this.listMaps = await this.mapService.getAllMaps();
 
-      console.log(this.listMaps);
+  //     console.log(this.listMaps);
 
-    }catch (error) {
-      console.log("Error List Maps");
-    }
-  }
+  //   }catch (error) {
+  //     console.log("Error List Maps");
+  //   }
+  // }
 
   public async submit(mapForm: NgForm): Promise<void> {
     if (mapForm.invalid) {
@@ -172,8 +172,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
       };
 
       try {
-        const response: MapModel = await this.mapService.createMap(map);
-        this.listMaps.push(response);
+        // const response: MapModel = await this.mapService.createMap(map);
+        // this.listMaps.push(response);
 
       } catch (error) {
         console.log("Error creating map!");

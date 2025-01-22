@@ -59,9 +59,11 @@ export class NvoteComponent implements OnInit {
   public async getAllNVotes(): Promise<void> {
     try {
       this.listNVotes = await this.nvoteService.getAllNVotes();
-      this.signalRService.onEventUpdate(updatedEvent => {
-        this.nevenementSyncService.addOrUpdateNEvenement(updatedEvent);
-      })
+      this.signalRService.onEventUpdate(updatedEvents => {
+        updatedEvents.forEach(updatedEvent => {
+          this.nevenementSyncService.addOrUpdateNEvenement(updatedEvent);
+        });
+      });
 
       console.log(this.listNVotes);
 

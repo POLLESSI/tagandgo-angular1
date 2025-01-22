@@ -1,12 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SignalRService } from 'src/app/services/signalr.service';
 import { NgForm, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { CONST_API } from 'src/app/constants/api-constants';
 import { ActivityModel } from 'src/app/models/activity/activity.model'
 import { ActivityCreationModel } from 'src/app/models/activity/activityCreation.model';
 import { ActivityEditionModel } from 'src/app/models/activity/activityEdition.model';
 import { ActivityService } from 'src/app/services/activity.service';
-import * as L from 'leaflet';
 import { MapService } from '../../services/map.service';
 
 // export type MarkerFactory = { values: any[], markerFn: Function, popupFn?: Function }
@@ -24,20 +22,17 @@ import { MapService } from '../../services/map.service';
   styleUrls: ['./activity.component.css']
 })
 export class ActivityComponent implements OnInit, OnDestroy {
-  // [x: string]: any;
   activities: ActivityModel[] = [];
   isLoading = false;
   
-  activity_Id! : number;
-  activityName! : string;
-  activityAddress! : string;
-  activityDescription! : string;
-  complementareInformation! : string;
-  posLat! : string;
-  posLong! : string;
-  organisateur_Id! : number;
-
-  disable! : boolean;
+  activity_Id!: number;
+  activityName!: string;
+  activityAddress!: string;
+  activityDescription!: string;
+  complementareInformation!: string;
+  posLat!: string;
+  posLong!: string;
+  organisateur_Id!: number;
 
   showForm: boolean;
   isFormEdition: boolean;
@@ -54,36 +49,45 @@ export class ActivityComponent implements OnInit, OnDestroy {
     'activity_Id'
   ];
   activity: any;
+
   constructor(
     private signalRservice: SignalRService,
     private activityService: ActivityService,
     private mapService: MapService
   ) {}
 
-  ngOnInit(): void {
-    // this.isLoading = true;
+  async ngOnInit(): Promise<void> {
+    this.isLoading = true;
+    this.initMap();
 
-    // //Synchronisation avec SignalR
-    // this.signalRservice.startConnection();
-    // this.signalRservice.onActivityUpdate(this.handleActivityUpdate.bind(this));
+    //Synchronisation avec SignalR
+    this.signalRservice.startConnection();
+    this.signalRservice.onActivityUpdate(this.handleActivityUpdate.bind(this));
 
     // //Charger les activités depuis l'API
-    // await this.loadActivities();
+    await this.loadActivities();
 
-    // this.isLoading = false;
-    this.loadActivities();
+    this.isLoading = false;
   }
 
   ngOnDestroy(): void {
-      // this.activityService.stopSignalRConnection();
+      this.signalRservice.stopConnection();
   }
+
+  private initMap(): void {
+    const mapOptions: L.MapOptions = {
+      center: [50.82790, 4.37240],
+      zoom: 13, 
+      maxZoom: 19,
+    };
+    this.mapService.initMap('map', mapOptions);
+  }
+
 
   private async loadActivities(): Promise<void> {
     try {
       this.activities = await this.activityService.getAllActivities();
-      this.activities.forEach(activity => {
-        this.mapService.addMarker(this.mapService.getMap(), activity.posLat, activity.posLong, activity.activityName);
-      });
+      this.mapService['addActivityMarkers'](this.activities);
     } catch (err) {
       console.error('Error loading activities:', err);
     }
@@ -124,30 +128,41 @@ export class ActivityComponent implements OnInit, OnDestroy {
   private handleActivityUpdate(updatedActivity: ActivityModel): void {
     const index = this.activities.findIndex(a => a.activity_Id === updatedActivity.activity_Id);
     if (index !== -1) {
-      this.activities.push(updatedActivity);
+      this.activities[index] = updatedActivity;   
     } else {
       this.activities.push(updatedActivity);
     }
-    this.mapService.updateMarker(updatedActivity);
+    this.mapService.updateMarker(updatedActivity.posLat, updatedActivity.posLong, updatedActivity.activityName);
   }
 
   public async onActivitySubmit(activity: ActivityModel): Promise<void> {
     try {
       const savedActivity = await this.activityService.saveActivity(activity); // Sauvegarder l'activité
-      this['signalRService'].sendActivityUpdate(savedActivity); // Notifier SignalR
+      this.signalRservice.sendActivityUpdate(savedActivity); // Notifier SignalR
     } catch (error) {
       console.error('Error saving activity:', error);
     }
   }
 
-  public async updateActivityPosition(activityId: number, newLat: number, newLng: number): Promise<void> {
+  public async updateActivityPosition(activityId: number, newLat: string, newLng: string): Promise<void> {
     try {
       // Update activity data
       const activity = this.activities.find(a => a.activity_Id === activityId);
       if (activity) {
         activity.posLat = newLat.toString();
         activity.posLong = newLng.toString();
-        this.signalRservice.sendMarkerUpdate(activityId.toString(), { lat: newLat, lng: newLng });
+        this.signalRservice.sendMarkerUpdate(activityId.toString(), {
+          posLat: newLat.toString(), posLong: newLng.toString(),
+          activity_Id: 0,
+          activityName: '',
+          activityAddress: '',
+          activityDescription: '',
+          complementareInformation: '',
+          organisateur_Id: 0,
+          upVotes: undefined,
+          downVotes: undefined,
+          positiveFeedback: 0
+        });
       }
     } catch (err) {
       console.error('Error updating activity position:', err);
@@ -256,13 +271,13 @@ export class ActivityComponent implements OnInit, OnDestroy {
 
         const response: ActivityModel = await this.activityService.createActivity(activityEdited);
 
-        this.activities.filter((a: ActivityModel) => a.activity_Id != response.activity_Id);
+        this.activities = this.activities.filter((a: ActivityModel) => a.activity_Id != response.activity_Id);
 
         this.activities.push(response);
 
-        // activityForm.resetForm();
+        activityForm.resetForm();
 
-        // this.cancelForm();
+        this.cancelForm();
 
       } catch (error) {
         console.log("Error update activity!");
@@ -285,13 +300,9 @@ export class ActivityComponent implements OnInit, OnDestroy {
         const response: ActivityModel = await this.activityService.createActivity(activity);
         console.log(this.activities);
         console.log(response);
-
         this.activities.push(response);
-
         activityForm.resetForm();
-
         this.cancelForm();
-
       } catch (error) {
         console.log("Error creating activity!");
       }
@@ -370,7 +381,7 @@ export class ActivityComponent implements OnInit, OnDestroy {
   }
 
   public async updateActivity(activity: any,activityUpdated: ActivityEditionModel): Promise<void> {
-    const url: string = `${CONST_API.URL_API}/Activity/update`;
+    //const url: string = `${CONST_API.URL_API}/Activity/update`;
     //Checking required fields
     if (!activityUpdated.activity_Id ||  !activityUpdated.activityName || !activityUpdated.activityAddress) {
       console.log('Missing required fields for activity update');

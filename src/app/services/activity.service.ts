@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { ActivityModel } from '../models/activity/activity.model';
-import { CONST_API } from '../constants/api-constants';
+//import { CONST_API } from '../constants/api-constants';
 import { ActivityCreationModel } from '../models/activity/activityCreation.model';
 import { ActivityEditionModel } from '../models/activity/activityEdition.model';
 import * as signalR from '@microsoft/signalr';
