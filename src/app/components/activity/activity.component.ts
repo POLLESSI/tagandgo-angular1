@@ -1,19 +1,44 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
 import { DateTime } from 'luxon';
 import { ActivityModel } from 'src/app/models/activity/activity.model'
 import { ActivityCreationModel } from 'src/app/models/activity/activityCreation.model';
 import { ActivityEditionModel } from 'src/app/models/activity/activityEdition.model';
 import { ActivityService } from 'src/app/services/activity.service';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatMenuModule } from '@angular/material/menu';
+import { CommonModule } from '@angular/common';
+import { MatNativeDateModule } from '@angular/material/core';
 
 export type MarkerFactory = { values: any[], markerFn: Function, popupFn?: Function }
 
 @Component({
   selector: 'app-activity',
   templateUrl: './activity.component.html',
-  styleUrl: './activity.component.css'
+  styleUrl: './activity.component.scss',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatTableModule,
+    MatIconModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatMenuModule,
+    FormsModule
+  ]
 })
 export class ActivityComponent implements OnInit {
+
+  dataSource = new MatTableDataSource<ActivityModel>();
 
   listActivities: ActivityModel[] = [];
 
@@ -41,14 +66,13 @@ export class ActivityComponent implements OnInit {
   }
 
   public async ngOnInit(): Promise<void> {
-    await this.getAllActivities();``
+    await this.getAllActivities();
   }
 
   public async getAllActivities(): Promise<void> {
     try {
-      this.listActivities = await this.activityService.getAllActivities();
-
-      console.log('List of activities:', this.listActivities);
+      this.listActivities = await this.activityService.getAllActivitiesActive();
+      this.dataSource.data = this.listActivities;
 
     } catch (error) {
       console.error('Error fetching activities:', error);
@@ -63,29 +87,24 @@ export class ActivityComponent implements OnInit {
       return;
     }
 
-    console.log(this.isFormEdition);
-
     if (this.isFormEdition) {
       const activityEdited: ActivityEditionModel = {
-        Id: this.activityToEdit.Id,
-        Name: this.name,
-        Address: this.address,
-        StartDate: this.startDate,
-        EndDate: this.endDate,
-        Description: this.description,
-        AdditionalInformation: this.additionalInformation,
-        Location: this.location
+        id: this.activityToEdit.id,
+        name: this.name,
+        address: this.address,
+        startDate: this.startDate,
+        endDate: this.endDate,
+        description: this.description,
+        additionalInformation: this.additionalInformation,
+        location: this.location
       };
 
 
       try {
-        console.log("Activity to edit:", activityEdited);
-
         const response: ActivityModel = await this.activityService.createActivity(activityEdited);
-
-        this.listActivities.filter((a: ActivityModel) => a.Id != response.Id);
-
+        this.listActivities.filter((a: ActivityModel) => a.id != response.id);
         this.listActivities.push(response);
+        this.dataSource.data = this.listActivities;
 
         activityForm.resetForm();
 
@@ -96,25 +115,20 @@ export class ActivityComponent implements OnInit {
       }
     }
     else {
-      console.log("ICI");
-
       const activity: ActivityCreationModel = {
-        Name: this.name,
-        Address: this.address,
-        StartDate: this.startDate,
-        EndDate: this.endDate,
-        Description: this.description,
-        AdditionalInformation: this.additionalInformation,
-        Location: this.location
+        name: this.name,
+        address: this.address,
+        startDate: this.startDate,
+        endDate: this.endDate,
+        description: this.description,
+        additionalInformation: this.additionalInformation,
+        location: this.location
       };
 
       try {
         const response: ActivityModel = await this.activityService.createActivity(activity);
-
-        console.log(this.listActivities);
-        console.log(response);
-
         this.listActivities.push(response);
+        this.dataSource.data = this.listActivities;
 
         activityForm.resetForm();
 
@@ -126,17 +140,19 @@ export class ActivityComponent implements OnInit {
     }
   }
 
-  public onIdition(id: number): void {
+  public onIdition(activityToEdit: ActivityModel): void {
     this.showForm = true;
     this.isFormEdition = true;
 
-    this.activityToEdit = this.listActivities.find((a: ActivityModel) => a.Id == id);
+    this.activityToEdit = activityToEdit;
 
-    this.name = this.activityToEdit.Name;
-    this.address = this.activityToEdit.Address;
-    this.description = this.activityToEdit.Description;
-    this.additionalInformation = this.activityToEdit.AdditionalInformation;
-    this.location = this.activityToEdit.Location;
+    this.name = this.activityToEdit.name;
+    this.address = this.activityToEdit.address;
+    this.description = this.activityToEdit.description;
+    this.startDate = this.activityToEdit.startDate;
+    this.endDate =  this.activityToEdit.endDate;
+    this.additionalInformation = this.activityToEdit.additionalInformation;
+    this.location = this.activityToEdit.location;
 
     //this.organisateur_Id = this.activityToEdit.organisateur_Id;
   }
@@ -155,6 +171,30 @@ export class ActivityComponent implements OnInit {
     this.additionalInformation = null;
     this.location = null;
     //this.organisateur_Id = null;
+  }
+
+  public async deleteActivity(activityId: number): Promise<void> {
+    try {
+      await this.activityService.deleteActivity(activityId);
+
+      this.listActivities = this.listActivities.filter((a: ActivityModel) => a.id != activityId);
+      this.dataSource.data = this.listActivities;
+    } catch (error) {
+      alert("La suppresion n'a pas fonctionnée !")
+    }
+  }
+
+  public async onArchive(activityId: number): Promise<void> {
+    try {
+      const response: ActivityModel = await this.activityService.patchActivity(activityId);
+
+      this.listActivities = this.listActivities.filter((a: ActivityModel) => a.id != response.id);
+      this.listActivities.push(response);
+      this.dataSource.data = this.listActivities;
+
+    } catch (error) {
+      alert("L'archivage n'a pas fonctionnée !")
+    }
   }
 }
 

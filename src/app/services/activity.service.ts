@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { ActivityModel } from '../models/activity/activity.model';
@@ -12,7 +11,6 @@ import { ActivityEditionModel } from '../models/activity/activityEdition.model';
 })
 export class ActivityService {
   //private baseUrl = 'https://localhost:7069/api/activities'
-
 
   constructor(private http: HttpClient) { }
 
@@ -28,8 +26,20 @@ export class ActivityService {
     }
   }
 
+  public async getAllActivitiesActive(): Promise<Array<ActivityModel>> {
+    const url: string = `${CONST_API.URL_API}/Activity/active`;
+    try {
+      const respons: any = await firstValueFrom(this.http.get(url, {responseType: 'json'}));
+
+      return respons as Array<ActivityModel>;
+
+    } catch (error) {
+      throw new error('Error getting activity : ${error}');
+    }
+  }
+
   public async createActivity(activityCreated: ActivityCreationModel): Promise<ActivityModel> {
-    const url: string = `${CONST_API.URL_API}/Activity/create`;
+    const url: string = `${CONST_API.URL_API}/Activity`;
 
     try {
       const respons: any = await firstValueFrom(this.http.post(url, activityCreated, {responseType: 'json'}));
@@ -41,33 +51,40 @@ export class ActivityService {
     }
   }
 
-  public updateActivity(activityUpdated: ActivityEditionModel): Observable<ActivityEditionModel> {
-
+  public async updateActivity(activityUpdated: ActivityEditionModel): Promise<ActivityModel> {
+    const url: string = `${CONST_API.URL_API}/Activity`;
 
     try {
-      const url: string = `${CONST_API.URL_API}/Activity/update`;
-      // const url = '${this.baseUrl}/${activityUpdated.activity_Id}';
-      console.log("UPDATE : ", url, activityUpdated);
-
-      return this.http.put<ActivityModel>(url, activityUpdated, { responseType: 'json'});
+      const respons = await firstValueFrom(this.http.put<ActivityModel>(url, activityUpdated, { responseType: 'json'}));
+      return respons as ActivityModel;
 
     } catch (error) {
       throw error;
     }
   }
 
+  public async patchActivity(id: number): Promise<ActivityModel> {
+    const url: string = `${CONST_API.URL_API}/Activity/patch/${id}`;
+
+    console.log(url);
+
+
+    try {
+      const respons = await firstValueFrom(this.http.patch(url, {responseType: 'json'}));
+      return respons as ActivityModel;
+
+    } catch (error) {
+      throw new Error('Error patching activity: ${error}');
+    }
+  }
+
   public async deleteActivity(id: number): Promise<void> {
-    const url: string = `${CONST_API.URL_API}/Activity/delete/`;
+    const url: string = `${CONST_API.URL_API}/Activity/${id}`;
 
     try {
       await firstValueFrom(this.http.delete(url, {responseType: 'json'}));
-      console.log(`Activity with ID ${id} deleted successfully`)
     } catch (error) {
       throw new Error('Error deleting activity: ${error}');
     }
   }
 }
-function from(promise: Promise<ActivityModel[]>): Observable<ActivityModel[]> {
-  throw new Error('Function not implemented.');
-}
-
