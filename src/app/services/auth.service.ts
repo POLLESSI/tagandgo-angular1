@@ -37,14 +37,6 @@ export class AuthService {
   }
 
   public verifyToken(): Observable<boolean> {
-    // const token = localStorage.getItem('token'); // Stockez et récupérez le token comme convenu
-    // if (!token) {
-    //   return new Observable<boolean>((observer) => {
-    //     observer.next(false);
-    //     observer.complete();
-    //   });
-    // }
-
     const url: string = `${CONST_API.URL_API}/Auth/verifyToken`;
 
     // Vérifier le token via l'API

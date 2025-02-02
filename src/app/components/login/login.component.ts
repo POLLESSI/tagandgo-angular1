@@ -46,7 +46,7 @@ export class LoginComponent {
     try {
       await this.authService.login(userAuth);
 
-      this.router.navigate([RoutesDefined.DASHBOARD]);
+      this.router.navigate([RoutesDefined.DASHBOARD, RoutesDefined.WELCOME]);
 
     } catch (error) {
       console.error(`Erreur de connexion utilisateur : ${error.message}`);

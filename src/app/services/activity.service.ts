@@ -26,7 +26,7 @@ export class ActivityService {
     }
   }
 
-  public async getAllActivitiesActive(): Promise<Array<ActivityModel>> {
+  public async GetAllActivitiesNoneArchived(): Promise<Array<ActivityModel>> {
     const url: string = `${CONST_API.URL_API}/Activity/active`;
     try {
       const respons: any = await firstValueFrom(this.http.get(url, {responseType: 'json'}));

@@ -71,7 +71,7 @@ export class ActivityComponent implements OnInit {
 
   public async getAllActivities(): Promise<void> {
     try {
-      this.listActivities = await this.activityService.getAllActivitiesActive();
+      this.listActivities = await this.activityService.GetAllActivitiesNoneArchived();
       this.dataSource.data = this.listActivities;
 
     } catch (error) {
