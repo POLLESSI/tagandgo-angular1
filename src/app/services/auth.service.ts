@@ -24,6 +24,7 @@ export class AuthService {
       // Stocker le token dans le localStorage
       if (response && response.token) {
         localStorage.setItem('token', response.token); // Stocke le token avec une clé "token"
+
         return true;
       }
 
