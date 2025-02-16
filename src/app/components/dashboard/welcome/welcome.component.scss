@@ -1,0 +1,25 @@
+.welcom-links {
+  display: flex;
+  gap: 20px;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  .link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 100px;
+    width: 100px;
+    padding: 20px;
+    cursor: pointer;
+    background-color: rgb(56, 106, 255);
+    color: white;
+    border-radius: 20px;
+    transition: 0.5S ;
+
+    &:hover {
+       opacity: 0.8;
+    }
+  }
+}

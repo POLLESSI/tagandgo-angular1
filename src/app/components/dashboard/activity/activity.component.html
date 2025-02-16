@@ -142,11 +142,18 @@
 
       <button mat-button [matMenuTriggerFor]="menu">...</button>
       <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="deleteActivity(element.id)"><mat-icon>delete</mat-icon> Delete</button>
-        <button mat-menu-item (click)="onIdition(element)"><mat-icon>edit</mat-icon> Editer</button>
-        <button mat-menu-item (click)="onArchive(element.id)"><mat-icon>archive</mat-icon> Archiver</button>
-      </mat-menu>
+        <div *ngIf="isAnAdmin || isAnModerator">
+          <button mat-menu-item (click)="deleteActivity(element.id)"><mat-icon>delete</mat-icon> Supprimer</button>
+          <button mat-menu-item (click)="onIdition(element)"><mat-icon>edit</mat-icon> Editer</button>
+          <button mat-menu-item (click)="onArchive(element.id)"><mat-icon>archive</mat-icon> Archiver</button>
+        </div>
 
+        <div *ngIf="isAnDefaultUser">
+          <button mat-menu-item><mat-icon>arrow_circle_right</mat-icon> S'insrcire</button>
+
+        </div>
+
+      </mat-menu>
     </td>
   </ng-container>
 

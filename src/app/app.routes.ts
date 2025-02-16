@@ -18,7 +18,7 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       { path: RoutesDefined.FORBIDDEN, component: ForbiddenComponent },
-      { path: RoutesDefined.ACTIVITY, component: ActivityComponent, canActivate: [AuthGuard, AdminGuard] },
+      { path: RoutesDefined.ACTIVITY, component: ActivityComponent, canActivate: [AuthGuard] },
       { path: RoutesDefined.WELCOME, component: WelcomeComponent, canActivate: [AuthGuard] },
       { path: RoutesDefined.PROFILE, component: ProfileComponent, canActivate: [AuthGuard] },
     ]

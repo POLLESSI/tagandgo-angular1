@@ -1,40 +1,30 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
 import { jwtDecode } from "jwt-decode";
-import { CONST_ROLES } from '../constants/roles-constants';
+import { Roles } from '../constants/roles-constants';
 import { RoutesDefined } from '../constants/routes';
+import { TokenService } from '../services/token.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AdminGuard implements CanActivate {
-  constructor(private router: Router) {}
+
+  constructor(
+    private router: Router,
+    private tokenService: TokenService
+  ) {}
 
   canActivate(): boolean {
-    // Récupère le token depuis le localStorage
-    const token = localStorage.getItem('token');
+    const tokenDecoded = this.tokenService.getTokenDecrypted();
+    console.log(tokenDecoded);
 
-    if (token) {
-      try {
-        // Décoder le token
-        const decodedToken: any = jwtDecode(token);
-
-        console.log(decodedToken);
-
-
-        const keyRole: string = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
-
-        // Vérifie si l'utilisateur a le rôle Admin
-        if (decodedToken[keyRole] && decodedToken[keyRole] === CONST_ROLES.ADMIN) {
-          return true; // L'utilisateur a le rôle Admin, accès autorisé
-        } else {
-          console.warn('Accès refusé : Rôle non autorisé');
-          this.router.navigate([RoutesDefined.FORBIDDEN]); // Redirige vers une page "interdite"
-          return false;
-        }
-      } catch (err) {
-        console.error('Erreur lors du décodage du token', err);
-        this.router.navigate([RoutesDefined.LOGIN]);
+    if (tokenDecoded) {
+      if (tokenDecoded.role === Roles.ADMIN) {
+        return true;
+      } else {
+        console.warn('Accès refusé : Rôle non autorisé');
+        this.router.navigate([RoutesDefined.DASHBOARD, RoutesDefined.FORBIDDEN]);
         return false;
       }
     } else {

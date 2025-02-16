@@ -17,20 +17,23 @@
   </button>
 
   <button
-    mat-button
-    aria-label="Activité"
-    [routerLink]="['/', routesDefined.DASHBOARD, routesDefined.ACTIVITY]"
-    routerLinkActive="router-link-active"
-    >
-    <span>Activité</span>
-  </button>
-
-  <button
+    *ngIf="!showRole"
     mat-icon-button
     aria-label="Profil"
     [routerLink]="['/', routesDefined.DASHBOARD, routesDefined.PROFILE]"
     routerLinkActive="router-link-active"
     >
     <mat-icon>person</mat-icon>
+  </button>
+
+  <button
+    *ngIf="showRole"
+    mat-button
+    aria-label="Profil"
+    [routerLink]="['/', routesDefined.DASHBOARD, routesDefined.PROFILE]"
+    routerLinkActive="router-link-active"
+    >
+    <mat-icon>person</mat-icon>
+    <span>{{ userRole }}</span>
   </button>
 </mat-toolbar>

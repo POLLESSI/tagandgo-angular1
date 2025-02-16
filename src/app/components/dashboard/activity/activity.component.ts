@@ -15,6 +15,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatMenuModule } from '@angular/material/menu';
 import { CommonModule } from '@angular/common';
 import { MatNativeDateModule } from '@angular/material/core';
+import { TokenService } from 'src/app/services/token.service';
+import { Roles } from 'src/app/constants/roles-constants';
 
 export type MarkerFactory = { values: any[], markerFn: Function, popupFn?: Function }
 
@@ -62,11 +64,26 @@ export class ActivityComponent implements OnInit {
 
   displayedColumns: string[] = ['name', 'address',  'startDate',  'endDate', 'description', 'additionalInformation', 'location', 'id'];
 
-  constructor(private activityService: ActivityService) {
-  }
+  isAnAdmin: boolean;
+  isAnModerator: boolean;
+  isAnDefaultUser: boolean;
+
+  constructor(
+    private activityService: ActivityService,
+    private tokenService: TokenService
+  ) {}
 
   public async ngOnInit(): Promise<void> {
+    this.initRoles();
     await this.getAllActivities();
+  }
+
+  public initRoles(): void {
+    const role: Roles = this.tokenService.getTokenDecrypted().role;
+
+    this.isAnAdmin = role === Roles.ADMIN;
+    this.isAnModerator = role === Roles.MODERATOR;
+    this.isAnDefaultUser = role === Roles.DEFAULT;
   }
 
   public async getAllActivities(): Promise<void> {
