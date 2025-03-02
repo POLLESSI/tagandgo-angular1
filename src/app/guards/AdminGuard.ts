@@ -3,7 +3,7 @@ import { CanActivate, Router } from '@angular/router';
 import { jwtDecode } from "jwt-decode";
 import { Roles } from '../constants/roles-constants';
 import { RoutesDefined } from '../constants/routes';
-import { TokenService } from '../services/token.service';
+import { TokenService } from '../services/util/token.service';
 
 @Injectable({
   providedIn: 'root',

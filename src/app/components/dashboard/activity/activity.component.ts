@@ -4,7 +4,7 @@ import { DateTime } from 'luxon';
 import { ActivityModel } from 'src/app/models/activity/activity.model'
 import { ActivityCreationModel } from 'src/app/models/activity/activityCreation.model';
 import { ActivityEditionModel } from 'src/app/models/activity/activityEdition.model';
-import { ActivityService } from 'src/app/services/activity.service';
+import { ActivityService } from 'src/app/services/api/activity.service';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 
 import { MatButtonModule } from '@angular/material/button';
@@ -15,7 +15,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatMenuModule } from '@angular/material/menu';
 import { CommonModule } from '@angular/common';
 import { MatNativeDateModule } from '@angular/material/core';
-import { TokenService } from 'src/app/services/token.service';
+import { TokenService } from 'src/app/services/util/token.service';
 import { Roles } from 'src/app/constants/roles-constants';
 
 export type MarkerFactory = { values: any[], markerFn: Function, popupFn?: Function }

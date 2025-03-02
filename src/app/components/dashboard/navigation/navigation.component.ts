@@ -1,4 +1,4 @@
-import { TokenService } from './../../../services/token.service';
+import { TokenService } from './../../../services/util/token.service';
 import { Component, OnInit } from '@angular/core';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';

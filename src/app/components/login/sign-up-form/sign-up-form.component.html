@@ -1,0 +1,28 @@
+<form #loginForm="ngForm" (ngSubmit)="submit(loginForm)">
+  <!-- Activity Name -->
+  <mat-form-field>
+    <mat-label>Adresse mail :</mat-label>
+    <input matInput type="text" name="mail" [(ngModel)]="mail" required #nameField="ngModel">
+    <mat-error *ngIf="nameField.invalid && nameField.touched">Adresse mail est requise.</mat-error>
+  </mat-form-field>
+
+  <!-- Password -->
+  <mat-form-field>
+    <mat-label>Mot de passe :</mat-label>
+    <input matInput type="password" name="password" [(ngModel)]="password" required #passwordField="ngModel">
+    <mat-error *ngIf="passwordField.invalid && passwordField.touched">Mot de passe requis.</mat-error>
+  </mat-form-field>
+
+  <!-- Confirm Password -->
+  <mat-form-field>
+    <mat-label>Confirmer le mot de passe :</mat-label>
+    <input matInput type="password" name="confirmPassword" [(ngModel)]="confirmPassword" required #confirmPasswordField="ngModel">
+    <mat-error *ngIf="confirmPasswordField.invalid && confirmPasswordField.touched">Confirmation requise.</mat-error>
+    <mat-error *ngIf="password && confirmPassword">Les mots de passe ne correspondent pas.</mat-error>
+  </mat-form-field>
+
+  <!-- <p>Passwords match: {{ passwordsMatch }}</p> -->
+
+
+  <button mat-flat-button type="submit" [disabled]="loginForm.invalid">Valider</button>
+</form>

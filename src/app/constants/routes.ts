@@ -5,5 +5,4 @@ export class RoutesDefined {
   public static readonly ACTIVITY = "activity";
   public static readonly WELCOME = "welcome";
   public static readonly PROFILE = "profile";
-
 }

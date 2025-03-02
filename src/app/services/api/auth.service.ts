@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom, Observable } from 'rxjs';
-import { CONST_API } from '../constants/api-constants';
-import { UserAuthModel } from '../models/user/userAuth.model';
+import { CONST_API } from '../../constants/api-constants';
+import { UserAuthModel } from '../../models/user/userAuth.model';
 
 
 @Injectable({

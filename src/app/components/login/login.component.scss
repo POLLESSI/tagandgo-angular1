@@ -4,12 +4,11 @@ main {
   width: 100%;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
+  gap: 15px;
 
-
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+  .link {
+    text-decoration: underline;
+    cursor: pointer;
   }
 }
-

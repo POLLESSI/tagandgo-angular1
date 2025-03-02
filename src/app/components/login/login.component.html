@@ -1,21 +1,9 @@
 <main>
-  <form #loginForm="ngForm" (ngSubmit)="submit(loginForm)">
-    <!-- Activity Name -->
-    <mat-form-field>
-      <mat-label>Adresse mail :</mat-label>
-      <input matInput type="text" name="mail" [(ngModel)]="mail" required #nameField="ngModel">
-      <mat-error *ngIf="nameField.invalid && nameField.touched">Adresse mail est requise.</mat-error>
-    </mat-form-field>
+  <app-sign-in-form *ngIf="isSignInForm"></app-sign-in-form>
+  <div class="link" *ngIf="isSignInForm" (click)="isSignInForm = false">Se créer un compte</div>
 
-    <!-- Address -->
-    <mat-form-field>
-      <mat-label>Mot de passe :</mat-label>
-      <input matInput type="password" name="password" [(ngModel)]="password" required #addressField="ngModel">
-      <mat-error *ngIf="addressField.invalid && addressField.touched">Mot de passe requi.</mat-error>
-    </mat-form-field>
-
-    <button mat-flat-button type="submit" [disabled]="loginForm.invalid">Connexion</button>
-  </form>
+  <app-sign-up-form *ngIf="!isSignInForm"></app-sign-up-form>
+  <div class="link" *ngIf="!isSignInForm" (click)="isSignInForm = true">Retourner à la connexion</div>
 </main>
 
 
