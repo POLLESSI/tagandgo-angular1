@@ -25,4 +25,6 @@
 
 
   <button mat-flat-button type="submit" [disabled]="loginForm.invalid">Valider</button>
+
+  <mat-spinner *ngIf="loading" [diameter]="30"></mat-spinner>
 </form>

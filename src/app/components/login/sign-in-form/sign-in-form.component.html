@@ -14,5 +14,10 @@
   </mat-form-field>
 
   <button mat-flat-button type="submit" [disabled]="loginForm.invalid">Connexion</button>
+
+  <mat-spinner *ngIf="loading" [diameter]="30"></mat-spinner>
 </form>
+
+
+
 
