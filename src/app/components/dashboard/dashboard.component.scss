@@ -1,0 +1,16 @@
+.dashboard {
+    h1 {
+        color: #333;
+    }
+
+    nav {
+      a {
+        margin-right: 10px;
+        text-decoration: none;
+        color: #007bff;
+        &:hover {
+            text-decoration: underline;
+        }
+      } 
+    }
+}

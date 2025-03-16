@@ -6,91 +6,91 @@
       "logLevel": "debug"
     },
     "/activityhub": {
-      "target": "https://localhost:7069",
+      "target": "https://localhost:7069/activityhub",
       "secure": false,
       "ws": true,
       "logLevel": "debug"
     },
     "/avatarhub": {
-        "target": "https://localhost:7069",
+        "target": "https://localhost:7069/avatarhub",
         "secure": false,
         "ws": true,
         "logLevel": "debug"
     },
     "/bonushub": {
-        "target": "https://localhost:7069",
+        "target": "https://localhost:7069/bonushub",
         "secure": false,
         "ws": true,
         "logLevel": "debug"
     },
     "/chatactivityhub": {
-        "target": "https://localhost:7069",
+        "target": "https://localhost:7069/chatactivityhub",
         "secure": false,
         "ws": true,
         "logLevel": "debug"
     },
     "/chatevenementhub": {
-        "target": "https://localhost:7069",
+        "target": "https://localhost:7069/chatevenementhub",
         "secure": false,
         "ws": true,
         "logLevel": "debug"
     },
     "/maphub": {
-        "target": "https://localhost:7069",
+        "target": "https://localhost:7069/maphub",
         "secure": false,
         "ws": true,
         "logLevel": "debug"
     },
     "/mediaItemhub": {
-        "target": "https://localhost:7069",
+        "target": "https://localhost:7069/mediaItemhub",
         "secure": false,
         "ws": true,
         "logLevel": "debug"
     },
     "/nevenementhub": {
-        "target": "https://localhost:7069",
+        "target": "https://localhost:7069/nevenementhub",
         "secure": false,
         "ws": true,
         "logLevel": "debug"
     },
     "/niconhub": {
-        "target": "https://localhost:7069",
+        "target": "https://localhost:7069/niconhub",
         "secure": false,
         "ws": true,
         "logLevel": "debug"
     },
     "/npersonhub": {
-        "target": "https://localhost:7069",
+        "target": "https://localhost:7069/npersonhub",
         "secure": false,
         "ws": true,
         "logLevel": "debug"
     },
     "/nuserhub": {
-        "target": "https://localhost:7069",
+        "target": "https://localhost:7069/nuserhub",
         "secure": false,
         "ws": true,
         "logLevel": "debug"
     },
     "/nvotehub": {
-        "target": "https://localhost:7069",
+        "target": "https://localhost:7069/nvotehub",
         "secure": false,
         "ws": true,
         "logLevel": "debug"
     },
     "/organisateurhub": {
-        "target": "https://localhost:7069",
+        "target": "https://localhost:7069/organisateurhub",
         "secure": false,
         "ws": true,
         "logLevel": "debug"
     },
     "/recompensehub": {
-        "target": "https://localhost:7069",
+        "target": "https://localhost:7069/recompensehub",
         "secure": false,
         "ws": true,
         "logLevel": "debug"
     },
     "/weatherforecast": {
-        "target": "https://localhost:7069",
+        "target": "https://localhost:7069/weatherforecasthub",
         "secure": false,
         "ws": true,
         "logLevel": "debug"

@@ -1,0 +1,95 @@
+// filepath: c:\Users\Pol PC\Downloads\TagAndGo\TagAndGoUI\tagandgo_angular\src\styles.scss
+@use '@angular/material' as mat;
+@use '@angular/material/theming' as mat-theme;
+@import './assets/styles/overlay.scss';
+@import './assets/styles/leave.scss';
+@import './assets/styles/enter.scss';
+
+@include mat.core();
+/* // Custom Theming for Angular Material
+
+// For more information: https://material.angular.io/guide/theming */
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker hue.
+$primary: mat.define-palette(mat.$indigo-palette);
+$accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+$warn: mat.define-palette(mat.$red-palette);
+
+/* // Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once! */
+
+// $tagandgo-angular-theme: mat-light-theme(
+//   $primary: mat-palette($mat-indigo),
+//   $accent: mat-palette($mat-pink, A200, A100, A400),
+//   $warn: mat-palette($mat-red)
+// );
+$tagandgo-angular-theme: mat-theme.define-light-theme((
+    color: (
+        primary: $primary,
+        accent: $accent,
+        warn: $warn,
+    )
+));
+
+@include mat-theme.all-component-themes($tagandgo-angular-theme);     
+
+/* // Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using. */
+
+/* // Comment out the line below if you want to use the pre-defined typography utility classes.
+// For more information: https://material.angular.io/guide/typography#using-typography-styles-in-your-application.
+// @include mat.typography-hierarchy($tagandgo-angular1-theme);
+
+// Comment out the line below if you want to use the deprecated `color` inputs.
+// @include mat.color-variants-backwards-compatibility($tagandgo-angular1-theme); */
+/* You can add global styles to this file, and also import other style files */
+
+/* html {  } */
+
+body {
+    margin: 0; 
+    font-family: Roboto, "Helvetica Neue", sans-serif; 
+    font-family: Roboto, "Sixtyfour Convergence", sans-serif;
+    background-color: rgb(255, 255, 255);
+    height: 100%;
+  }
+
+h1 {
+    font-family: "Sixtyfour Convergence", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    font-variation-settings:
+        "BLED" 0,
+        "SCAN" 0,
+        "XELA" 0,
+        "YELA" 0;
+    color: red;
+}
+
+.container {
+    margin: 100px;
+}
+
+.router-link-active span,
+.router-link-active mat-icon
+{
+    font-weight: bold;
+    color: #005cbb;
+}
+
+html, body { 
+    height: 100%; 
+}
+body { 
+    margin: 0; 
+    font-family: Roboto, "Helvetica Neue", sans-serif; 
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

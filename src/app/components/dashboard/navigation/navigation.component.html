@@ -1,0 +1,41 @@
+<mat-toolbar>
+    <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+      <mat-icon>menu</mat-icon>
+    </button>
+  
+    <span>Tag&GoApp</span>
+  
+    <span class="example-spacer"></span>
+  
+    <button
+      mat-button
+      aria-label="Acceuil"
+      [routerLink]="['/', routesDefined.DASHBOARD, routesDefined.WELCOME]"
+      routerLinkActive="router-link-active"
+      >
+      <span>Welcome</span>
+    </button>
+  
+    <nav>
+      <button mat-button **ngFor="let route of routesDefined"[routerLink]="route.path">
+        {{ route.name}}
+      </button>
+    </nav>
+    <button
+      mat-button
+      aria-label="Activité"
+      [routerLink]="['/', routesDefined.DASHBOARD, routesDefined.ACTIVITY]"
+      routerLinkActive="router-link-active"
+      >
+      <span>Activité</span>
+    </button>
+  
+    <button
+      mat-icon-button
+      aria-label="Profil"
+      [routerLink]="['/', routesDefined.DASHBOARD, routesDefined.PROFILE]"
+      routerLinkActive="router-link-active"
+      >
+      <mat-icon>person</mat-icon>
+    </button>
+  </mat-toolbar>

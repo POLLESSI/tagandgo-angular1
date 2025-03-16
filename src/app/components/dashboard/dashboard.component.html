@@ -1,0 +1,9 @@
+<app-navigation></app-navigation>
+
+<div class="container">
+    <h1>Dashboard</h1>
+    <nav>
+        <a *ngFor="let route of routesDefined" [routerLink]="route.path">{{ route.name }}</a>
+    </nav>
+    <router-outlet></router-outlet>
+</div>

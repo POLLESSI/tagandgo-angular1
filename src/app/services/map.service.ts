@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import * as L from 'leaflet';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
@@ -21,6 +21,7 @@ import { ActivityService } from './activity.service';
   providedIn: 'root'
 })
 export class MapService {
+  private eventEmitter : EventEmitter<MapModel[]> = new EventEmitter<MapModel[]>()
   // activities: any;
   // activityService: any;
   // evenements: any;
@@ -32,6 +33,42 @@ export class MapService {
   // get currentMap(): L.Map | null {
   //   return this.map;
   // }
+  constructor(
+    private http: HttpClient, 
+    private activityService : ActivityService,
+    private nevenementService : NevenementService
+  ) {
+    this.initializeConnections();
+  }
+
+  private initializeConnections():  void {
+    this.eventEmitter.subscribe((maps: MapModel[]) => {
+      console.log('Event received', maps);
+    })
+  }
+
+  public addListener(listener: (maps: MapModel[]) => void): void {
+    this.eventEmitter.subscribe(listener);
+  }
+
+  public emitEvent(maps:MapModel[]): void {
+    this.eventEmitter.emit(maps);
+  }
+
+  public async getAllMaps(): Promise<MapModel[]> {
+    const url: string = `${CONST_API.URL_API}/Maps`;
+    return this.http.get(url, {responseType: 'json'}).toPromise() as Promise<Array<MapModel>>;
+  } 
+
+  // Méthide pour émettre des événements après avoir récupéré les cartes
+  public async fetchAndEmitMaps(): Promise<void> {
+    try {
+      const maps = await this.getAllMaps();
+      this.emitEvent(maps);
+    } catch (error) {
+      console.error('Error fetching maps:', error);
+    }
+  }
   // Initialiser la carte
   initMap(containerId: string, options: L.MapOptions): void {
     const container = document.getElementById(containerId) as HTMLElement & { _leaflet_id?: number}

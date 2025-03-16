@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { OrganisateurModel } from '../models/organisateur/organisateur.model';
 import { CONST_API } from '../constants/api-constants';
 import { OrganisateurCreationModel } from '../models/organisateur/organisateurCreation.model';
@@ -9,18 +9,38 @@ import { OrganisateurCreationModel } from '../models/organisateur/organisateurCr
   providedIn: 'root'
 })
 export class OrganisateurService {
+  private eventEmitter: EventEmitter<OrganisateurModel[]> = new EventEmitter();
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) { 
+    this.initializeConnections();
+  }
 
-  public async getAllOrganisateurs(): Promise<Array<OrganisateurModel>> {
+  private initializeConnections(): void { 
+    this.eventEmitter.subscribe((organisateurs: OrganisateurModel[]) => {
+      console.log('Event received', organisateurs);
+    });
+  }
+
+  public addListener(listener: (organisateurs: OrganisateurModel[]) => void): void {
+    this.eventEmitter.subscribe(listener);
+  }
+
+  public emitEvent(organisateurs: OrganisateurModel[]): void {
+    this.eventEmitter.emit(organisateurs);
+  }
+
+  public async getAllOrganisateurs(): Promise<OrganisateurModel[]> {
     const url: string = `${CONST_API.URL_API}/Organisateur`;
+    return this.http.get(url, { responseType: 'json'}).toPromise() as Promise<OrganisateurModel[]>;
+  }
 
+  // Méthode pour émettre des événements après avoir récupérer les organisateurs
+  public async fetchAndEmitOrganisateurs(): Promise<void> {
     try {
-      const respons: any = await firstValueFrom(this.http.get(url, { responseType: 'json'}));
-
-      return respons as Array<OrganisateurModel>
+      const organisateurs = await this.getAllOrganisateurs();
+      this.emitEvent(organisateurs);   
     } catch (error) {
-      throw error;
+      console.error('Error fetching organisateurs', error);
     }
   }
 

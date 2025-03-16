@@ -1,0 +1,17 @@
+<main>
+    <form #loginForm="ngForm" (ngSubmit)="submit(loginForm)">
+        <mat-form-field>
+            <mat-label>Email :</mat-label>
+            <input matInput type="text" name="mail" [(ngModel)]="mail" required #nameField="ngModel">
+            <mat-error *ngIf="nameField.invalid && nameField.touched">Email address is required.</mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Password :</mat-label>
+            <input matInput type="password" name="password" [(ngModel)]="password" required #addressField="ngModel">
+            <mat-error *ngIf="addressField.invalid && addressField.touched">Password is required.</mat-error>
+        </mat-form-field>
+
+        <button mat-flat-button type="submit" [disabled]="loginForm.invalid">Connection</button>
+    </form>
+</main>

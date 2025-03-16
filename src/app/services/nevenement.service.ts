@@ -1,28 +1,48 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom, Observable } from 'rxjs';
 import { NEvenementModel } from '../models/nevenement/nevenement.model';
 import { CONST_API } from '../constants/api-constants';
 import { NEvenementCreationModel } from '../models/nevenement/nevenementCreation.model';
-import { NevenementComponent } from '../components/nevenement/nevenement.component';
+import { NevenementComponent } from '../components/dashboard/nevenement/nevenement.component';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NevenementService {
   private apiUrl = "https://localhost:7069/nEvenement"; //URL API
+  private eventEmitter: EventEmitter<NEvenementModel[]> = new EventEmitter();
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) { 
+    this.initializeConnections();
+  }
+
+  private initializeConnections(){
+    this.getAllNEvenements().then((Response: Array<NEvenementModel>) => {
+      this.eventEmitter.emit(Response);
+    });
+  }
+
+  public addListener(listener: (data: NEvenementModel[]) => void): void {
+    this.eventEmitter.subscribe(listener);
+  }
+
+  public emitEvent(data: NEvenementModel[]): void {
+    this.eventEmitter.emit(data);
+  }
 
   public async getAllNEvenements(): Promise<Array<NEvenementModel>> {
     const url: string = `${CONST_API.URL_API}/NEvenement`;
-    
-    try {
-      const respons: any = await firstValueFrom(this.http.get<NEvenementModel[]>(`${this.apiUrl}/evenements`,{responseType: 'json'}));
+    return this.http.get(url, {responseType: 'json'}).toPromise() as Promise<Array<NEvenementModel>>;   
+  }
 
-      return respons as Array<NEvenementModel>
+  // Méthode pour émettre des événements après avoir les événements
+  public async fetchAndEmitNEvenements(): Promise<void> {
+    try {
+      const nevenements = await this.getAllNEvenements();
+      this.eventEmitter.emit(nevenements);  
     } catch (error) {
-      throw error;
+      console.error('Error fetching events', error);
     }
   }
 

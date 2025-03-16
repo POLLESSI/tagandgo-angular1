@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { NIconModel } from '../models/nicon/nicon.model';
@@ -9,18 +9,36 @@ import { NIconCreationModel } from '../models/nicon/niconCreation.model';
   providedIn: 'root'
 })
 export class NiconService {
+  private eventEmitter: EventEmitter<NIconModel[]> = new EventEmitter();
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+    this.initializeConnections();
+  }
+  private initializeConnections(): void {
+    this.eventEmitter.subscribe((nIcons: NIconModel[]) => {
+      console.log('Event received', nIcons);
+    })
+  }
+
+  public addListener(listener: (nIcons: NIconModel[]) => void): void {
+    this.eventEmitter.subscribe(listener);
+  }
+  public emitEvent(nIcons: NIconModel[]): void {
+    this.eventEmitter.emit(nIcons);
+  }
 
   public async getAllNIcons(): Promise<Array<NIconModel>> {
     const url: string = `${CONST_API.URL_API}/NIcon`;
+    return this.http.get(url, { responseType: 'json'}).toPromise() as Promise<NIconModel[]>;
+  }
 
+  //Méthode pour émettre des événements après avoir récupéré les icones
+  public async fetchAndEmitNIcons(): Promise<void> {
     try {
-      const respons: any = await firstValueFrom(this.http.get(url, { responseType: 'json'}));
-
-      return respons as Array<NIconModel>
+      const nIcons = await this.getAllNIcons();
+      this.emitEvent(nIcons);
     } catch (error) {
-      throw error;
+      console.error('Error fetching icons', error);
     }
   }
 

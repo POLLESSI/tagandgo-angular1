@@ -1,16 +1,25 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { NotificationService } from '../services/notification.service';
-
+import { MatButtonModule } from '@angular/material/button';
+import { RouterModule } from '@angular/router';
+import { RoutesDefined } from 'src/app/constants/routes';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTableModule } from '@angular/material/table';
 import { BehaviorSubject } from 'rxjs';
 
 @Component({
     selector: 'app-notification-bar',
+    standalone: true,
     template: `
     <div *ngIf="message$ | async as message" class="notification-bar">
       {{ message }}
     </div>
   `,
-  
     styles: [`
       .notification-bar {
         position: fixed;
@@ -23,7 +32,19 @@ import { BehaviorSubject } from 'rxjs';
         padding: 10px;
         z-index: 1000;
       }
-    `]
+    `],
+    imports: [
+      CommonModule,
+      MatSlideToggleModule,
+      MatButtonModule,
+      RouterModule,
+      FormsModule,
+      MatFormFieldModule,
+      MatInputModule,
+      MatIconModule,
+      MatTableModule,
+      MatButtonModule
+  ]
 })
 export class NotificationBarComponent implements OnInit {
     currentNotification: string | null = null;
