@@ -9,6 +9,9 @@ export function intercept(req: HttpRequest<unknown>, next: HttpHandlerFn): Obser
       headers: req.headers.set('Authorization', `Bearer ${token}`),
     });
 
+    console.log("===>", token);
+
+
     return next(cloned);
   }
 

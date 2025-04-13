@@ -1,4 +1,5 @@
 import { DateTime } from 'luxon';
+import { UserModel } from '../user/user.model';
 
 export interface ActivityModel {
   id: number;
@@ -10,4 +11,5 @@ export interface ActivityModel {
   additionalInformation: string;
   location: string;
   active: Boolean;
+  organizers: Array<UserModel>
 }

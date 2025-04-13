@@ -17,6 +17,15 @@ import { CommonModule } from '@angular/common';
 import { MatNativeDateModule } from '@angular/material/core';
 import { TokenService } from 'src/app/services/util/token.service';
 import { Roles } from 'src/app/constants/roles-constants';
+import { ComponentPortal } from '@angular/cdk/portal';
+import { OrganizersListComponent } from './organizers-list/organizers-list.component';
+import {
+  Overlay,
+  OverlayRef,
+  OverlayConfig,
+  PositionStrategy
+} from '@angular/cdk/overlay';
+import { UserModel } from 'src/app/models/user/user.model';
 
 export type MarkerFactory = { values: any[], markerFn: Function, popupFn?: Function }
 
@@ -66,11 +75,17 @@ export class ActivityComponent implements OnInit {
 
   isAnAdmin: boolean;
   isAnModerator: boolean;
-  isAnDefaultUser: boolean;
+  isAnLanbdaUser: boolean;
+  isAnEnterprise: boolean;
+
+  listActivitiesBelongsCurrentUser: number[] = [];
+
+  private overlayRef: OverlayRef | null = null;
 
   constructor(
     private activityService: ActivityService,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private overlay: Overlay
   ) {}
 
   public async ngOnInit(): Promise<void> {
@@ -80,16 +95,25 @@ export class ActivityComponent implements OnInit {
 
   public initRoles(): void {
     const role: Roles = this.tokenService.getTokenDecrypted().role;
+    const userId: number = parseInt(this.tokenService.getTokenDecrypted().userId);
 
     this.isAnAdmin = role === Roles.ADMIN;
     this.isAnModerator = role === Roles.MODERATOR;
-    this.isAnDefaultUser = role === Roles.DEFAULT;
+    this.isAnEnterprise = role === Roles.USER_ENTERPRISE;
+    this.isAnLanbdaUser = role === Roles.USER_LAMBDA;
   }
 
   public async getAllActivities(): Promise<void> {
     try {
       this.listActivities = await this.activityService.GetAllActivitiesNoneArchived();
       this.dataSource.data = this.listActivities;
+
+      this.listActivitiesBelongsCurrentUser = this.listActivities.filter((a: ActivityModel) => {
+        return a.organizers.some((o: UserModel) => o.id == parseInt(this.tokenService.getTokenDecrypted().userId));
+      }).map((a: ActivityModel) => a.id);
+
+      console.log(this.listActivitiesBelongsCurrentUser);
+
 
     } catch (error) {
       console.error('Error fetching activities:', error);
@@ -213,6 +237,37 @@ export class ActivityComponent implements OnInit {
       alert("L'archivage n'a pas fonctionnée !")
     }
   }
+
+  openOverlayOrganizer(activityId: number): void {
+    const positionStrategy = this.overlay.position()
+      .global()
+      .centerHorizontally()
+      .centerVertically();
+
+    const overlayConfig = new OverlayConfig({
+      hasBackdrop: true,
+      backdropClass: 'cdk-overlay-dark-backdrop',
+      positionStrategy
+    });
+
+    this.overlayRef = this.overlay.create(overlayConfig);
+    const portal = new ComponentPortal(OrganizersListComponent);
+    const componentRef = this.overlayRef.attach(portal);
+
+    // ✅ Transmet les données via l’Input
+    componentRef.instance.organizers = this.listActivities
+      .find((a: ActivityModel) => a.id == activityId).organizers;
+
+    this.overlayRef.backdropClick().subscribe(() => this.closeOverlay());
+  }
+
+  closeOverlay(): void {
+    if (this.overlayRef) {
+      this.overlayRef.dispose();
+      this.overlayRef = null;
+    }
+  }
+
 }
 
 
