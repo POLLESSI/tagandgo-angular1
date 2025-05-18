@@ -1,7 +1,7 @@
+import { ApiClient, ActivityDto, UserDto } from './../../../api-client';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { DateTime } from 'luxon';
-import { ActivityModel } from 'src/app/models/activity/activity.model'
 import { ActivityCreationModel } from 'src/app/models/activity/activityCreation.model';
 import { ActivityEditionModel } from 'src/app/models/activity/activityEdition.model';
 import { ActivityService } from 'src/app/services/api/activity.service';
@@ -26,6 +26,9 @@ import {
   PositionStrategy
 } from '@angular/cdk/overlay';
 import { UserModel } from 'src/app/models/user/user.model';
+import { firstValueFrom } from 'rxjs';
+
+
 
 export type MarkerFactory = { values: any[], markerFn: Function, popupFn?: Function }
 
@@ -49,9 +52,10 @@ export type MarkerFactory = { values: any[], markerFn: Function, popupFn?: Funct
 })
 export class ActivityComponent implements OnInit {
 
-  dataSource = new MatTableDataSource<ActivityModel>();
+  dataSource = new MatTableDataSource<ActivityDto>();
 
-  listActivities: ActivityModel[] = [];
+  //listActivities: ActivityDto[] = [];
+  listActivities: ActivityDto[] = [];
 
   id! : number;
   name! : string;
@@ -69,7 +73,7 @@ export class ActivityComponent implements OnInit {
 
   showForm: boolean;
   isFormEdition: boolean;
-  activityToEdit: ActivityModel | null = null;
+  activityToEdit: ActivityDto | null = null;
 
   displayedColumns: string[] = ['name', 'address',  'startDate',  'endDate', 'description', 'additionalInformation', 'location', 'id'];
 
@@ -85,7 +89,8 @@ export class ActivityComponent implements OnInit {
   constructor(
     private activityService: ActivityService,
     private tokenService: TokenService,
-    private overlay: Overlay
+    private overlay: Overlay,
+    private apiClient: ApiClient,
   ) {}
 
   public async ngOnInit(): Promise<void> {
@@ -105,12 +110,15 @@ export class ActivityComponent implements OnInit {
 
   public async getAllActivities(): Promise<void> {
     try {
-      this.listActivities = await this.activityService.GetAllActivitiesNoneArchived();
+      //this.listActivities = await this.activityService.GetAllActivitiesNoneArchived();
+      this.listActivities = await firstValueFrom(this.apiClient.activityActive());
+
+
       this.dataSource.data = this.listActivities;
 
-      this.listActivitiesBelongsCurrentUser = this.listActivities.filter((a: ActivityModel) => {
-        return a.organizers.some((o: UserModel) => o.id == parseInt(this.tokenService.getTokenDecrypted().userId));
-      }).map((a: ActivityModel) => a.id);
+      this.listActivitiesBelongsCurrentUser = this.listActivities.filter((a: ActivityDto) => {
+        return a.organizers.some((o: UserDto) => o.id == parseInt(this.tokenService.getTokenDecrypted().userId));
+      }).map((a: ActivityDto) => a.id);
 
       console.log(this.listActivitiesBelongsCurrentUser);
 
@@ -142,12 +150,12 @@ export class ActivityComponent implements OnInit {
 
 
       try {
-        const response: ActivityModel = await this.activityService.createActivity(activityEdited);
-        this.listActivities.filter((a: ActivityModel) => a.id != response.id);
-        this.listActivities.push(response);
-        this.dataSource.data = this.listActivities;
+        // const response: ActivityDto = await this.activityService.createActivity(activityEdited);
+        // this.listActivities.filter((a: ActivityDto) => a.id != response.id);
+        // this.listActivities.push(response);
+        // this.dataSource.data = this.listActivities;
 
-        activityForm.resetForm();
+        // activityForm.resetForm();
 
         this.cancelForm();
 
@@ -167,9 +175,9 @@ export class ActivityComponent implements OnInit {
       };
 
       try {
-        const response: ActivityModel = await this.activityService.createActivity(activity);
-        this.listActivities.push(response);
-        this.dataSource.data = this.listActivities;
+        // const response: ActivityDto = await this.activityService.createActivity(activity);
+        // this.listActivities.push(response);
+        // this.dataSource.data = this.listActivities;
 
         activityForm.resetForm();
 
@@ -181,7 +189,7 @@ export class ActivityComponent implements OnInit {
     }
   }
 
-  public onIdition(activityToEdit: ActivityModel): void {
+  public onIdition(activityToEdit: ActivityDto): void {
     this.showForm = true;
     this.isFormEdition = true;
 
@@ -190,8 +198,8 @@ export class ActivityComponent implements OnInit {
     this.name = this.activityToEdit.name;
     this.address = this.activityToEdit.address;
     this.description = this.activityToEdit.description;
-    this.startDate = this.activityToEdit.startDate;
-    this.endDate =  this.activityToEdit.endDate;
+    this.startDate = DateTime.fromJSDate(this.activityToEdit.startDate as unknown as Date);
+    this.endDate = DateTime.fromJSDate(this.activityToEdit.endDate as unknown as Date);
     this.additionalInformation = this.activityToEdit.additionalInformation;
     this.location = this.activityToEdit.location;
 
@@ -218,7 +226,7 @@ export class ActivityComponent implements OnInit {
     try {
       await this.activityService.deleteActivity(activityId);
 
-      this.listActivities = this.listActivities.filter((a: ActivityModel) => a.id != activityId);
+      this.listActivities = this.listActivities.filter((a: ActivityDto) => a.id != activityId);
       this.dataSource.data = this.listActivities;
     } catch (error) {
       alert("La suppresion n'a pas fonctionnée !")
@@ -227,10 +235,12 @@ export class ActivityComponent implements OnInit {
 
   public async onArchive(activityId: number): Promise<void> {
     try {
-      const response: ActivityModel = await this.activityService.patchActivity(activityId);
+      //const response: ActivityDto =  await this.activityService.patchActivity(activityId);
 
-      this.listActivities = this.listActivities.filter((a: ActivityModel) => a.id != response.id);
-      this.listActivities.push(response);
+      await firstValueFrom(this.apiClient.activityArchive(activityId));
+
+      this.listActivities = this.listActivities.filter((a: ActivityDto) => a.id != activityId);
+      //this.listActivities.push(response);
       this.dataSource.data = this.listActivities;
 
     } catch (error) {
@@ -256,7 +266,7 @@ export class ActivityComponent implements OnInit {
 
     // ✅ Transmet les données via l’Input
     componentRef.instance.organizers = this.listActivities
-      .find((a: ActivityModel) => a.id == activityId).organizers;
+      .find((a: ActivityDto) => a.id == activityId).organizers;
 
     this.overlayRef.backdropClick().subscribe(() => this.closeOverlay());
   }

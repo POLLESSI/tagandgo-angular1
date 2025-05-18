@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { UserDto } from 'src/app/api-client';
 import { UserModel } from 'src/app/models/user/user.model';
 
 @Component({
@@ -11,7 +12,7 @@ import { UserModel } from 'src/app/models/user/user.model';
 })
 export class OrganizersListComponent implements OnInit {
 
-  organizers: Array<UserModel> = [];
+  organizers: Array<UserDto> = [];
 
   ngOnInit(): void {
     throw new Error('Method not implemented.');
