@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
 import { UserDto } from 'src/app/api-client';
-import { UserModel } from 'src/app/models/user/user.model';
 
 @Component({
   selector: 'app-organizers-list',
@@ -10,12 +10,13 @@ import { UserModel } from 'src/app/models/user/user.model';
   templateUrl: './organizers-list.component.html',
   styleUrl: './organizers-list.component.scss'
 })
-export class OrganizersListComponent implements OnInit {
+export class OrganizersListComponent {
 
   organizers: Array<UserDto> = [];
 
-  ngOnInit(): void {
-    throw new Error('Method not implemented.');
-  }
+  @Output() close = new EventEmitter<void>();
 
+  closeDialog(): void {
+     this.close.emit();
+  }
 }

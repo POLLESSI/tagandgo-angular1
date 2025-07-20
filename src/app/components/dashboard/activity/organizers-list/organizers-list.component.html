@@ -1,4 +1,8 @@
 <div class="container">
+  <div class="exit">
+      <div (click)="closeDialog()">X</div>
+  </div>
+
   <h2>List des organisateurs :</h2>
 
   <div class="list" *ngFor="let item of organizers">

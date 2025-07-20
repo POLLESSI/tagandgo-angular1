@@ -85,7 +85,7 @@ export class ApiClient {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return OK
      */
     activityPOST(body: ActivityCreationDto | undefined): Observable<ActivityDto> {
@@ -253,7 +253,7 @@ export class ApiClient {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return OK
      */
     activityPUT(id: number, body: ActivityEditionDto | undefined): Observable<void> {
@@ -361,7 +361,7 @@ export class ApiClient {
      * @return OK
      */
     activityArchive(id: number): Observable<void> {
-        let url_ = this.baseUrl + "/api/Activity/patch/{id}";
+        let url_ = this.baseUrl + "/api/Activity/ActivityArchive/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -375,11 +375,11 @@ export class ApiClient {
         };
 
         return this.http.request("patch", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processPatch(response_);
+            return this.processActivityArchive(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processPatch(response_ as any);
+                    return this.processActivityArchive(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<void>;
                 }
@@ -388,7 +388,7 @@ export class ApiClient {
         }));
     }
 
-    protected processPatch(response: HttpResponseBase): Observable<void> {
+    protected processActivityArchive(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -408,7 +408,7 @@ export class ApiClient {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return OK
      */
     login(body: UserLoginDto | undefined): Observable<void> {
@@ -565,7 +565,7 @@ export class ApiClient {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return OK
      */
     userPOST(body: UserCreationDto | undefined): Observable<void> {
@@ -617,7 +617,7 @@ export class ApiClient {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return OK
      */
     userPUT(body: UserEditionDto | undefined): Observable<void> {
@@ -922,7 +922,6 @@ export class ActivityEditionDto implements IActivityEditionDto {
     description?: string | undefined;
     additionalInformation?: string | undefined;
     location?: string | undefined;
-    active?: boolean;
 
     constructor(data?: IActivityEditionDto) {
         if (data) {
@@ -943,7 +942,6 @@ export class ActivityEditionDto implements IActivityEditionDto {
             this.description = _data["description"];
             this.additionalInformation = _data["additionalInformation"];
             this.location = _data["location"];
-            this.active = _data["active"];
         }
     }
 
@@ -964,7 +962,6 @@ export class ActivityEditionDto implements IActivityEditionDto {
         data["description"] = this.description;
         data["additionalInformation"] = this.additionalInformation;
         data["location"] = this.location;
-        data["active"] = this.active;
         return data;
     }
 }
@@ -978,7 +975,6 @@ export interface IActivityEditionDto {
     description?: string | undefined;
     additionalInformation?: string | undefined;
     location?: string | undefined;
-    active?: boolean;
 }
 
 export class UserCreationDto implements IUserCreationDto {

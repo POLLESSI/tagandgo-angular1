@@ -1,9 +1,6 @@
-import { ApiClient, ActivityDto, UserDto } from './../../../api-client';
+import { ApiClient, ActivityDto, UserDto, ActivityCreationDto, ActivityEditionDto } from './../../../api-client';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import { DateTime } from 'luxon';
-import { ActivityCreationModel } from 'src/app/models/activity/activityCreation.model';
-import { ActivityEditionModel } from 'src/app/models/activity/activityEdition.model';
 import { ActivityService } from 'src/app/services/api/activity.service';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 
@@ -60,8 +57,8 @@ export class ActivityComponent implements OnInit {
   id! : number;
   name! : string;
   address! : string;
-  startDate!: DateTime;
-  endDate!: DateTime;
+  startDate!: Date;
+  endDate!: Date;
   description! : string;
   additionalInformation! : string;
   location! : string;
@@ -113,12 +110,9 @@ export class ActivityComponent implements OnInit {
       //this.listActivities = await this.activityService.GetAllActivitiesNoneArchived();
       this.listActivities = await firstValueFrom(this.apiClient.activityActive());
 
-
       this.dataSource.data = this.listActivities;
 
-      this.listActivitiesBelongsCurrentUser = this.listActivities.filter((a: ActivityDto) => {
-        return a.organizers.some((o: UserDto) => o.id == parseInt(this.tokenService.getTokenDecrypted().userId));
-      }).map((a: ActivityDto) => a.id);
+      this.listActivitiesBelongsCurrentUser = this.getActivityIdsWhereUserIsOrganizer(this.listActivities);
 
       console.log(this.listActivitiesBelongsCurrentUser);
 
@@ -136,8 +130,9 @@ export class ActivityComponent implements OnInit {
       return;
     }
 
+    // EDITION
     if (this.isFormEdition) {
-      const activityEdited: ActivityEditionModel = {
+      const activityEdited: ActivityEditionDto = ActivityEditionDto.fromJS({
         id: this.activityToEdit.id,
         name: this.name,
         address: this.address,
@@ -146,16 +141,26 @@ export class ActivityComponent implements OnInit {
         description: this.description,
         additionalInformation: this.additionalInformation,
         location: this.location
-      };
+      });
 
 
       try {
-        // const response: ActivityDto = await this.activityService.createActivity(activityEdited);
-        // this.listActivities.filter((a: ActivityDto) => a.id != response.id);
-        // this.listActivities.push(response);
-        // this.dataSource.data = this.listActivities;
+        await firstValueFrom(this.apiClient.activityPUT(activityEdited.id, activityEdited));
+        // this.listActivities = this.listActivities.filter((a: ActivityDto) => a.id != activityEdited.id);
 
-        // activityForm.resetForm();
+        let activityToEdit = this.listActivities.find((a: ActivityDto) => a.id == activityEdited.id);
+        activityToEdit.name = activityEdited.name;
+        activityToEdit.address = activityEdited.address;
+        activityToEdit.startDate = activityEdited.startDate;
+        activityToEdit.endDate = activityEdited.endDate;
+        activityToEdit.description = activityEdited.description;
+        activityToEdit.additionalInformation = activityEdited.additionalInformation;
+        activityToEdit.location = activityEdited.location;
+
+        // this.listActivities.push(activityEdited);
+        this.dataSource.data = this.listActivities;
+
+        activityForm.resetForm();
 
         this.cancelForm();
 
@@ -163,8 +168,9 @@ export class ActivityComponent implements OnInit {
         console.log("Error update activity!");
       }
     }
+    // CREATION
     else {
-      const activity: ActivityCreationModel = {
+      const activity: ActivityCreationDto = ActivityCreationDto.fromJS({
         name: this.name,
         address: this.address,
         startDate: this.startDate,
@@ -172,12 +178,17 @@ export class ActivityComponent implements OnInit {
         description: this.description,
         additionalInformation: this.additionalInformation,
         location: this.location
-      };
+      });
 
       try {
-        // const response: ActivityDto = await this.activityService.createActivity(activity);
-        // this.listActivities.push(response);
-        // this.dataSource.data = this.listActivities;
+        const response: ActivityDto = await firstValueFrom(this.apiClient.activityPOST(activity));
+        this.listActivities.push(response);
+        this.dataSource.data = this.listActivities;
+
+        this.listActivitiesBelongsCurrentUser = this.getActivityIdsWhereUserIsOrganizer(this.listActivities);
+
+        console.log(this.dataSource.data);
+
 
         activityForm.resetForm();
 
@@ -189,6 +200,15 @@ export class ActivityComponent implements OnInit {
     }
   }
 
+  private getActivityIdsWhereUserIsOrganizer(listActivities: ActivityDto[]): number[] {
+    return listActivities
+      .filter((a: ActivityDto) => {
+        return a.organizers
+          .some((o: UserDto) => o.id == parseInt(this.tokenService.getTokenDecrypted().userId));
+      })
+      .map((a: ActivityDto) => a.id);
+  }
+
   public onIdition(activityToEdit: ActivityDto): void {
     this.showForm = true;
     this.isFormEdition = true;
@@ -198,8 +218,8 @@ export class ActivityComponent implements OnInit {
     this.name = this.activityToEdit.name;
     this.address = this.activityToEdit.address;
     this.description = this.activityToEdit.description;
-    this.startDate = DateTime.fromJSDate(this.activityToEdit.startDate as unknown as Date);
-    this.endDate = DateTime.fromJSDate(this.activityToEdit.endDate as unknown as Date);
+    this.startDate = this.activityToEdit.startDate;
+    this.endDate = this.activityToEdit.endDate;
     this.additionalInformation = this.activityToEdit.additionalInformation;
     this.location = this.activityToEdit.location;
 
@@ -248,7 +268,7 @@ export class ActivityComponent implements OnInit {
     }
   }
 
-  openOverlayOrganizer(activityId: number): void {
+  public openOverlayOrganizer(activityId: number): void {
     const positionStrategy = this.overlay.position()
       .global()
       .centerHorizontally()
@@ -269,9 +289,10 @@ export class ActivityComponent implements OnInit {
       .find((a: ActivityDto) => a.id == activityId).organizers;
 
     this.overlayRef.backdropClick().subscribe(() => this.closeOverlay());
+    componentRef.instance.close.subscribe(() => this.closeOverlay());
   }
 
-  closeOverlay(): void {
+  public closeOverlay(): void {
     if (this.overlayRef) {
       this.overlayRef.dispose();
       this.overlayRef = null;
