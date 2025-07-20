@@ -1,6 +1,8 @@
 
 <h1>Activities Room</h1>
 
+<app-map [activity]="activitySeletedForMap"></app-map>
+
 <button mat-flat-button (click)="showForm = true" *ngIf="!isAnLanbdaUser">Create activity</button>
 
 <div *ngIf="showForm" class="overlay">
@@ -149,6 +151,6 @@
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="showOnMap(row)"></tr>
 </table>
 

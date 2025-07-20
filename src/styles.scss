@@ -38,6 +38,8 @@ $tagandgo-angular1-theme: mat.define-theme((
 
 @import './assets/styles/overlay.scss';
 @import './assets/styles/leave.scss';
+@import "leaflet/dist/leaflet.css";
+
 
 html, body { height: 100%; }
 body {
@@ -51,7 +53,7 @@ html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .container {
-  margin: 100px;
+  margin: 20px 100px;
 }
 
 .router-link-active span,

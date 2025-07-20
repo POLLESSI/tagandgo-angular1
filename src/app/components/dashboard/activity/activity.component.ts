@@ -24,6 +24,7 @@ import {
 } from '@angular/cdk/overlay';
 import { UserModel } from 'src/app/models/user/user.model';
 import { firstValueFrom } from 'rxjs';
+import { MapComponent } from "./map/map.component";
 
 
 
@@ -44,8 +45,10 @@ export type MarkerFactory = { values: any[], markerFn: Function, popupFn?: Funct
     MatDatepickerModule,
     MatNativeDateModule,
     MatMenuModule,
-    FormsModule
-  ]
+    FormsModule,
+    MapComponent,
+    MapComponent
+]
 })
 export class ActivityComponent implements OnInit {
 
@@ -82,6 +85,8 @@ export class ActivityComponent implements OnInit {
   listActivitiesBelongsCurrentUser: number[] = [];
 
   private overlayRef: OverlayRef | null = null;
+
+  activitySeletedForMap: ActivityDto;
 
   constructor(
     private activityService: ActivityService,
@@ -299,6 +304,9 @@ export class ActivityComponent implements OnInit {
     }
   }
 
+  public showOnMap(activity: ActivityDto): void {
+    this.activitySeletedForMap = activity;
+  }
 }
 
 
