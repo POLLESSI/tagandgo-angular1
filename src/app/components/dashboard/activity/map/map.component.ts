@@ -1,11 +1,12 @@
 import { Component, Input, input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
 import * as L from 'leaflet';
 import { ActivityDto } from 'src/app/api-client';
 
 @Component({
   selector: 'app-map',
   standalone: true,
-  imports: [ ],
+  imports: [ MatIconModule ],
   templateUrl: './map.component.html',
   styleUrl: './map.component.scss'
 })
@@ -27,6 +28,8 @@ export class MapComponent implements OnInit, OnChanges {
     L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png', {
       attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; OpenMapTiles &copy; OpenStreetMap contributors'
     }).addTo(this.map);
+
+    this.markerLayer.addTo(this.map);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -43,12 +46,30 @@ export class MapComponent implements OnInit, OnChanges {
 
     const coords: any[] = this.activity.location.split(' '); // ["50.1441414", "4.24353453"]
 
+    console.log("ICI: ", this.activity)
+
     const coord_x: number = parseFloat(coords[0]); // 50.1441414
     const coord_y: number = parseFloat(coords[1]); // 4.24353453
 
-    const marker = L.marker([coord_x, coord_y])
+    console.log(coord_x, coord_y);
+
+
+    const marker = L
+      .marker([coord_x, coord_y], { icon: this.setIconActivity() })
       .bindPopup(this.activity.name);
 
     this.markerLayer.addLayer(marker);
+  }
+
+  private setIconActivity(): any {
+    return L.divIcon({
+      html:
+      `
+        <div class="custom-marker--activity">
+          <div><i class="material-icons">location_on</i></div>
+        </div>
+      `,
+      className: '',
+    });
   }
 }

@@ -11,5 +11,7 @@ export interface ActivityModel {
   additionalInformation: string;
   location: string;
   active: Boolean;
+  like: number;
+  disLike: number;
   organizers: Array<UserModel>
 }
